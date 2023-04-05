@@ -2,6 +2,9 @@
 ## 技术栈
 
 vue3 + vite + typescript + element-plus + pinia + vue-router
+## DEMO
+[http://demo.cncf.vip/vue-admin/](http://demo.cncf.vip/vue-admin/)
+
 ## 界面
 ### 正常模式
 ![正常模式](docs/images/1.png)

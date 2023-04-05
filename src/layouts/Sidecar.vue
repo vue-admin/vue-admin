@@ -62,7 +62,6 @@ import {
     Location,
     Setting,
 } from '@element-plus/icons-vue'
-import IconLogo from '../components/icons/iconLogo.vue'
 const collapse = useCollapseStore()
 const handleOpen = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)
