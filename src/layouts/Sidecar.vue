@@ -1,0 +1,111 @@
+<template>
+    <el-aside :class="collapse.collapse ? 'el-aside--collapse' : ''">
+        <el-menu default-active="2" class="el-menu-aside" :collapse="collapse.collapse" :router="true" @open="handleOpen"
+            background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" @close="handleClose">
+            <div class="logo">
+                <el-icon>
+                    <IconLogo />
+                </el-icon>
+                <span v-if="!collapse.collapse">
+                    后台管理系统
+                </span>
+            </div>
+            <el-menu-item index="/">
+                <el-icon><icon-menu /></el-icon>
+                <template #title>
+                    控制台
+                </template>
+            </el-menu-item>
+            <el-menu-item index="/about">
+                <el-icon>
+                    <document />
+                </el-icon>
+                <template #title>
+                    文档列表
+                </template>
+            </el-menu-item>
+            <el-sub-menu index="3">
+                <template #title>
+                    <el-icon>
+                        <location />
+                    </el-icon>
+                    <span>用户中心</span>
+                </template>
+                <el-menu-item-group>
+                    <template #title><span>用户</span></template>
+                    <el-menu-item index="1-1">用户列表</el-menu-item>
+                    <el-menu-item index="1-2">用户画像</el-menu-item>
+                </el-menu-item-group>
+                <el-menu-item-group title="商家">
+                    <el-menu-item index="1-3">商家列表</el-menu-item>
+                </el-menu-item-group>
+                <el-sub-menu index="1-4">
+                    <template #title><span>管理员</span></template>
+                    <el-menu-item index="1-4-1">管理员列表</el-menu-item>
+                </el-sub-menu>
+            </el-sub-menu>
+            <el-menu-item index="4">
+                <el-icon>
+                    <setting />
+                </el-icon>
+                <template #title>系统设置</template>
+            </el-menu-item>
+        </el-menu>
+    </el-aside>
+</template>
+  
+<script lang="ts" setup>
+import { useCollapseStore } from '@/stores/collapse'
+import {
+    Document,
+    Menu as IconMenu,
+    Location,
+    Setting,
+} from '@element-plus/icons-vue'
+import IconLogo from '../components/icons/iconLogo.vue'
+const collapse = useCollapseStore()
+const handleOpen = (key: string, keyPath: string[]) => {
+    console.log(key, keyPath)
+}
+const handleClose = (key: string, keyPath: string[]) => {
+    console.log(key, keyPath)
+}
+</script>
+  
+<style scoped>
+.logo {
+    color: #dcdfe6;
+    text-align: center;
+    height: 48px;
+    border-bottom: 0px solid #dcdfe6;
+}
+
+.logo .el-icon {
+    font-size: 26px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.logo span {
+    margin-left: 10px;
+    display: inline-block;
+    line-height: 30px;
+    vertical-align: super;
+}
+
+.el-menu-aside {
+    height: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden auto;
+}
+
+.el-aside {
+    width: var(--ep-aside-width, 200px);
+}
+
+.el-aside--collapse {
+    width: var(--ep-aside-width, 65px);
+}
+</style>
