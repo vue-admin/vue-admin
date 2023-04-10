@@ -1,7 +1,7 @@
 <template>
     <el-aside :class="collapse.collapse ? 'el-aside--collapse' : ''">
         <el-menu default-active="2" class="el-menu-aside" :collapse="collapse.collapse" :router="true" @open="handleOpen"
-            background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" @close="handleClose">
+            @close="handleClose">
             <div class="logo">
                 <el-icon>
                     <IconLogo />
@@ -73,10 +73,9 @@ const handleClose = (key: string, keyPath: string[]) => {
   
 <style scoped>
 .logo {
-    color: #dcdfe6;
     text-align: center;
-    height: 48px;
-    border-bottom: 0px solid #dcdfe6;
+    height: 50px;
+    border-bottom: 1px solid var(--el-menu-border-color);
 }
 
 .logo .el-icon {

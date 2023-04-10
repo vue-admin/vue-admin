@@ -1,6 +1,6 @@
 <template>
     <el-header>
-        <el-menu :default-active="activeIndex" class="el-menu-header" mode="horizontal" :ellipsis="false"
+        <el-menu :default-active="activeIndex" class="el-menu-header" mode="horizontal" :ellipsis="false" :router="true"
             @select="handleSelect">
             <div class="el-collapse-icon">
                 <a @click="collapse.change()">
@@ -13,11 +13,11 @@
                 </a>
             </div>
             <div class="flex-grow" />
-            <el-menu-item index="1">
-                <RouterLink to="/">首页</RouterLink>
+            <el-menu-item index="/">
+                首页
             </el-menu-item>
-            <el-menu-item index="2">
-                <RouterLink to="/about">关于</RouterLink>
+            <el-menu-item index="/about">
+                关于
             </el-menu-item>
             <div class="dark-icon" @click="toggleDark()">
                 <el-icon>
@@ -25,15 +25,15 @@
                     <Sunny v-else />
                 </el-icon>
             </div>
-            <el-sub-menu index="100">
+            <el-sub-menu index="/">
                 <template #title>
                     <el-icon>
                         <Avatar />
                     </el-icon>
                     管理员
                 </template>
-                <el-menu-item index="100-1">个人中心</el-menu-item>
-                <el-menu-item index="100-2">退出</el-menu-item>
+                <el-menu-item index="/user">个人中心</el-menu-item>
+                <el-menu-item index="/login">退出</el-menu-item>
             </el-sub-menu>
         </el-menu>
 
@@ -58,12 +58,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
 }
 </script>
   
-<style>
-.el-header {
-    --el-header-padding: 0;
-    --el-header-height: initial;
-}
-
+<style scoped>
 .el-menu-header a {
     font-size: 14px;
     font-weight: 500;
