@@ -18,6 +18,10 @@ a {
   --el-header-height: initial;
 }
 
+.el-header {
+  --el-header-padding: 0;
+}
+
 code {
   border-radius: 2px;
   padding: 2px 4px;

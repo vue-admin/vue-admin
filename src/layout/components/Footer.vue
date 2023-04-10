@@ -9,6 +9,6 @@
     line-height: 48px;
     vertical-align: middle;
     height: 48px;
-    border-top: 1px solid #dcdfe6;
+    border-top: 1px solid var(--el-menu-border-color);
 }
 </style>
