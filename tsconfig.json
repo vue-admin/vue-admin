@@ -1,5 +1,4 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.web.json",
   "include": [
     "env.d.ts",
     "src/**/*.vue",
@@ -14,11 +13,10 @@
       "@/*": [
         "./src/*"
       ]
-    }
-  },
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ]
+    },
+    "lib": ["esnext", "dom"],
+    "composite": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+  }
 }
