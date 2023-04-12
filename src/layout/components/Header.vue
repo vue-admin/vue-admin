@@ -3,8 +3,8 @@
         <el-menu :default-active="activeIndex" class="el-menu-header" mode="horizontal" :ellipsis="false" :router="true"
             @select="handleSelect">
             <div class="el-collapse-icon">
-                <a @click="collapse.change()">
-                    <el-icon v-if="collapse.collapse">
+                <a @click="toggleCollapse()">
+                    <el-icon v-if="isCollapse">
                         <Expand />
                     </el-icon>
                     <el-icon v-else>
@@ -13,9 +13,7 @@
                 </a>
             </div>
             <div class="flex-grow" />
-            <el-menu-item index="/">
-                首页
-            </el-menu-item>
+            <el-menu-item index="/">首页</el-menu-item>
             <el-menu-item index="/about">
                 关于
             </el-menu-item>
@@ -30,7 +28,7 @@
                     <el-icon>
                         <Avatar />
                     </el-icon>
-                    管理员
+                    {{ user.name }}
                 </template>
                 <el-menu-item index="/user">个人中心</el-menu-item>
                 <el-menu-item index="/login">退出</el-menu-item>
@@ -49,9 +47,9 @@ import {
     Sunny,
     Avatar,
 } from '@element-plus/icons-vue'
-import { useCollapseStore } from '@/stores/collapse'
+import { toggleCollapse,isCollapse } from '@/stores/collapse'
 import { toggleDark, isDark } from '@/stores/dark'
-const collapse = useCollapseStore()
+import { user } from '@/stores/user'
 const activeIndex = ref('1')
 const handleSelect = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)
@@ -72,7 +70,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
 
 .dark-icon {
     font-size: 20px;
-    margin-top: 15px;
+    margin: 15px 15px 0 15px;
     cursor: pointer;
 }
 

@@ -23,9 +23,34 @@ const router = createRouter({
           path: '/about',
           name: 'about',
           component: () => import('@/views/AboutView.vue'),
-        }
+        },
+        {
+          path: '/user',
+          name: 'user',
+          children: [
+            {
+              path: '/user/list',
+              name: 'userList',
+              component: () => import('@/views/user/List.vue'),
+            },
+            {
+              path: '/user/portrait',
+              name: 'userPortrait',
+              component: () => import('@/views/user/Portrait.vue'),
+            },
+          ]
+        },
+        {
+          path: '/404',
+          name: 'NotFound',
+          component: () => import('@/views/404.vue'),
+        },
       ]
-    }
+    },
+    {
+      path: '/:catchAll(.*)',
+      redirect: '/404'
+    },
   ]
 })
 

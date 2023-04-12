@@ -1,10 +1,4 @@
-import { ref } from 'vue'
-import { defineStore } from 'pinia'
+import { useToggle,useStorage } from '@vueuse/core'
 
-export const useCollapseStore = defineStore('collapse', () => {
-    let collapse = ref(false)
-    function change() {
-        collapse.value = !collapse.value
-    }
-    return { collapse, change }
-})
+export const isCollapse = useStorage('collapse', true)
+export const toggleCollapse = useToggle(isCollapse)

@@ -1,12 +1,12 @@
 <template>
-    <el-aside :class="collapse.collapse ? 'el-aside--collapse' : ''">
-        <el-menu default-active="2" class="el-menu-aside" :collapse="collapse.collapse" :router="true" @open="handleOpen"
+    <el-aside :class="isCollapse ? 'el-aside--collapse' : ''">
+        <el-menu default-active="2" class="el-menu-aside" :collapse="isCollapse" :router="true" @open="handleOpen"
             @close="handleClose">
             <div class="logo">
                 <el-icon>
                     <IconLogo />
                 </el-icon>
-                <span v-if="!collapse.collapse">
+                <span v-if="!isCollapse">
                     后台管理系统
                 </span>
             </div>
@@ -33,18 +33,18 @@
                 </template>
                 <el-menu-item-group>
                     <template #title><span>用户</span></template>
-                    <el-menu-item index="1-1">用户列表</el-menu-item>
-                    <el-menu-item index="1-2">用户画像</el-menu-item>
+                    <el-menu-item index="/user/list">用户列表</el-menu-item>
+                    <el-menu-item index="/user/portrait">用户画像</el-menu-item>
                 </el-menu-item-group>
                 <el-menu-item-group title="商家">
-                    <el-menu-item index="1-3">商家列表</el-menu-item>
+                    <el-menu-item index="/merchant/list">商家列表</el-menu-item>
                 </el-menu-item-group>
-                <el-sub-menu index="1-4">
+                <el-sub-menu index="/admin">
                     <template #title><span>管理员</span></template>
-                    <el-menu-item index="1-4-1">管理员列表</el-menu-item>
+                    <el-menu-item index="/admiln/list">管理员列表</el-menu-item>
                 </el-sub-menu>
             </el-sub-menu>
-            <el-menu-item index="4">
+            <el-menu-item index="/sys">
                 <el-icon>
                     <setting />
                 </el-icon>
@@ -55,14 +55,13 @@
 </template>
   
 <script lang="ts" setup>
-import { useCollapseStore } from '@/stores/collapse'
 import {
     Document,
     Menu as IconMenu,
     Location,
     Setting,
 } from '@element-plus/icons-vue'
-const collapse = useCollapseStore()
+import { isCollapse } from '@/stores/collapse'
 const handleOpen = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)
 }
