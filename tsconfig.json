@@ -1,22 +1,21 @@
 {
-  "include": [
-    "env.d.ts",
-    "src/**/*.vue",
-    "src/**/*"
-  ],
   "compilerOptions": {
     "baseUrl": ".",
-    "types": [
-      "element-plus/global"
-    ],
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    },
-    "lib": ["esnext", "dom"],
-    "composite": true,
-    "skipLibCheck": true,
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "module": "esnext",
     "moduleResolution": "node",
-  }
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "lib": ["esnext", "dom"],
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "skipLibCheck": true
+  },
+  "include": ["env.d.ts","src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }
