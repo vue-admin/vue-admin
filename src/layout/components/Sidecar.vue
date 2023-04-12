@@ -15,15 +15,11 @@
         <span v-if="!isCollapse"> 后台管理系统 </span>
       </div>
       <el-menu-item index="/">
-        <el-icon>
-          <Menu />
-        </el-icon>
+        <el-icon><Menu /></el-icon>
         <template #title> 控制台 </template>
       </el-menu-item>
       <el-menu-item index="/doc">
-        <el-icon>
-          <document />
-        </el-icon>
+        <el-icon><document /></el-icon>
         <template #title> 文档列表 </template>
       </el-menu-item>
       <el-sub-menu index="3">
