@@ -1,9 +1,4 @@
 {
-  "include": [
-    "env.d.ts",
-    "src/**/*.vue",
-    "src/**/*"
-  ],
   "compilerOptions": {
     "baseUrl": ".",
     "types": [
@@ -14,9 +9,18 @@
         "./src/*"
       ]
     },
-    "lib": ["esnext", "dom"],
+    "lib": [
+      "esnext",
+      "dom"
+    ],
     "composite": true,
     "skipLibCheck": true,
     "moduleResolution": "node",
-  }
+    "module": "ESNext"
+  },
+  "include": [
+    "env.d.ts",
+    "src/**/*.vue",
+    "src/**/*"
+  ],
 }
