@@ -15,13 +15,14 @@ export default defineConfig({
     hmr: true
   },
   plugins: [
-    vue(), vueJsx(),
+    vue(),
+    vueJsx(),
     AutoImport({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [ElementPlusResolver()]
     }),
     Components({
-      resolvers: [ElementPlusResolver()],
-    }),
+      resolvers: [ElementPlusResolver()]
+    })
   ],
   resolve: {
     alias: {
