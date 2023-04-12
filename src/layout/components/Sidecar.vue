@@ -11,12 +11,14 @@
                 </span>
             </div>
             <el-menu-item index="/">
-                <el-icon><icon-menu /></el-icon>
+                <el-icon>
+                    <Menu />
+                </el-icon>
                 <template #title>
                     控制台
                 </template>
             </el-menu-item>
-            <el-menu-item index="/about">
+            <el-menu-item index="/doc">
                 <el-icon>
                     <document />
                 </el-icon>
@@ -56,12 +58,6 @@
   
 <script lang="ts" setup>
 import { useCollapseStore } from '@/stores/collapse'
-import {
-    Document,
-    Menu as IconMenu,
-    Location,
-    Setting,
-} from '@element-plus/icons-vue'
 const collapse = useCollapseStore()
 const handleOpen = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)

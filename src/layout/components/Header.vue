@@ -12,6 +12,9 @@
                     </el-icon>
                 </a>
             </div>
+            <div class="breadcrumb">
+                <Breadcrumb />
+            </div>
             <div class="flex-grow" />
             <el-menu-item index="/">
                 首页
@@ -42,15 +45,9 @@
   
 <script lang="ts" setup>
 import { ref } from 'vue'
-import {
-    Expand,
-    Fold,
-    Moon,
-    Sunny,
-    Avatar,
-} from '@element-plus/icons-vue'
 import { useCollapseStore } from '@/stores/collapse'
 import { toggleDark, isDark } from '@/stores/dark'
+import Breadcrumb from "./Breadcrumb.vue"
 const collapse = useCollapseStore()
 const activeIndex = ref('1')
 const handleSelect = (key: string, keyPath: string[]) => {
@@ -65,6 +62,12 @@ const handleSelect = (key: string, keyPath: string[]) => {
 }
 
 .el-collapse-icon a {
+    margin: 15px;
+    font-size: 20px;
+    line-height: 50px;
+}
+
+.breadcrumb {
     margin: 15px;
     font-size: 20px;
     line-height: 50px;
