@@ -64,11 +64,7 @@
   
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
-import { useRouter } from "vue-router";
-import {
-    Moon,
-    Sunny,
-} from '@element-plus/icons-vue'
+import { useRouter } from "vue-router"
 import { toggleDark, isDark } from '@/stores/dark'
 import type { FormInstance, FormRules } from 'element-plus'
 
@@ -79,7 +75,7 @@ const router = useRouter();
 const validateEmpty = (rule: any, value: any, callback: any) => {
     if (value === '') {
         callback(new Error('字段不能为空'))
-    }else{
+    } else {
         callback()
     }
 }
