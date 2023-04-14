@@ -5,10 +5,11 @@
       class="el-menu-aside"
       :collapse="isCollapse"
       :router="true"
+      :collapse-transition="false"
       @open="handleOpen"
       @close="handleClose"
     >
-      <div class="logo">
+      <div class="sidebar-logo-container">
         <el-icon>
           <IconLogo />
         </el-icon>
@@ -63,19 +64,20 @@ const handleClose = (key: string, keyPath: string[]) => {
 </script>
 
 <style scoped>
-.logo {
+.sidebar-logo-container {
   text-align: center;
   height: 50px;
+  overflow: hidden;
   border-bottom: 1px solid var(--el-menu-border-color);
 }
 
-.logo .el-icon {
+.sidebar-logo-container .el-icon {
   font-size: 26px;
   margin-top: 10px;
   margin-bottom: 10px;
 }
 
-.logo span {
+.sidebar-logo-container span {
   margin-left: 10px;
   display: inline-block;
   line-height: 30px;
@@ -91,10 +93,14 @@ const handleClose = (key: string, keyPath: string[]) => {
 }
 
 .el-aside {
+  -webkit-transition: width 0.28s;
+  transition: width 0.28s;
   width: var(--ep-aside-width, 200px);
 }
 
 .el-aside--collapse {
+  -webkit-transition: width 0.28s;
+  transition: width 0.28s;
   width: var(--ep-aside-width, 65px);
 }
 </style>

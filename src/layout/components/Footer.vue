@@ -6,9 +6,9 @@
 
 <style scoped>
 .el-footer {
-  line-height: 48px;
+  line-height: 32px;
   vertical-align: middle;
-  height: 48px;
+  height: 32px;
   border-top: 1px solid var(--el-menu-border-color);
 }
 </style>

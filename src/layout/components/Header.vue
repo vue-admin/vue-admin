@@ -49,6 +49,7 @@ import { ref } from 'vue'
 import { toggleCollapse, isCollapse } from '@/stores/collapse'
 import { toggleDark, isDark } from '@/stores/dark'
 import { user } from '@/stores/user'
+import Breadcrumb from './Breadcrumb.vue'
 const activeIndex = ref('1')
 const handleSelect = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
@@ -62,15 +63,20 @@ const handleSelect = (key: string, keyPath: string[]) => {
 }
 
 .el-collapse-icon a {
-  margin: 15px;
-  font-size: 20px;
-  line-height: 50px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 16px;
+  margin: 0 0 0 15px;
 }
 
 .breadcrumb {
-  margin: 15px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   font-size: 20px;
-  line-height: 50px;
+  margin: 0 0 0 15px;
 }
 
 .dark-icon {
