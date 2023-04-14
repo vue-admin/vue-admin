@@ -1,10 +1,8 @@
 <template>
   <el-tabs
     v-model="editableTabsValue"
-    type="card"
-    tab-position="top"
+    tab-position="left"
     class="demo-tabs"
-    closable
     @tab-remove="removeTab"
   >
     <el-tab-pane
@@ -24,14 +22,14 @@ let tabIndex = 2
 const editableTabsValue = ref('2')
 const editableTabs = ref([
   {
-    title: 'Tab 1',
+    title: 'VIP',
     name: '1',
-    content: 'Tab 1 content',
+    content: 'VIP用户',
   },
   {
-    title: 'Tab 2',
+    title: '普通',
     name: '2',
-    content: 'Tab 2 content',
+    content: '普通用户',
   },
 ])
 
