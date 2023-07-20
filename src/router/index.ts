@@ -33,6 +33,15 @@ const router = createRouter({
           },
         },
         {
+          path: '/xterm',
+          name: 'xterm',
+          component: () => import('@/views/Webssh.vue'),
+          meta: {
+            title: 'ssh',
+            showInbreadcrumb: true,
+          },
+        },
+        {
           path: '/about',
           name: 'about',
           component: () => import('@/views/AboutView.vue'),
