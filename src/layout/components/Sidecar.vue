@@ -23,6 +23,10 @@
         <el-icon><document /></el-icon>
         <template #title> 文档列表 </template>
       </el-menu-item>
+      <el-menu-item index="/xterm">
+        <el-icon><ScaleToOriginal /></el-icon>
+        <template #title> 命令行 </template>
+      </el-menu-item>
       <el-sub-menu index="3">
         <template #title>
           <el-icon>
