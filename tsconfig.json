@@ -12,16 +12,12 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "lib": ["esnext", "dom"],
+    "types": ["vite/client"],
     "paths": {
+      "@": ["src"],
       "@/*": ["src/*"]
     },
     "skipLibCheck": true
   },
-  "include": [
-    "env.d.ts",
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }
