@@ -2,7 +2,7 @@
 
 ## 技术栈
 
-vue3 + vite + typescript + element-plus + pinia + vue-router
+vue3 + vite + typescript + element-plus + pinia + vue-router + axios
 
 ## DEMO
 
@@ -23,13 +23,13 @@ vue3 + vite + typescript + element-plus + pinia + vue-router
 ### 安装依赖
 
 ```sh
-npm install
+pnpm i
 ```
 
 ### 启动 dev
 
 ```sh
-npm run dev
+pnpm dev
 ```
 
 ### 浏览器打开

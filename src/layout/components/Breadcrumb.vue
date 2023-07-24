@@ -1,13 +1,11 @@
 <template>
   <el-breadcrumb separator="/">
-    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
     <el-breadcrumb-item
       v-for="item in routers"
       :key="item.path"
       :to="{ path: item?.path }"
       >{{ item?.meta?.title || '--' }}</el-breadcrumb-item
     >
-    <el-breadcrumb-item>文档详情</el-breadcrumb-item>
   </el-breadcrumb>
 </template>
 <script setup lang="ts">

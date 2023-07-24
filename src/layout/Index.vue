@@ -5,8 +5,9 @@
       <el-header>
         <Header />
       </el-header>
+      <TagView />
       <el-main>
-        <RouterView></RouterView>
+        <RouterView />
       </el-main>
       <Footer />
     </el-container>
@@ -16,5 +17,6 @@
 <script setup lang="ts">
 import Sicecar from './components/Sidecar.vue'
 import Header from './components/Header.vue'
+import TagView from './components/TagsView/Index.vue'
 import Footer from './components/Footer.vue'
 </script>

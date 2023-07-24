@@ -60,7 +60,7 @@ const removeTab = (targetName: string) => {
   editableTabs.value = tabs.filter((tab) => tab.name !== targetName)
 }
 </script>
-<style>
+<style scoped>
 .demo-tabs > .el-tabs__content {
   padding: 32px;
   color: #6b778c;

@@ -1,5 +1,4 @@
 <template>
-  <el-header>
     <el-menu
       :default-active="activeIndex"
       class="el-menu-header"
@@ -41,7 +40,6 @@
         <el-menu-item index="/login">退出</el-menu-item>
       </el-sub-menu>
     </el-menu>
-  </el-header>
 </template>
 
 <script lang="ts" setup>
