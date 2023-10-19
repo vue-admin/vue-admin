@@ -40,7 +40,7 @@
         </el-menu-item-group>
         <el-sub-menu index="/admin">
           <template #title><span>管理员</span></template>
-          <el-menu-item index="/admiln/list">管理员列表</el-menu-item>
+          <el-menu-item index="/admin/list">管理员列表</el-menu-item>
         </el-sub-menu>
       </el-sub-menu>
       <el-menu-item index="/sys">

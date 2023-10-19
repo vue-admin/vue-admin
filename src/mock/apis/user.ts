@@ -4,11 +4,18 @@ export default [
   {
     url: '/api/login', // 注意，这里只能是string格式
     method: 'post',
-    response: () => {
-      return {
-        code: 0,
-        data: {
-          token: 'safdasdfas'
+    response: (req) => {
+      if (req.body.username == 'admin') {
+        return {
+          code: 0,
+          data: {
+            token: 'safdasdfas'
+          }
+        }
+      } else {
+        return {
+          code: 401,
+          msg: '用户名密码错误'
         }
       }
     }

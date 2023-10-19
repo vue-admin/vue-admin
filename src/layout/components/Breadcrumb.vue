@@ -1,11 +1,8 @@
 <template>
   <el-breadcrumb separator="/">
-    <el-breadcrumb-item
-      v-for="item in routers"
-      :key="item.path"
-      :to="{ path: item?.path }"
-      >{{ item?.meta?.title || '--' }}</el-breadcrumb-item
-    >
+    <el-breadcrumb-item :to="'/'">首页</el-breadcrumb-item>
+    <el-breadcrumb-item v-for="item in routers" :key="item.path" :to="{ path: item?.path }">{{ item?.meta?.title || '--'
+    }}</el-breadcrumb-item>
   </el-breadcrumb>
 </template>
 <script setup lang="ts">
@@ -18,7 +15,7 @@ console.log(router.currentRoute.value.matched)
 const routers = computed(() => {
   // 过滤掉没有meta的
   return router.currentRoute.value.matched.filter(
-    (item) => item.meta.title || null
+    (item) => item.meta?.showInbreadcrumb ? item.meta.title : false
   )
 })
 </script>

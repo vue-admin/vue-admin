@@ -58,7 +58,7 @@ export function removeTagsView(payload: tagsViewItemType) {
       tagsViewList.value.length - payload.index + 1
     )
     tagsViewList.value.splice(0, payload.index)
-    if (payload.index != 0) {
+    if (payload.index !== 0) {
       //list第一位加入删除了的首页tag
       tagsViewList.value.unshift(defaultTagsViewItem)
     }
