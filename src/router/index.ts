@@ -7,7 +7,7 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('../views/Login.vue'),
+      component: () => import('../views/Login.vue')
     },
     {
       path: '/',
@@ -20,8 +20,8 @@ const router = createRouter({
           component: () => import('@/views/HomeView.vue'),
           meta: {
             title: '首页',
-            showInbreadcrumb: true,
-          },
+            showInbreadcrumb: false
+          }
         },
         {
           path: '/doc',
@@ -29,8 +29,8 @@ const router = createRouter({
           component: () => import('@/views/Documents.vue'),
           meta: {
             title: '文档',
-            showInbreadcrumb: true,
-          },
+            showInbreadcrumb: true
+          }
         },
         {
           path: '/about',
@@ -38,15 +38,15 @@ const router = createRouter({
           component: () => import('@/views/AboutView.vue'),
           meta: {
             title: '关于',
-            showInbreadcrumb: true,
-          },
+            showInbreadcrumb: true
+          }
         },
         {
-          path: '/user',
+          path: '',
           name: 'user',
           meta: {
             title: '用户中心',
-            showInbreadcrumb: true,
+            showInbreadcrumb: true
           },
           children: [
             {
@@ -55,8 +55,8 @@ const router = createRouter({
               component: () => import('@/views/user/List.vue'),
               meta: {
                 title: '用户列表',
-                showInbreadcrumb: true,
-              },
+                showInbreadcrumb: true
+              }
             },
             {
               path: '/user/portrait',
@@ -64,26 +64,73 @@ const router = createRouter({
               component: () => import('@/views/user/Portrait.vue'),
               meta: {
                 title: '用户画像',
-                showInbreadcrumb: true,
-              },
-            },
-          ],
+                showInbreadcrumb: true
+              }
+            }
+          ]
+        },
+        {
+          path: '',
+          name: 'merchant',
+          meta: {
+            title: '商家',
+            showInbreadcrumb: true
+          },
+          children: [
+            {
+              path: '/merchant/list',
+              name: 'merchantList',
+              component: () => import('@/views/merchant/List.vue'),
+              meta: {
+                title: '商家列表',
+                showInbreadcrumb: true
+              }
+            }
+          ]
+        },
+        {
+          path: '',
+          name: 'admin',
+          meta: {
+            title: '管理员',
+            showInbreadcrumb: true
+          },
+          children: [
+            {
+              path: '/admin/list',
+              name: 'adminList',
+              component: () => import('@/views/admin/List.vue'),
+              meta: {
+                title: '管理员列表',
+                showInbreadcrumb: true
+              }
+            }
+          ]
+        },
+        {
+          path: '/sys',
+          name: 'sys',
+          component: () => import('@/views//Sys.vue'),
+          meta: {
+            title: '系统设置',
+            showInbreadcrumb: true
+          }
         },
         {
           path: '/404',
           name: 'NotFound',
-          component: () => import('@/views/404.vue'),
-        },
-      ],
+          component: () => import('@/views/404.vue')
+        }
+      ]
     },
     {
       path: '/:catchAll(.*)',
       redirect: '/404',
       meta: {
-        showInbreadcrumb: false,
-      },
-    },
-  ],
+        showInbreadcrumb: false
+      }
+    }
+  ]
 })
 
 export default router

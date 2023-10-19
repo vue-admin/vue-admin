@@ -4,7 +4,8 @@
       <router-link
         class="tags-view-item"
         :style="{
-          backgroundColor: isActive(tag) ? '#b4bccc' : '',
+          backgroundColor: isActive(tag) ? 'var(--el-menu-hover-bg-color)' : '',
+          color: isActive(tag) ? 'var(--el-menu-active-color)' : '',
           borderColor: isActive(tag) ? '' : ''
         }"
         v-for="(tag, index) in tagsViewList"
@@ -157,14 +158,18 @@ watch(
     if (path === '/') {
       affix = true
     }
+    let title = getTitle(to)
+    if (title === undefined || title === '') {
+      return
+    }
     addTagsViewList({
       fullPath,
       params,
       path,
       query,
-      title: getTitle(to),
-      name: getTitle(to),
-      meta: { title: getTitle(to), affix: affix }
+      title: title,
+      name: title,
+      meta: { title: title, affix: affix }
     })
   },
   {
@@ -177,8 +182,8 @@ watch(
 .tags-view-container {
   height: 34px;
   width: 100%;
-  border-bottom: 1px solid #d8dce5;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
+  border-bottom: 1px solid var(--el-menu-border-color);
+  //box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
 
   .tags-view-item {
     display: inline-block;
@@ -186,8 +191,8 @@ watch(
     cursor: pointer;
     height: 26px;
     line-height: 26px;
-    border: 1px solid #d8dce5;
-    color: #495060;
+    border: 1px solid var(--el-menu-border-color);
+    color: var(--el-menu-text-color);
     padding: 0 8px;
     font-size: 12px;
     margin-left: 5px;
@@ -234,8 +239,8 @@ watch(
       }
 
       &:hover {
-        background-color: #b4bccc;
-        color: #fff;
+        background-color: var(--el-menu-hover-bg-color);
+        color: var(--el-menu-hover-text-color);
       }
     }
   }

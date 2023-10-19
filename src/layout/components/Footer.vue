@@ -1,6 +1,6 @@
 <template>
   <el-footer>
-    <div>©2023</div>
+    <div>©{{ new Date().getFullYear() }}</div>
   </el-footer>
 </template>
 
