@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <h1>商家列表</h1>
+    <h1>三级菜单</h1>
   </div>
 </template>
 
