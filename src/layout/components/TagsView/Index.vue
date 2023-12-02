@@ -22,11 +22,7 @@
         </template>
       </router-link>
     </el-scrollbar>
-    <context-menu
-      v-show="visible"
-      :style="menuStyle"
-      :index="selectIndex"
-    ></context-menu>
+    <context-menu v-show="visible" :style="menuStyle" :index="selectIndex" />
   </div>
 </template>
 

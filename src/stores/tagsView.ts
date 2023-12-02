@@ -47,7 +47,7 @@ export function addTagsViewList(tag: tagsViewItem) {
 
 /**
  * 删除 tag
- * @param {type: 'other'||'right'||'index', index: index} payload
+ * @param tagsViewItemType payload
  */
 export function removeTagsView(payload: tagsViewItemType) {
   if (payload.type === 'index') {
