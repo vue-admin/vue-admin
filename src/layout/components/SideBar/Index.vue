@@ -28,8 +28,8 @@
 import { isCollapse } from '@/stores/collapse'
 import { ref, reactive } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
-import { fetchMenus, menuItemData } from '@/apis/user/info'
 import MenuItem from '../Menu/MenuItem.vue'
+import menus from '@/router/menus'
 
 // 菜单激活的路由
 const activePath = ref<string>('')
@@ -47,11 +47,6 @@ const handleClose = (key: string, keyPath: string[]) => {
 
 const ruleForm = reactive({
   userId: ''
-})
-
-let menus = ref<menuItemData[]>([])
-fetchMenus(ruleForm).then((res) => {
-  menus.value = res.data
 })
 </script>
 

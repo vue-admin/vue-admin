@@ -24,24 +24,15 @@ const editableTabs = ref([
   {
     title: 'VIP',
     name: '1',
-    content: 'VIP用户',
+    content: 'VIP用户'
   },
   {
     title: '普通',
     name: '2',
-    content: '普通用户',
-  },
+    content: '普通用户'
+  }
 ])
 
-const addTab = (targetName: string) => {
-  const newTabName = `${++tabIndex}`
-  editableTabs.value.push({
-    title: 'New Tab',
-    name: newTabName,
-    content: 'New Tab content',
-  })
-  editableTabsValue.value = newTabName
-}
 const removeTab = (targetName: string) => {
   const tabs = editableTabs.value
   let activeName = editableTabsValue.value

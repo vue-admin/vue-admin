@@ -16,6 +16,6 @@
   </el-sub-menu>
 </template>
 <script lang="ts" setup>
-import { menuItemData } from '@/apis/user/info'
-const m = defineProps<{ data: menuItemData }>()
+import { RouteRecordRaw } from 'vue-router'
+const m = defineProps<{ data: RouteRecordRaw }>()
 </script>
