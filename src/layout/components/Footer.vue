@@ -1,6 +1,6 @@
 <template>
   <el-footer>
-    <div>©{{ new Date().getFullYear() }}</div>
+    <div>©{{ new Date().getFullYear() }} vue-admin</div>
   </el-footer>
 </template>
 

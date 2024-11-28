@@ -26,15 +26,15 @@
 
 <script lang="ts" setup>
 import { isCollapse } from '@/stores/collapse'
-import { ref, reactive } from 'vue'
-import { onBeforeRouteUpdate } from 'vue-router'
+import { ref, reactive, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import MenuItem from '../Menu/MenuItem.vue'
 import menus from '@/router/menus'
 
 // 菜单激活的路由
-const activePath = ref<string>('')
-// 路由监听
-onBeforeRouteUpdate((to) => {
+const route = useRoute()
+const activePath = ref<string>(route.path)
+watch(route, (to) => {
   activePath.value = to.path
 })
 
