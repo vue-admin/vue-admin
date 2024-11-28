@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <Sicecar />
+    <Sidebar />
     <el-container>
       <el-header>
         <Header />
@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import Sicecar from './components/SideBar/Index.vue'
+import Sidebar from './components/Sidebar/Index.vue'
 import Header from './components/Header/Index.vue'
 import TagView from './components/TagsView/Index.vue'
 import Footer from './components/Footer.vue'

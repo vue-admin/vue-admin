@@ -35,3 +35,9 @@ pnpm dev
 ### 浏览器打开
 
 http://localhost:5173/
+
+### 构建
+
+```sh
+pnpm build
+```

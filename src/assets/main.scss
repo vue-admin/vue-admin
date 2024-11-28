@@ -16,6 +16,7 @@ a {
 :root {
   --el-menu-item-height: 48px;
   --el-header-height: initial;
+  --el-menu-horizontal-height: initial;
 }
 
 .el-header {
@@ -29,6 +30,7 @@ a {
 
 .el-main {
   --el-main-padding: 10px;
+  // background-color: var(--el-bg-color-page);
 }
 
 code {

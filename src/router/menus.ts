@@ -16,8 +16,28 @@ const menus = [
     meta: {
       title: '文档',
       icon: 'document',
-      showMenu: true
+      showMenu: false
     }
+  },
+  {
+    path: '/curd',
+    name: '增删改查',
+    meta: {
+      title: '增删改查',
+      icon: 'document',
+      showMenu: true
+    },
+    children: [
+      {
+        path: '/crud/list',
+        name: 'crudList',
+        component: () => import('@/views/crud/Index.vue'),
+        meta: {
+          title: '列表',
+          showMenu: true
+        }
+      }
+    ]
   },
   {
     path: '/about',
@@ -26,7 +46,6 @@ const menus = [
     meta: {
       title: '关于',
       icon: 'about',
-      showInbreadcrumb: true,
       showMenu: false
     }
   },

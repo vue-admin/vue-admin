@@ -5,10 +5,10 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import router from '@/router/index'
 
 class Service {
-  service: AxiosInstance
+  axios: AxiosInstance
 
   constructor(baseURL = '/', timeout = 30000) {
-    this.service = axios.create({
+    this.axios = axios.create({
       baseURL,
       timeout,
       headers: {
@@ -19,7 +19,7 @@ class Service {
   }
   interceptors() {
     // http request 拦截器
-    this.service.interceptors.request.use(
+    this.axios.interceptors.request.use(
       (config: ApiRequestConfig) => {
         return config
       },
@@ -33,7 +33,7 @@ class Service {
       }
     )
     // http response 拦截器
-    this.service.interceptors.response.use(
+    this.axios.interceptors.response.use(
       (response: AxiosResponse) => {
         const resData = response.data as ApiResult
         if (resData.code === 0) {
@@ -129,27 +129,27 @@ class Service {
     data?: D,
     options?: Partial<ApiRequestConfig>
   ): Promise<ApiResult<T>> {
-    return this.service.get(url, { params: data, ...options })
+    return this.axios.get(url, { params: data, ...options })
   }
   put<T = any, D = any>(
     url: string,
     data?: D,
     options?: Partial<ApiRequestConfig>
   ): Promise<ApiResult<T>> {
-    return this.service.put(url, data, options)
+    return this.axios.put(url, data, options)
   }
   post<T = any, D = any>(
     url: string,
     data?: D,
     options?: Partial<ApiRequestConfig>
   ): Promise<ApiResult<T>> {
-    return this.service.post(url, data, options)
+    return this.axios.post(url, data, options)
   }
   delete<T = any>(
     url: string,
     options?: Partial<ApiRequestConfig>
   ): Promise<ApiResult<T>> {
-    return this.service.delete(url, options)
+    return this.axios.delete(url, options)
   }
 }
 

@@ -20,9 +20,7 @@ const router = createRouter({
     {
       path: '/:catchAll(.*)',
       redirect: '/404',
-      meta: {
-        showInbreadcrumb: false
-      }
+      meta: {}
     }
   ]
 })
