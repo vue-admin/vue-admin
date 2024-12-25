@@ -1,4 +1,11 @@
 <template>
+  <el-input
+    v-model="input"
+    style="width: 240px"
+    placeholder="请输入搜索内容"
+    clearable
+  />
+  <el-divider />
   <!-- 表格 header 按钮 -->
   <div style="padding-bottom: 15px">
     <el-button type="primary" @click="drawer = true">新增</el-button>
@@ -55,44 +62,24 @@
 </style>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { fetchCrud, item } from '@/apis/crud'
+import { ref, onMounted } from 'vue'
+const input = ref('')
 const drawer = ref(false)
-const tableData = [
-  {
-    date: '2016-05-02',
-    name: '王小虎',
-    province: '上海',
-    city: '普陀区',
-    address: '上海市普陀区金沙江路 1518 弄',
-    zip: 200333
-  },
-  {
-    date: '2016-05-04',
-    name: '王小虎',
-    province: '上海',
-    city: '普陀区',
-    address: '上海市普陀区金沙江路 1517 弄',
-    zip: 200333
-  },
-  {
-    date: '2016-05-01',
-    name: '王小虎',
-    province: '上海',
-    city: '普陀区',
-    address: '上海市普陀区金沙江路 1519 弄',
-    zip: 200333
-  },
-  {
-    date: '2016-05-03',
-    name: '王小虎',
-    province: '上海',
-    city: '普陀区',
-    address: '上海市普陀区金沙江路 1516 弄',
-    zip: 200333
+const tableData = ref<item[]>([])
+const currentPage4 = ref(1)
+const pageSize4 = ref(10)
+onMounted(async () => {
+  try {
+    const res = await fetchCrud({ name: '123' })
+    tableData.value = res.data.records
+    currentPage4.value = res.data.current
+    pageSize4.value = res.data.size
+    console.log(res.data)
+  } catch (error) {
+    console.error(error)
   }
-]
-const currentPage4 = 1
-const pageSize4 = 10
+})
 const handleSizeChange = () => {}
 const handleCurrentChange = () => {}
 </script>
