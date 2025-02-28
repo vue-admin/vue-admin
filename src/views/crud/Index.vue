@@ -31,7 +31,7 @@
   </div>
   <!-- 表格 header 按钮 -->
   <div style="padding-bottom: 15px">
-    <el-button type="primary" @click="drawer = true">新增</el-button>
+    <el-button type="primary" @click="openDrawer('add')">新增</el-button>
   </div>
   <!-- 表格 -->
   <el-table
@@ -47,9 +47,21 @@
     <el-table-column prop="zip" label="Zip" width="120" />
     <el-table-column prop="date" label="Date" width="150" />
     <el-table-column fixed="right" label="操作" width="120">
-      <template #default>
-        <el-button link type="primary" size="small">查看</el-button>
-        <el-button link type="primary" size="small">编辑</el-button>
+      <template #default="scope">
+        <el-button
+          link
+          type="primary"
+          size="small"
+          @click="handleView(scope.id)"
+          >查看</el-button
+        >
+        <el-button
+          link
+          type="primary"
+          size="small"
+          @click="handleEdit(scope.id)"
+          >编辑</el-button
+        >
       </template>
     </el-table-column>
   </el-table>
@@ -64,10 +76,12 @@
     @current-change="handleCurrentChange"
     style="padding-top: 15px"
   />
-  <!-- 新增 -->
-  <el-drawer v-model="drawer" title="新增用户">
-    <detail />
-  </el-drawer>
+  <!-- 详情 弹窗 -->
+  <detail
+    v-model:visible="drawerVisible"
+    :mode="drawerMode"
+    :record-id="selectedId"
+  />
 </template>
 
 <style>
@@ -89,7 +103,6 @@ import { ref, onMounted } from 'vue'
 import { Search } from '@element-plus/icons-vue'
 import detail from './detail.vue'
 const input = ref('')
-const drawer = ref(false)
 const tableData = ref<item[]>([])
 const currentPage4 = ref(1)
 const pageSize4 = ref(10)
@@ -107,4 +120,24 @@ onMounted(async () => {
 })
 const handleSizeChange = () => {}
 const handleCurrentChange = () => {}
+
+// 父组件状态
+const drawerVisible = ref(false)
+const drawerMode = ref('add')
+const selectedId = ref(0)
+
+const openDrawer = (mode: string, id?: number) => {
+  drawerMode.value = mode
+  id && (selectedId.value = id)
+  drawerVisible.value = true
+}
+
+// 列表行点击处理
+const handleView = (id: number) => {
+  openDrawer('view', id)
+}
+
+const handleEdit = (id: number) => {
+  openDrawer('edit', id)
+}
 </script>
