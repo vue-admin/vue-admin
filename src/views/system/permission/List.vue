@@ -6,7 +6,7 @@
       <div class="search-area">
         <el-input
           v-model="searchForm.keyword"
-          placeholder="请输入用户名、姓名、邮箱或电话"
+          placeholder="请输入权限名称、代码或描述"
           clearable
           style="width: 200px"
           @keyup.enter="handleSearch"
@@ -16,15 +16,18 @@
           </template>
         </el-input>
         <el-select
-          v-model="searchForm.role"
+          v-model="searchForm.module"
           clearable
-          placeholder="角色"
+          placeholder="模块"
           style="width: 100px"
           @clear="handleSearch"
         >
-          <el-option label="管理员" value="admin" />
-          <el-option label="普通用户" value="user" />
-          <el-option label="VIP用户" value="vip" />
+          <el-option label="系统管理" value="system" />
+          <el-option label="用户管理" value="user" />
+          <el-option label="角色管理" value="role" />
+          <el-option label="权限管理" value="permission" />
+          <el-option label="字典管理" value="dict" />
+          <el-option label="系统配置" value="config" />
         </el-select>
         <el-select
           v-model="searchForm.status"
@@ -43,7 +46,7 @@
       <!-- 操作按钮栏 -->
       <div class="action-buttons">
         <el-button type="primary" :icon="Plus" @click="openDrawer('add')">
-          新增用户
+          新增权限
         </el-button>
         <el-button
           type="danger"
@@ -75,20 +78,14 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" />
-      <el-table-column prop="username" label="用户名" min-width="120" show-overflow-tooltip />
-      <el-table-column prop="realName" label="姓名" min-width="100" show-overflow-tooltip />
-      <el-table-column prop="email" label="邮箱" min-width="180" show-overflow-tooltip />
-      <el-table-column prop="phone" label="电话" min-width="130" show-overflow-tooltip />
-      <el-table-column prop="role" label="角色" min-width="100">
+      <el-table-column prop="name" label="权限名称" min-width="120" show-overflow-tooltip />
+      <el-table-column prop="code" label="权限代码" min-width="120" show-overflow-tooltip />
+      <el-table-column prop="module" label="模块" min-width="100">
         <template #default="scope">
-          <el-tag
-            :type="getRoleType(scope.row.role)"
-            size="small"
-          >
-            {{ getRoleLabel(scope.row.role) }}
-          </el-tag>
+          <el-tag :type="getModuleType(scope.row.module)" size="small">{{ getModuleName(scope.row.module) }}</el-tag>
         </template>
       </el-table-column>
+      <el-table-column prop="description" label="描述" min-width="200" show-overflow-tooltip />
       <el-table-column prop="status" label="状态" min-width="100">
         <template #default="scope">
           <el-tag
@@ -104,9 +101,9 @@
           {{ formatDate(scope.row.createTime) }}
         </template>
       </el-table-column>
-      <el-table-column prop="lastLoginTime" label="最后登录" min-width="180">
+      <el-table-column prop="updateTime" label="更新时间" min-width="180">
         <template #default="scope">
-          {{ formatDate(scope.row.lastLoginTime) }}
+          {{ formatDate(scope.row.updateTime) }}
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="180" fixed="right">
@@ -150,80 +147,59 @@
     </div>
   </el-card>
 
-  <!-- 新增/编辑/查看用户抽屉 -->
+  <!-- 新增/编辑/查看权限抽屉 -->
   <el-drawer
     v-model="drawerVisible"
-    :title="drawerMode === 'add' ? '新增用户' : drawerMode === 'edit' ? '编辑用户' : '查看用户'"
+    :title="drawerMode === 'add' ? '新增权限' : drawerMode === 'edit' ? '编辑权限' : '查看权限'"
     size="50%"
     :close-on-click-modal="false"
   >
     <el-form
-      ref="userFormRef"
-      :model="userForm"
+      ref="permissionFormRef"
+      :model="permissionForm"
       :rules="formRules"
       label-width="100px"
-      class="user-form"
+      class="permission-form"
       :disabled="drawerMode === 'view'"
     >
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item label="用户名" prop="username">
-            <el-input v-model="userForm.username" placeholder="请输入用户名" />
+          <el-form-item label="权限名称" prop="name">
+            <el-input v-model="permissionForm.name" placeholder="请输入权限名称" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="姓名" prop="realName">
-            <el-input v-model="userForm.realName" placeholder="请输入姓名" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model="userForm.email" placeholder="请输入邮箱" type="email" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="电话" prop="phone">
-            <el-input v-model="userForm.phone" placeholder="请输入电话" />
+          <el-form-item label="权限代码" prop="code">
+            <el-input v-model="permissionForm.code" placeholder="请输入权限代码" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item label="角色" prop="role">
-            <el-select v-model="userForm.role" placeholder="请选择角色">
-              <el-option label="管理员" value="admin" />
-              <el-option label="普通用户" value="user" />
-              <el-option label="VIP用户" value="vip" />
+          <el-form-item label="模块" prop="module">
+            <el-select v-model="permissionForm.module" placeholder="请选择模块">
+              <el-option label="系统管理" value="system" />
+              <el-option label="用户管理" value="user" />
+              <el-option label="角色管理" value="role" />
+              <el-option label="权限管理" value="permission" />
+              <el-option label="字典管理" value="dict" />
+              <el-option label="系统配置" value="config" />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="状态" prop="status">
-            <el-select v-model="userForm.status" placeholder="请选择状态">
+            <el-select v-model="permissionForm.status" placeholder="请选择状态">
               <el-option label="启用" value="active" />
               <el-option label="禁用" value="inactive" />
             </el-select>
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row :gutter="20" v-if="drawerMode === 'add' || (drawerMode === 'edit' && showPassword)">
-        <el-col :span="12">
-          <el-form-item label="密码" prop="password">
-            <el-input v-model="userForm.password" placeholder="请输入密码" type="password" show-password />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="确认密码" prop="confirmPassword">
-            <el-input v-model="userForm.confirmPassword" placeholder="请确认密码" type="password" show-password />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row v-if="drawerMode === 'edit'">
+      <el-row :gutter="20">
         <el-col :span="24">
-          <el-form-item>
-            <el-checkbox v-model="showPassword">修改密码</el-checkbox>
+          <el-form-item label="描述" prop="description">
+            <el-input v-model="permissionForm.description" placeholder="请输入权限描述" type="textarea" :rows="3" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -296,6 +272,11 @@
 
 /* 响应式布局 */
 @media (max-width: 768px) {
+  .search-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .search-area {
     flex-direction: column;
     align-items: stretch;
@@ -307,9 +288,7 @@
   }
 
   .action-buttons {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
+    justify-content: space-between;
   }
 
   .pagination-wrapper {
@@ -319,7 +298,7 @@
 </style>
 
 <script lang="ts" setup>
-import { ref, onMounted, reactive, computed } from 'vue'
+import { ref, onMounted, reactive } from 'vue'
 import {
   Search,
   Refresh,
@@ -331,31 +310,31 @@ import {
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import {
-  fetchUserList,
-  deleteUser,
-  batchDeleteUsers,
-  exportUsers,
-  fetchUserDetail,
-  createUser,
-  updateUser,
-  type UserInfo,
-  type UserSearchRequest,
-  type UserCreateRequest,
-} from '@/apis/user'
+  fetchPermissionList,
+  deletePermission,
+  batchDeletePermissions,
+  exportPermissions,
+  fetchPermissionDetail,
+  createPermission,
+  updatePermission,
+  type PermissionInfo,
+  type PermissionSearchRequest,
+  type PermissionCreateRequest,
+} from '@/apis/permission'
 
 // 搜索表单
-const searchForm = reactive<UserSearchRequest>({
+const searchForm = reactive<PermissionSearchRequest>({
   keyword: '',
-  role: '',
+  module: '',
   status: '',
   page: 1,
   size: 10,
 })
 
 // 表格数据
-const tableData = ref<UserInfo[]>([])
+const tableData = ref<PermissionInfo[]>([])
 const tableLoading = ref(false)
-const selectedRows = ref<UserInfo[]>([])
+const selectedRows = ref<PermissionInfo[]>([])
 
 // 分页
 const currentPage4 = ref(1)
@@ -365,64 +344,34 @@ const totalCount = ref(0)
 // 抽屉状态
 const drawerVisible = ref(false)
 const drawerMode = ref<'add' | 'edit' | 'view'>('add')
-const showPassword = ref(false)
 
-// 用户表单数据
-const userForm = reactive<UserCreateRequest & { confirmPassword?: string }>({
-  username: '',
-  realName: '',
-  email: '',
-  phone: '',
-  role: 'user',
+// 权限表单数据
+const permissionForm = reactive<PermissionCreateRequest>({
+  name: '',
+  code: '',
+  module: '',
+  description: '',
   status: 'active',
-  password: '',
-  confirmPassword: '',
 })
 
 // 表单验证规则
 const formRules = reactive<FormRules>({
-  username: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 3, max: 20, message: '用户名长度应在3-20个字符之间', trigger: 'blur' },
+  name: [
+    { required: true, message: '请输入权限名称', trigger: 'blur' },
+    { min: 2, max: 20, message: '权限名称长度应在2-20个字符之间', trigger: 'blur' },
   ],
-  realName: [
-    { required: true, message: '请输入姓名', trigger: 'blur' },
-    { min: 2, max: 20, message: '姓名长度应在2-20个字符之间', trigger: 'blur' },
+  code: [
+    { required: true, message: '请输入权限代码', trigger: 'blur' },
+    { min: 2, max: 20, message: '权限代码长度应在2-20个字符之间', trigger: 'blur' },
   ],
-  email: [
-    { required: true, message: '请输入邮箱', trigger: 'blur' },
-    { type: 'email', message: '请输入有效的邮箱地址', trigger: ['blur', 'change'] },
+  module: [
+    { required: true, message: '请选择模块', trigger: 'change' },
   ],
-  phone: [
-    { required: true, message: '请输入电话', trigger: 'blur' },
-    { pattern: /^1[3-9]\d{9}$/, message: '请输入有效的手机号', trigger: ['blur', 'change'] },
-  ],
-  role: [
-    { required: true, message: '请选择角色', trigger: 'change' },
+  description: [
+    { max: 200, message: '描述长度不能超过200个字符', trigger: 'blur' },
   ],
   status: [
     { required: true, message: '请选择状态', trigger: 'change' },
-  ],
-  password: [
-    { required: drawerMode.value === 'add' || (drawerMode.value === 'edit' && showPassword.value), message: '请输入密码', trigger: 'blur' },
-    { min: 6, message: '密码长度至少6个字符', trigger: 'blur' },
-  ],
-  confirmPassword: [
-    {
-      required: drawerMode.value === 'add' || (drawerMode.value === 'edit' && showPassword.value),
-      message: '请确认密码',
-      trigger: 'blur',
-    },
-    {
-      validator: (rule, value, callback) => {
-        if (value !== userForm.password) {
-          callback(new Error('两次输入的密码不一致'))
-        } else {
-          callback()
-        }
-      },
-      trigger: 'blur',
-    },
   ],
 })
 
@@ -430,7 +379,7 @@ const formRules = reactive<FormRules>({
 const getTableData = async () => {
   tableLoading.value = true
   try {
-    const res = await fetchUserList({
+    const res = await fetchPermissionList({
       ...searchForm,
       page: currentPage4.value,
       size: pageSize4.value,
@@ -458,7 +407,7 @@ const handleSearch = () => {
 // 重置搜索
 const handleReset = () => {
   searchForm.keyword = ''
-  searchForm.role = ''
+  searchForm.module = ''
   searchForm.status = ''
   currentPage4.value = 1
   getTableData()
@@ -476,7 +425,7 @@ const handleCurrentChange = (page: number) => {
 }
 
 // 表格选择变化
-const handleSelectionChange = (rows: UserInfo[]) => {
+const handleSelectionChange = (rows: PermissionInfo[]) => {
   selectedRows.value = rows
 }
 
@@ -486,68 +435,68 @@ const formatDate = (date: string) => {
   return new Date(date).toLocaleString('zh-CN')
 }
 
-// 获取角色类型
-const getRoleType = (role: string) => {
-  const roleTypes: Record<string, string> = {
-    admin: 'danger',
-    user: 'info',
-    vip: 'success',
+// 获取模块类型
+const getModuleType = (module: string) => {
+  const moduleTypes: Record<string, string> = {
+    system: 'primary',
+    user: 'success',
+    role: 'warning',
+    permission: 'info',
+    dict: 'danger',
+    config: 'primary',
   }
-  return roleTypes[role] || 'info'
+  return moduleTypes[module] || 'info'
 }
 
-// 获取角色标签
-const getRoleLabel = (role: string) => {
-  const roleLabels: Record<string, string> = {
-    admin: '管理员',
-    user: '普通用户',
-    vip: 'VIP用户',
+// 获取模块名称
+const getModuleName = (module: string) => {
+  const moduleNames: Record<string, string> = {
+    system: '系统管理',
+    user: '用户管理',
+    role: '角色管理',
+    permission: '权限管理',
+    dict: '字典管理',
+    config: '系统配置',
   }
-  return roleLabels[role] || role
+  return moduleNames[module] || module
 }
 
 // 打开抽屉
-const openDrawer = (mode: 'add' | 'edit' | 'view', user?: UserInfo) => {
+const openDrawer = (mode: 'add' | 'edit' | 'view', permission?: PermissionInfo) => {
   drawerMode.value = mode
-  showPassword.value = false
   // 重置表单
-  userForm.username = ''
-  userForm.realName = ''
-  userForm.email = ''
-  userForm.phone = ''
-  userForm.role = 'user'
-  userForm.status = 'active'
-  userForm.password = ''
-  userForm.confirmPassword = ''
+  permissionForm.name = ''
+  permissionForm.code = ''
+  permissionForm.module = ''
+  permissionForm.description = ''
+  permissionForm.status = 'active'
 
-  if (mode === 'view' && user) {
+  if (mode === 'view' && permission) {
     // 查看模式
-    userForm.username = user.username
-    userForm.realName = user.realName
-    userForm.email = user.email
-    userForm.phone = user.phone
-    userForm.role = user.role
-    userForm.status = user.status
-  } else if (mode === 'edit' && user) {
+    permissionForm.name = permission.name
+    permissionForm.code = permission.code
+    permissionForm.module = permission.module
+    permissionForm.description = permission.description
+    permissionForm.status = permission.status
+  } else if (mode === 'edit' && permission) {
     // 编辑模式
-    userForm.username = user.username
-    userForm.realName = user.realName
-    userForm.email = user.email
-    userForm.phone = user.phone
-    userForm.role = user.role
-    userForm.status = user.status
+    permissionForm.name = permission.name
+    permissionForm.code = permission.code
+    permissionForm.module = permission.module
+    permissionForm.description = permission.description
+    permissionForm.status = permission.status
   }
 
   drawerVisible.value = true
 }
 
 // 列表行点击处理
-const handleView = (user: UserInfo) => {
-  openDrawer('view', user)
+const handleView = (permission: PermissionInfo) => {
+  openDrawer('view', permission)
 }
 
-const handleEdit = (user: UserInfo) => {
-  openDrawer('edit', user)
+const handleEdit = (permission: PermissionInfo) => {
+  openDrawer('edit', permission)
 }
 
 // 删除操作
@@ -558,7 +507,7 @@ const handleDelete = async (id: string) => {
       cancelButtonText: '取消',
       type: 'warning',
     })
-    await deleteUser(id)
+    await deletePermission(id)
     ElMessage.success('删除成功')
     getTableData()
   } catch {
@@ -578,7 +527,7 @@ const handleBatchDelete = async () => {
         type: 'warning',
       }
     )
-    await batchDeleteUsers(selectedRows.value.map(row => row.id))
+    await batchDeletePermissions(selectedRows.value.map(row => row.id))
     ElMessage.success('删除成功')
     selectedRows.value = []
     getTableData()
@@ -600,23 +549,17 @@ const handleFormSuccess = () => {
 
 // 表单提交
 const handleFormSubmit = async () => {
-  const formRef = (window as any).userFormRef
+  const formRef = (window as any).permissionFormRef
   if (!formRef) return
 
   try {
     await formRef.validate()
 
     if (drawerMode.value === 'add') {
-      await createUser(userForm)
+      await createPermission(permissionForm)
       ElMessage.success('创建成功')
     } else if (drawerMode.value === 'edit') {
-      // 如果不修改密码，移除密码字段
-      const submitData = { ...userForm }
-      if (!showPassword.value) {
-        delete submitData.password
-        delete submitData.confirmPassword
-      }
-      await updateUser(selectedRows.value[0].id, submitData)
+      await updatePermission(selectedRows.value[0].id, permissionForm)
       ElMessage.success('更新成功')
     }
 
