@@ -102,21 +102,20 @@ const rules = reactive<FormRules>({
   password: [{ validator: validateEmpty, trigger: 'blur' }]
 })
 
-const submitForm = (formEl: FormInstance | undefined) => {
+const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  formEl.validate(async (valid) => {
-    if (valid) {
-      const { error, data, response } = await fetchUsers(ruleForm)
-      if (error) {
-        console.log(response)
-        return
-      }
-      console.log(data.token)
-      router.push('/')
-    } else {
-      console.log('error submit!')
-      return false
-    }
-  })
+  try {
+    await formEl.validate()
+  } catch (error) {
+    console.log('error submit!', error)
+    return
+  }
+  const { error, data, response } = await fetchUsers(ruleForm)
+  if (error) {
+    console.log(response)
+    return
+  }
+  console.log(data.token)
+  router.push('/')
 }
 </script>

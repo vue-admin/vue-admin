@@ -1,7 +1,16 @@
-import { id } from 'element-plus/es/locale'
 import type { MockMethod } from 'vite-plugin-mock'
 
-const crudList = [
+interface CrudRecord {
+  id: string
+  date: string
+  name: string
+  province: string
+  city: string
+  address: string
+  zip: number
+}
+
+let crudList: CrudRecord[] = [
   {
     id: '1',
     date: '2016-05-02',
@@ -40,20 +49,65 @@ const crudList = [
   }
 ]
 
+const success = <T>(data: T) => ({ code: 0, data })
+const notFound = (msg = '记录不存在') => ({ code: 404, msg })
+
 export default [
   {
-    url: '/api/crud', // 注意，这里只能是string格式
+    url: '/api/crud',
     method: 'get',
     response: (req) => {
-      return {
-        code: 0,
-        data: {
-          records: crudList,
-          total: 100,
-          current: 1,
-          size: 10,
-        }
+      const { current = 1, size = 10 } = req.query || {}
+      return success({
+        records: crudList,
+        total: crudList.length,
+        current: Number(current),
+        size: Number(size)
+      })
+    }
+  },
+  {
+    url: '/api/crud/detail',
+    method: 'get',
+    response: (req) => {
+      const { id } = req.query || {}
+      const record = crudList.find((item) => item.id === id)
+      if (!record) {
+        return notFound()
       }
+      return success(record)
+    }
+  },
+  {
+    url: '/api/crud',
+    method: 'post',
+    response: (req) => {
+      const id = `${Date.now()}`
+      const record = {
+        ...req.body,
+        id
+      } as CrudRecord
+      crudList = [record, ...crudList]
+      return success(record)
+    }
+  },
+  {
+    url: '/api/crud',
+    method: 'put',
+    response: (req) => {
+      const { body } = req
+      if (!body?.id) {
+        return notFound('缺少记录ID')
+      }
+      const index = crudList.findIndex((item) => item.id === body.id)
+      if (index === -1) {
+        return notFound()
+      }
+      crudList[index] = {
+        ...crudList[index],
+        ...body
+      }
+      return success(crudList[index])
     }
   }
 ] as MockMethod[]

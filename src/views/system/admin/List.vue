@@ -22,9 +22,8 @@
           style="width: 100px"
           @clear="handleSearch"
         >
-          <el-option label="管理员" value="admin" />
-          <el-option label="普通用户" value="user" />
-          <el-option label="VIP用户" value="vip" />
+          <el-option label="超级管理员" value="super" />
+          <el-option label="普通管理员" value="admin" />
         </el-select>
         <el-select
           v-model="searchForm.status"
@@ -43,7 +42,7 @@
       <!-- 操作按钮栏 -->
       <div class="action-buttons">
         <el-button type="primary" :icon="Plus" @click="openDrawer('add')">
-          新增用户
+          新增管理员
         </el-button>
         <el-button
           type="danger"
@@ -150,58 +149,57 @@
     </div>
   </el-card>
 
-  <!-- 新增/编辑/查看用户抽屉 -->
+  <!-- 新增/编辑/查看管理员抽屉 -->
   <el-drawer
     v-model="drawerVisible"
-    :title="drawerMode === 'add' ? '新增用户' : drawerMode === 'edit' ? '编辑用户' : '查看用户'"
+    :title="drawerMode === 'add' ? '新增管理员' : drawerMode === 'edit' ? '编辑管理员' : '查看管理员'"
     size="50%"
     :close-on-click-modal="false"
   >
     <el-form
-      ref="userFormRef"
-      :model="userForm"
+      ref="adminFormRef"
+      :model="adminForm"
       :rules="formRules"
       label-width="100px"
-      class="user-form"
+      class="admin-form"
       :disabled="drawerMode === 'view'"
     >
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="用户名" prop="username">
-            <el-input v-model="userForm.username" placeholder="请输入用户名" />
+            <el-input v-model="adminForm.username" placeholder="请输入用户名" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="姓名" prop="realName">
-            <el-input v-model="userForm.realName" placeholder="请输入姓名" />
+            <el-input v-model="adminForm.realName" placeholder="请输入姓名" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="邮箱" prop="email">
-            <el-input v-model="userForm.email" placeholder="请输入邮箱" type="email" />
+            <el-input v-model="adminForm.email" placeholder="请输入邮箱" type="email" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="电话" prop="phone">
-            <el-input v-model="userForm.phone" placeholder="请输入电话" />
+            <el-input v-model="adminForm.phone" placeholder="请输入电话" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="角色" prop="role">
-            <el-select v-model="userForm.role" placeholder="请选择角色">
-              <el-option label="管理员" value="admin" />
-              <el-option label="普通用户" value="user" />
-              <el-option label="VIP用户" value="vip" />
+            <el-select v-model="adminForm.role" placeholder="请选择角色">
+              <el-option label="超级管理员" value="super" />
+              <el-option label="普通管理员" value="admin" />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="状态" prop="status">
-            <el-select v-model="userForm.status" placeholder="请选择状态">
+            <el-select v-model="adminForm.status" placeholder="请选择状态">
               <el-option label="启用" value="active" />
               <el-option label="禁用" value="inactive" />
             </el-select>
@@ -211,12 +209,12 @@
       <el-row :gutter="20" v-if="drawerMode === 'add' || (drawerMode === 'edit' && showPassword)">
         <el-col :span="12">
           <el-form-item label="密码" prop="password">
-            <el-input v-model="userForm.password" placeholder="请输入密码" type="password" show-password />
+            <el-input v-model="adminForm.password" placeholder="请输入密码" type="password" show-password />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="确认密码" prop="confirmPassword">
-            <el-input v-model="userForm.confirmPassword" placeholder="请确认密码" type="password" show-password />
+            <el-input v-model="adminForm.confirmPassword" placeholder="请确认密码" type="password" show-password />
           </el-form-item>
         </el-col>
       </el-row>
@@ -296,6 +294,11 @@
 
 /* 响应式布局 */
 @media (max-width: 768px) {
+  .search-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .search-area {
     flex-direction: column;
     align-items: stretch;
@@ -307,9 +310,7 @@
   }
 
   .action-buttons {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
+    justify-content: space-between;
   }
 
   .pagination-wrapper {
@@ -331,20 +332,20 @@ import {
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import {
-  fetchUserList,
-  deleteUser,
-  batchDeleteUsers,
-  exportUsers,
-  fetchUserDetail,
-  createUser,
-  updateUser,
-  type UserInfo,
-  type UserSearchRequest,
-  type UserCreateRequest,
-} from '@/apis/user'
+  fetchAdminList,
+  deleteAdmin,
+  batchDeleteAdmins,
+  exportAdmins,
+  fetchAdminDetail,
+  createAdmin,
+  updateAdmin,
+  type AdminInfo,
+  type AdminSearchRequest,
+  type AdminCreateRequest,
+} from '@/apis/admin'
 
 // 搜索表单
-const searchForm = reactive<UserSearchRequest>({
+const searchForm = reactive<AdminSearchRequest>({
   keyword: '',
   role: '',
   status: '',
@@ -353,9 +354,9 @@ const searchForm = reactive<UserSearchRequest>({
 })
 
 // 表格数据
-const tableData = ref<UserInfo[]>([])
+const tableData = ref<AdminInfo[]>([])
 const tableLoading = ref(false)
-const selectedRows = ref<UserInfo[]>([])
+const selectedRows = ref<AdminInfo[]>([])
 
 // 分页
 const currentPage4 = ref(1)
@@ -367,13 +368,13 @@ const drawerVisible = ref(false)
 const drawerMode = ref<'add' | 'edit' | 'view'>('add')
 const showPassword = ref(false)
 
-// 用户表单数据
-const userForm = reactive<UserCreateRequest & { confirmPassword?: string }>({
+// 管理员表单数据
+const adminForm = reactive<AdminCreateRequest & { confirmPassword?: string }>({
   username: '',
   realName: '',
   email: '',
   phone: '',
-  role: 'user',
+  role: 'admin',
   status: 'active',
   password: '',
   confirmPassword: '',
@@ -415,7 +416,7 @@ const formRules = reactive<FormRules>({
     },
     {
       validator: (rule, value, callback) => {
-        if (value !== userForm.password) {
+        if (value !== adminForm.password) {
           callback(new Error('两次输入的密码不一致'))
         } else {
           callback()
@@ -430,7 +431,7 @@ const formRules = reactive<FormRules>({
 const getTableData = async () => {
   tableLoading.value = true
   try {
-    const res = await fetchUserList({
+    const res = await fetchAdminList({
       ...searchForm,
       page: currentPage4.value,
       size: pageSize4.value,
@@ -476,7 +477,7 @@ const handleCurrentChange = (page: number) => {
 }
 
 // 表格选择变化
-const handleSelectionChange = (rows: UserInfo[]) => {
+const handleSelectionChange = (rows: AdminInfo[]) => {
   selectedRows.value = rows
 }
 
@@ -489,9 +490,8 @@ const formatDate = (date: string) => {
 // 获取角色类型
 const getRoleType = (role: string) => {
   const roleTypes: Record<string, string> = {
-    admin: 'danger',
-    user: 'info',
-    vip: 'success',
+    super: 'danger',
+    admin: 'info',
   }
   return roleTypes[role] || 'info'
 }
@@ -499,55 +499,54 @@ const getRoleType = (role: string) => {
 // 获取角色标签
 const getRoleLabel = (role: string) => {
   const roleLabels: Record<string, string> = {
-    admin: '管理员',
-    user: '普通用户',
-    vip: 'VIP用户',
+    super: '超级管理员',
+    admin: '普通管理员',
   }
   return roleLabels[role] || role
 }
 
 // 打开抽屉
-const openDrawer = (mode: 'add' | 'edit' | 'view', user?: UserInfo) => {
+const openDrawer = (mode: 'add' | 'edit' | 'view', admin?: AdminInfo) => {
   drawerMode.value = mode
   showPassword.value = false
   // 重置表单
-  userForm.username = ''
-  userForm.realName = ''
-  userForm.email = ''
-  userForm.phone = ''
-  userForm.role = 'user'
-  userForm.status = 'active'
-  userForm.password = ''
-  userForm.confirmPassword = ''
+  adminForm.username = ''
+  adminForm.realName = ''
+  adminForm.email = ''
+  adminForm.phone = ''
+  adminForm.role = 'admin'
+  adminForm.status = 'active'
+  adminForm.password = ''
+  adminForm.confirmPassword = ''
 
-  if (mode === 'view' && user) {
+  if (mode === 'view' && admin) {
     // 查看模式
-    userForm.username = user.username
-    userForm.realName = user.realName
-    userForm.email = user.email
-    userForm.phone = user.phone
-    userForm.role = user.role
-    userForm.status = user.status
-  } else if (mode === 'edit' && user) {
+    adminForm.username = admin.username
+    adminForm.realName = admin.realName
+    adminForm.email = admin.email
+    adminForm.phone = admin.phone
+    adminForm.role = admin.role
+    adminForm.status = admin.status
+  } else if (mode === 'edit' && admin) {
     // 编辑模式
-    userForm.username = user.username
-    userForm.realName = user.realName
-    userForm.email = user.email
-    userForm.phone = user.phone
-    userForm.role = user.role
-    userForm.status = user.status
+    adminForm.username = admin.username
+    adminForm.realName = admin.realName
+    adminForm.email = admin.email
+    adminForm.phone = admin.phone
+    adminForm.role = admin.role
+    adminForm.status = admin.status
   }
 
   drawerVisible.value = true
 }
 
 // 列表行点击处理
-const handleView = (user: UserInfo) => {
-  openDrawer('view', user)
+const handleView = (admin: AdminInfo) => {
+  openDrawer('view', admin)
 }
 
-const handleEdit = (user: UserInfo) => {
-  openDrawer('edit', user)
+const handleEdit = (admin: AdminInfo) => {
+  openDrawer('edit', admin)
 }
 
 // 删除操作
@@ -558,7 +557,7 @@ const handleDelete = async (id: string) => {
       cancelButtonText: '取消',
       type: 'warning',
     })
-    await deleteUser(id)
+    await deleteAdmin(id)
     ElMessage.success('删除成功')
     getTableData()
   } catch {
@@ -578,7 +577,7 @@ const handleBatchDelete = async () => {
         type: 'warning',
       }
     )
-    await batchDeleteUsers(selectedRows.value.map(row => row.id))
+    await batchDeleteAdmins(selectedRows.value.map(row => row.id))
     ElMessage.success('删除成功')
     selectedRows.value = []
     getTableData()
@@ -600,23 +599,23 @@ const handleFormSuccess = () => {
 
 // 表单提交
 const handleFormSubmit = async () => {
-  const formRef = (window as any).userFormRef
+  const formRef = (window as any).adminFormRef
   if (!formRef) return
 
   try {
     await formRef.validate()
 
     if (drawerMode.value === 'add') {
-      await createUser(userForm)
+      await createAdmin(adminForm)
       ElMessage.success('创建成功')
     } else if (drawerMode.value === 'edit') {
       // 如果不修改密码，移除密码字段
-      const submitData = { ...userForm }
+      const submitData = { ...adminForm }
       if (!showPassword.value) {
         delete submitData.password
         delete submitData.confirmPassword
       }
-      await updateUser(selectedRows.value[0].id, submitData)
+      await updateAdmin(selectedRows.value[0].id, submitData)
       ElMessage.success('更新成功')
     }
 

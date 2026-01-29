@@ -49,5 +49,30 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src')
     },
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
+  },
+  build: {
+    // 代码分割配置
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // 将 Element Plus 相关代码单独打包
+          'element-plus': ['element-plus'],
+          // 将 Vue 相关代码单独打包
+          'vue': ['vue', 'vue-router', 'pinia'],
+          // 将其他第三方库单独打包
+          'vendor': ['axios', '@vueuse/core']
+        }
+      }
+    },
+    // 压缩配置
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    },
+    // 打包文件大小限制
+    chunkSizeWarningLimit: 1000
   }
 })

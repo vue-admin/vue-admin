@@ -36,7 +36,7 @@
         </el-icon>
         {{ user.name }}
       </template>
-      <el-menu-item index="/user">个人中心</el-menu-item>
+      <el-menu-item index="/system/portrait">个人中心</el-menu-item>
       <el-menu-item index="/login">退出</el-menu-item>
     </el-sub-menu>
   </el-menu>
@@ -75,6 +75,13 @@ const handleSelect = (key: string, keyPath: string[]) => {
   align-items: center;
   font-size: 20px;
   margin: 0 0 0 15px;
+}
+
+/* 窄屏模式下隐藏面包屑 */
+@media (max-width: 768px) {
+  .breadcrumb {
+    display: none;
+  }
 }
 
 .dark-icon {
