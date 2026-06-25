@@ -1,156 +1,70 @@
-import axios from 'axios' // 引入axios
-import type { AxiosInstance, AxiosResponse, AxiosError } from 'axios'
-import type { ApiResult, ApiRequestConfig } from '../common'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import router from '@/router/index'
+// 过渡薄壳：底层走 @/lib/http/client 的统一 http 客户端，
+// 对外保留旧的 service.get/post/put/delete 三参数调用签名 + { silent } 选项，
+// 让现有 src/apis/*/index.ts 业务封装零改动继续工作。
+// M3 完成后，业务模块迁到 modules/<domain>/api.ts，本壳删除。
+import { http } from '@/lib/http/client'
+import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 
-class Service {
-  axios: AxiosInstance
-
-  constructor(baseURL = '/', timeout = 30000) {
-    this.axios = axios.create({
-      baseURL,
-      timeout,
-      headers: {
-        'Content-type': 'application/json'
-      }
-    })
-    this.interceptors()
-  }
-  interceptors() {
-    // http request 拦截器
-    this.axios.interceptors.request.use(
-      (config: ApiRequestConfig) => {
-        return config
-      },
-      (error: AxiosError) => {
-        ElMessage({
-          showClose: true,
-          message: error.message,
-          type: 'error'
-        })
-        return error
-      }
-    )
-    // http response 拦截器
-    this.axios.interceptors.response.use(
-      (response: AxiosResponse) => {
-        const resData = response.data as ApiResult
-        if (resData.code === 0) {
-          return { data: resData.data, response } as any
-        } else {
-          const { silent } = response.config as ApiRequestConfig
-          !silent &&
-            ElMessage({
-              showClose: true,
-              message: response.data.msg || decodeURI(response.headers.msg),
-              type: 'error'
-            })
-          if (response.data.data && response.data.data.reload) {
-            localStorage.clear()
-            router.push({ name: 'login', replace: true })
-          }
-          return { error: true, response }
-        }
-      },
-      (error: AxiosError) => {
-        let message = ''
-        if (!error.response) {
-          ElMessageBox.confirm(
-            `
-              <p>检测到请求错误</p>
-              <p>${error}</p>
-              `,
-            '请求报错',
-            {
-              dangerouslyUseHTMLString: true,
-              distinguishCancelAndClose: true,
-              confirmButtonText: '稍后重试',
-              cancelButtonText: '取消'
-            }
-          ).then((r) => r.action.replace.name)
-          return { error: true }
-        }
-
-        switch (error.response.status) {
-          case 400:
-            message = '请求错误(400)'
-            break
-          case 401:
-            message = '未授权，请重新登录(401)'
-            localStorage.clear()
-            router.push({ name: 'login', replace: true })
-            break
-          case 403:
-            message = '拒绝访问(403)'
-            break
-          case 404:
-            message = '请求出错(404)'
-            break
-          case 408:
-            message = '请求超时(408)'
-            break
-          case 500:
-            message = '服务器错误(500)'
-            break
-          case 501:
-            message = '服务未实现(501)'
-            break
-          case 502:
-            message = '网络错误(502)'
-            break
-          case 503:
-            message = '服务不可用(503)'
-            break
-          case 504:
-            message = '网络超时(504)'
-            break
-          case 505:
-            message = 'HTTP版本不受支持(505)'
-            break
-          default:
-            message = `连接出错(${error.response.status})!`
-        }
-        // 这里错误消息可以使用全局弹框展示出来
-        ElMessage({
-          showClose: true,
-          message: `${message}，请检查网络或联系管理员！`,
-          type: 'error'
-        })
-        return {
-          error: true,
-          response: error.response
-        }
-      }
-    )
-  }
-  get<T = any, D = any>(
-    url: string,
-    data?: D,
-    options?: Partial<ApiRequestConfig>
-  ): Promise<ApiResult<T>> {
-    return this.axios.get(url, { params: data, ...options })
-  }
-  put<T = any, D = any>(
-    url: string,
-    data?: D,
-    options?: Partial<ApiRequestConfig>
-  ): Promise<ApiResult<T>> {
-    return this.axios.put(url, data, options)
-  }
-  post<T = any, D = any>(
-    url: string,
-    data?: D,
-    options?: Partial<ApiRequestConfig>
-  ): Promise<ApiResult<T>> {
-    return this.axios.post(url, data, options)
-  }
-  delete<T = any>(
-    url: string,
-    options?: Partial<ApiRequestConfig>
-  ): Promise<ApiResult<T>> {
-    return this.axios.delete(url, options)
-  }
+// 兼容旧 ApiRequestConfig 的 silent 字段
+interface LegacyRequestOptions extends AxiosRequestConfig {
+  silent?: boolean
 }
 
-export default new Service()
+// 旧响应形状：业务消费方普遍写 `res.data.xxx`，
+// 部分老代码还会读 `res.error` / `res.response`（旧 Service 在异常时返回 { error: true, response }）。
+// 新 http 客户端异常会抛 HttpError，正常路径下这两个字段恒为 undefined，
+// 保留字段定义仅为兼容老消费方的类型签名。
+interface LegacyResponse<T> {
+  data: T
+  error?: boolean
+  response?: AxiosResponse
+}
+
+function adapt<T>(
+  promise: Promise<T>,
+  options?: LegacyRequestOptions,
+): Promise<LegacyResponse<T>> {
+  // silent → _silent 已在调用处通过 config 传递；这里仅做形状包装
+  return promise.then(data => ({ data })) as Promise<LegacyResponse<T>>
+}
+
+const service = {
+  get<T = unknown>(
+    url: string,
+    data?: unknown,
+    options?: LegacyRequestOptions,
+  ): Promise<LegacyResponse<T>> {
+    // GET 的 data 作为 query params（保持旧行为）
+    return adapt<T>(
+      http.get<T>(url, { ...options, params: data, _silent: options?.silent }).then(r => r.data),
+    )
+  },
+  post<T = unknown>(
+    url: string,
+    data?: unknown,
+    options?: LegacyRequestOptions,
+  ): Promise<LegacyResponse<T>> {
+    return adapt<T>(
+      http.post<T>(url, data, { ...options, _silent: options?.silent }).then(r => r.data),
+    )
+  },
+  put<T = unknown>(
+    url: string,
+    data?: unknown,
+    options?: LegacyRequestOptions,
+  ): Promise<LegacyResponse<T>> {
+    return adapt<T>(
+      http.put<T>(url, data, { ...options, _silent: options?.silent }).then(r => r.data),
+    )
+  },
+  delete<T = unknown>(
+    url: string,
+    options?: LegacyRequestOptions,
+  ): Promise<LegacyResponse<T>> {
+    return adapt<T>(
+      http.delete<T>(url, { ...options, _silent: options?.silent }).then(r => r.data),
+    )
+  },
+}
+
+export default service
