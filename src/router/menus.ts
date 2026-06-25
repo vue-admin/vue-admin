@@ -1,8 +1,10 @@
-const menus = [
+import type { RouteRecordRaw } from 'vue-router'
+
+const menus: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'home',
-    component: () => import('@/views/HomeView.vue'),
+    component: () => import('@/views/Home.vue'),
     meta: {
       title: '首页',
       icon: 'menu',
@@ -20,8 +22,8 @@ const menus = [
     }
   },
   {
-    path: '/curd',
-    name: '增删改查',
+    path: '/crud',
+    name: 'crud',
     meta: {
       title: '增删改查',
       icon: 'document',
@@ -42,16 +44,16 @@ const menus = [
   {
     path: '/about',
     name: 'about',
-    component: () => import('@/views/AboutView.vue'),
+    component: () => import('@/views/About.vue'),
     meta: {
       title: '关于',
-      icon: 'about',
+      icon: 'InfoFilled',
       showMenu: false
     }
   },
   {
     path: '/user',
-    name: 'user',
+    name: 'userCenter',
     meta: {
       title: '用户中心',
       icon: 'location',
@@ -81,7 +83,7 @@ const menus = [
     children: [
       {
         path: '/multi/two',
-        name: 'multiTwo',
+        name: 'multiLevel2',
         component: () => import('@/views/multi/Level2.vue'),
         meta: {
           title: '二级菜单',
@@ -90,7 +92,7 @@ const menus = [
         children: [
           {
             path: '/multi/two/list',
-            name: 'multiTwoList',
+            name: 'multiLevel3',
             component: () => import('@/views/multi/Level3.vue'),
             meta: {
               title: '三级菜单',
@@ -112,7 +114,7 @@ const menus = [
     children: [
       {
         path: '/system/admin',
-        name: 'admin',
+        name: 'systemAdmin',
         component: () => import('@/views/system/admin/List.vue'),
         meta: {
           title: '管理员',
@@ -122,7 +124,7 @@ const menus = [
       },
       {
         path: '/system/role',
-        name: 'role',
+        name: 'systemRole',
         component: () => import('@/views/system/role/List.vue'),
         meta: {
           title: '角色管理',
@@ -132,7 +134,7 @@ const menus = [
       },
       {
         path: '/system/permission',
-        name: 'permission',
+        name: 'systemPermission',
         component: () => import('@/views/system/permission/List.vue'),
         meta: {
           title: '权限管理',
@@ -142,7 +144,7 @@ const menus = [
       },
       {
         path: '/system/dict',
-        name: 'dict',
+        name: 'systemDict',
         component: () => import('@/views/system/dict/List.vue'),
         meta: {
           title: '字典管理',
@@ -152,8 +154,8 @@ const menus = [
       },
       {
         path: '/system/config',
-        name: 'sysConfig',
-        component: () => import('@/views/system/config/Sys.vue'),
+        name: 'systemConfig',
+        component: () => import('@/views/system/config/Config.vue'),
         meta: {
           title: '系统配置',
           icon: 'Setting',
@@ -174,8 +176,9 @@ const menus = [
   },
   {
     path: '/404',
-    name: 'NotFound',
-    component: () => import('@/views/404.vue')
+    name: 'notFound',
+    component: () => import('@/views/NotFound.vue')
   }
 ]
+
 export default menus

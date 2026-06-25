@@ -1,10 +1,11 @@
 import type { MockMethod } from 'vite-plugin-mock'
 
+// Mock：模拟后端下发的菜单结构，作为动态路由契约的参考
 const menus = [
   {
     path: '/',
     name: 'home',
-    component: 'HomeView',
+    component: 'Home',
     meta: {
       title: '首页',
       icon: 'menu',
@@ -24,17 +25,17 @@ const menus = [
   {
     path: '/about',
     name: 'about',
-    component: 'AboutView',
+    component: 'About',
     meta: {
       title: '关于',
-      icon: 'about',
-      showInbreadcrumb: true,
+      icon: 'InfoFilled',
+      showInBreadcrumb: true,
       showMenu: false
     }
   },
   {
     path: '/user',
-    name: 'user',
+    name: 'userCenter',
     meta: {
       title: '用户中心',
       icon: 'location',
@@ -73,7 +74,7 @@ const menus = [
     children: [
       {
         path: '/multi/two',
-        name: 'multiTwo',
+        name: 'multiLevel2',
         component: 'multi/List',
         meta: {
           title: '二级菜单',
@@ -82,7 +83,7 @@ const menus = [
         children: [
           {
             path: '/multi/two/list',
-            name: 'multiTwoList',
+            name: 'multiLevel3',
             component: 'multi/List',
             meta: {
               title: '三级菜单',
@@ -94,47 +95,48 @@ const menus = [
     ]
   },
   {
-    path: '/admin',
-    name: 'admin',
+    path: '/system',
+    name: 'system',
     meta: {
-      title: '管理员',
-      icon: 'Avatar',
+      title: '系统管理',
+      icon: 'setting',
       showMenu: true
     },
     children: [
       {
-        path: '/admin/list',
-        name: 'adminList',
-        component: 'admin/List',
+        path: '/system/admin',
+        name: 'systemAdmin',
+        component: 'system/admin/List',
         meta: {
           title: '管理员列表',
+          icon: 'Avatar',
+          showMenu: true
+        }
+      },
+      {
+        path: '/system/config',
+        name: 'systemConfig',
+        component: 'system/config/Config',
+        meta: {
+          title: '系统设置',
+          icon: 'setting',
           showMenu: true
         }
       }
     ]
   },
   {
-    path: '/sys',
-    name: 'sys',
-    component: 'Sys',
-    meta: {
-      title: '系统设置',
-      icon: 'setting',
-      showMenu: true
-    }
-  },
-  {
     path: '/404',
-    name: 'NotFound',
-    component: '404'
+    name: 'notFound',
+    component: 'NotFound'
   }
 ]
 
 export default [
   {
-    url: '/api/system/menus', // 注意，这里只能是string格式
+    url: '/api/system/menus',
     method: 'get',
-    response: (req) => {
+    response: () => {
       return {
         code: 0,
         data: menus

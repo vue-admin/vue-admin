@@ -114,7 +114,7 @@
     </div>
   </el-card>
   <!-- 详情 弹窗 -->
-  <detail
+  <Detail
     v-model:visible="drawerVisible"
     :mode="drawerMode"
     :record-id="selectedId"
@@ -220,7 +220,7 @@ import {
   RefreshRight,
 } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import detail from './detail.vue'
+import Detail from './Detail.vue'
 
 // 搜索表单
 const searchForm = reactive({

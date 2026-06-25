@@ -22,7 +22,7 @@
           class="demo-ruleForm"
         >
           <el-form-item label="用户名" prop="username">
-            <el-input v-model.number="ruleForm.username" />
+            <el-input v-model="ruleForm.username" />
           </el-form-item>
           <el-form-item label="密码" prop="password">
             <el-input

@@ -3,7 +3,7 @@ import service from '@/apis/client/service'
 export interface User {
   id: number
   username: string
-  create_time: string
+  createTime: string
 }
 
 export interface UserRequest {
