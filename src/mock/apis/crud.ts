@@ -1,4 +1,5 @@
 import type { MockMethod } from 'vite-plugin-mock'
+import { success, sendProblem } from '../_helpers'
 
 interface CrudRecord {
   id: string
@@ -49,9 +50,6 @@ let crudList: CrudRecord[] = [
   }
 ]
 
-const success = <T>(data: T) => ({ code: 0, data })
-const notFound = (msg = '记录不存在') => ({ code: 404, msg })
-
 export default [
   {
     url: '/api/crud',
@@ -69,11 +67,12 @@ export default [
   {
     url: '/api/crud/detail',
     method: 'get',
-    response: (req) => {
+    response: (req, res) => {
       const { id } = req.query || {}
       const record = crudList.find((item) => item.id === id)
       if (!record) {
-        return notFound()
+        sendProblem(res, { status: 404, title: 'Not Found', detail: '记录不存在' })
+        return
       }
       return success(record)
     }
@@ -94,14 +93,16 @@ export default [
   {
     url: '/api/crud',
     method: 'put',
-    response: (req) => {
+    response: (req, res) => {
       const { body } = req
       if (!body?.id) {
-        return notFound('缺少记录ID')
+        sendProblem(res, { status: 404, title: 'Not Found', detail: '缺少记录ID' })
+        return
       }
       const index = crudList.findIndex((item) => item.id === body.id)
       if (index === -1) {
-        return notFound()
+        sendProblem(res, { status: 404, title: 'Not Found', detail: '记录不存在' })
+        return
       }
       crudList[index] = {
         ...crudList[index],
@@ -113,15 +114,17 @@ export default [
   {
     url: '/api/crud/delete',
     method: 'post',
-    response: (req) => {
+    response: (req, res) => {
       const { id } = req.body || {}
       if (!id) {
-        return notFound('缺少记录ID')
+        sendProblem(res, { status: 404, title: 'Not Found', detail: '缺少记录ID' })
+        return
       }
       const before = crudList.length
       crudList = crudList.filter((item) => item.id !== id)
       if (crudList.length === before) {
-        return notFound()
+        sendProblem(res, { status: 404, title: 'Not Found', detail: '记录不存在' })
+        return
       }
       return success(true)
     }
@@ -129,10 +132,11 @@ export default [
   {
     url: '/api/crud/batch-delete',
     method: 'post',
-    response: (req) => {
+    response: (req, res) => {
       const { ids } = req.body || {}
       if (!Array.isArray(ids) || ids.length === 0) {
-        return notFound('ids 不能为空')
+        sendProblem(res, { status: 404, title: 'Not Found', detail: 'ids 不能为空' })
+        return
       }
       const idSet = new Set(ids)
       const before = crudList.length

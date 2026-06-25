@@ -1,4 +1,5 @@
 import type { MockMethod } from 'vite-plugin-mock'
+import { success, sendProblem } from '../_helpers'
 
 // 定义管理员类型
 interface AdminInfo {
@@ -48,11 +49,11 @@ export default [
   {
     url: '/api/admin/list',
     method: 'get',
-    response: (req: any) => {
-      const { keyword = '', role = '', status = '', page = 1, size = 10 } = req.query
+    response: (req) => {
+      const { keyword = '', role = '', status = '', page = 1, size = 10 } = req.query || {}
 
       // 筛选
-      let filteredAdmins = admins.filter(admin => {
+      const filteredAdmins = admins.filter(admin => {
         const matchKeyword = keyword === '' ||
           admin.username.includes(keyword) ||
           admin.realName.includes(keyword) ||
@@ -65,20 +66,18 @@ export default [
       })
 
       // 分页
-      const startIndex = (page - 1) * size
-      const endIndex = startIndex + parseInt(size)
+      const page_num = Number(page)
+      const size_num = Number(size)
+      const startIndex = (page_num - 1) * size_num
+      const endIndex = startIndex + size_num
       const paginatedAdmins = filteredAdmins.slice(startIndex, endIndex)
 
-      return {
-        code: 0,
-        data: {
-          records: paginatedAdmins,
-          total: filteredAdmins.length,
-          current: parseInt(page),
-          size: parseInt(size),
-        },
-        msg: 'success',
-      }
+      return success({
+        records: paginatedAdmins,
+        total: filteredAdmins.length,
+        current: page_num,
+        size: size_num,
+      })
     },
   },
 
@@ -86,22 +85,16 @@ export default [
   {
     url: '/api/admin/detail/:id',
     method: 'get',
-    response: (req: any) => {
+    response: (req, res) => {
       const id = req.query?.id || req.params?.id
       const admin = admins.find(u => u.id === id)
 
       if (admin) {
-        return {
-          code: 0,
-          data: admin,
-          msg: 'success',
-        }
+        return success(admin)
       }
 
-      return {
-        code: 404,
-        msg: '管理员不存在',
-      }
+      sendProblem(res, { status: 404, title: 'Not Found', detail: '管理员不存在' })
+      return
     },
   },
 
@@ -109,7 +102,7 @@ export default [
   {
     url: '/api/admin/create',
     method: 'post',
-    response: (req: any) => {
+    response: (req) => {
       const newAdmin = {
         id: (admins.length + 1).toString(),
         ...req.body,
@@ -121,11 +114,7 @@ export default [
 
       admins.push(newAdmin)
 
-      return {
-        code: 0,
-        data: newAdmin,
-        msg: '创建成功',
-      }
+      return success(newAdmin, '创建成功')
     },
   },
 
@@ -133,7 +122,7 @@ export default [
   {
     url: '/api/admin/update/:id',
     method: 'put',
-    response: (req: any) => {
+    response: (req, res) => {
       const id = req.query?.id || req.params?.id
       const adminIndex = admins.findIndex(u => u.id === id)
 
@@ -143,17 +132,11 @@ export default [
           ...req.body,
         }
 
-        return {
-          code: 0,
-          data: admins[adminIndex],
-          msg: '更新成功',
-        }
+        return success(admins[adminIndex], '更新成功')
       }
 
-      return {
-        code: 404,
-        msg: '管理员不存在',
-      }
+      sendProblem(res, { status: 404, title: 'Not Found', detail: '管理员不存在' })
+      return
     },
   },
 
@@ -161,24 +144,18 @@ export default [
   {
     url: '/api/admin/delete/:id',
     method: 'delete',
-    response: (req: any) => {
+    response: (req, res) => {
       const id = req.query?.id || req.params?.id
       const adminIndex = admins.findIndex(u => u.id === id)
 
       if (adminIndex !== -1) {
         admins.splice(adminIndex, 1)
 
-        return {
-          code: 0,
-          data: true,
-          msg: '删除成功',
-        }
+        return success(true, '删除成功')
       }
 
-      return {
-        code: 404,
-        msg: '管理员不存在',
-      }
+      sendProblem(res, { status: 404, title: 'Not Found', detail: '管理员不存在' })
+      return
     },
   },
 
@@ -186,8 +163,8 @@ export default [
   {
     url: '/api/admin/batch-delete',
     method: 'post',
-    response: (req: any) => {
-      const { ids } = req.body
+    response: (req) => {
+      const { ids } = req.body || {}
 
       ids.forEach((id: string) => {
         const adminIndex = admins.findIndex(u => u.id === id)
@@ -196,11 +173,7 @@ export default [
         }
       })
 
-      return {
-        code: 0,
-        data: true,
-        msg: '删除成功',
-      }
+      return success(true, '删除成功')
     },
   },
 
@@ -209,11 +182,7 @@ export default [
     url: '/api/admin/export',
     method: 'get',
     response: () => {
-      return {
-        code: 0,
-        data: 'export success',
-        msg: '导出成功',
-      }
+      return success('export success', '导出成功')
     },
   },
 ] as MockMethod[]
