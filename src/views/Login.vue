@@ -115,7 +115,9 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     console.log(response)
     return
   }
-  console.log(data.token)
+  if (data?.token) {
+    localStorage.setItem('token', data.token)
+  }
   router.push('/')
 }
 </script>

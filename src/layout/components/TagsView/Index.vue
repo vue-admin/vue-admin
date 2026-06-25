@@ -28,35 +28,22 @@
 
 <script lang="ts" setup>
 import ContextMenu from './ContextMenu.vue'
-import { ref, reactive, watch, onMounted } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { RouteLocationNormalizedLoaded, useRoute, useRouter } from 'vue-router'
-import {
-  tagsViewList,
-  addTagsViewList,
-  removeTagsView
-} from '@/stores/tagsView'
+import { storeToRefs } from 'pinia'
+import { useTagsViewStore, type TagsViewItem } from '@/stores/tagsView'
 
 const router = useRouter()
 const route = useRoute()
 
-interface tagsViewItem {
-  title: string
-  fullPath: string
-  path?: string
-  meta?: tagsViewItemMeta
-}
+const tagsViewStore = useTagsViewStore()
+const { tagsViewList } = storeToRefs(tagsViewStore)
+const { addTagsViewList, removeTagsView } = tagsViewStore
 
-interface tagsViewItemMeta {
-  affix: boolean
-}
-
-/**
- * 是否被选中
- */
-const isActive = (tag: tagsViewItem) => {
+const isActive = (tag: TagsViewItem) => {
   return tag.path === route.path
 }
-const isAffiix = (tag: tagsViewItem) => {
+const isAffiix = (tag: TagsViewItem) => {
   return tag.meta && tag.meta.affix
 }
 
@@ -68,9 +55,6 @@ const menuStyle = reactive({
   top: '0'
 })
 
-/**
- * 展示 menu
- */
 const openMenu = (e: any, index: number) => {
   const { x, y } = e
   menuStyle.left = x + 'px'
@@ -79,42 +63,26 @@ const openMenu = (e: any, index: number) => {
   visible.value = true
 }
 
-/**
- * 关闭 tag 的点击事件
- */
-
-const onCloseClick = (index: number, tag: tagsViewItem) => {
+const onCloseClick = (index: number, tag: TagsViewItem) => {
   removeTagsView({
     type: 'index',
     index: index
   })
-  //如果删除的是当前页面，自动定位到上一个页面
   if (isActive(tag)) {
     if (index == 0 && tagsViewList.value.length >= 1) {
-      let pre_index = 0
-      let pre_page = tagsViewList.value[pre_index]
-      router.push(pre_page.fullPath)
+      router.push(tagsViewList.value[0].fullPath)
     } else if (tagsViewList.value.length == 0) {
-      //如果是最后一个，定位到首页
       router.push('/')
     } else {
-      let pre_index = index - 1
-      let pre_page = tagsViewList.value[pre_index]
-      router.push(pre_page.fullPath)
+      router.push(tagsViewList.value[index - 1].fullPath)
     }
   }
 }
 
-/**
- * 关闭 menu
- */
 const closeMenu = () => {
   visible.value = false
 }
 
-/**
- * 监听变化
- */
 watch(
   visible,
   (val) => {
@@ -124,37 +92,26 @@ watch(
       document.body.removeEventListener('click', closeMenu)
     }
   },
-  {
-    immediate: true
-  }
+  { immediate: true }
 )
-/**
- * 生成 title
- */
+
 const getTitle = (route: RouteLocationNormalizedLoaded) => {
-  let title = ''
   if (!route.meta) {
-    // 处理无 meta 的路由
     const pathArr = route.path.split('/')
-    title = pathArr[pathArr.length - 1]
-  } else {
-    title = route.meta?.title as string
+    return pathArr[pathArr.length - 1]
   }
-  return title
+  return route.meta?.title as string
 }
 
-/**
- * 监听路由变化
- */
 watch(
   route,
-  (to, from) => {
+  (to) => {
     const { fullPath, meta, name, params, path, query } = to
     let affix = false
     if (path === '/') {
       affix = true
     }
-    let title = getTitle(to)
+    const title = getTitle(to)
     if (title === undefined || title === '') {
       return
     }
@@ -168,9 +125,7 @@ watch(
       meta: { title: title, affix: affix }
     })
   },
-  {
-    immediate: true
-  }
+  { immediate: true }
 )
 </script>
 
@@ -179,7 +134,6 @@ watch(
   height: 34px;
   width: 100%;
   border-bottom: 1px solid var(--el-menu-border-color);
-  //box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
 
   .tags-view-item {
     display: inline-block;
@@ -217,7 +171,6 @@ watch(
       }
     }
 
-    // close 按钮
     .el-icon-close {
       height: 1em;
       width: 1em;

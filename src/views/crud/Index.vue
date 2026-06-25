@@ -204,7 +204,12 @@
 </style>
 
 <script lang="ts" setup>
-import { fetchCrud, type item } from '@/apis/crud'
+import {
+  fetchCrud,
+  deleteCrudItem,
+  batchDeleteCrudItems,
+  type item
+} from '@/apis/crud'
 import { ref, onMounted, reactive } from 'vue'
 import {
   Search,
@@ -324,6 +329,8 @@ const handleDelete = async (id: string) => {
       cancelButtonText: '取消',
       type: 'warning',
     })
+    const res = await deleteCrudItem(id)
+    if (res.error) return
     ElMessage.success('删除成功')
     getTableData()
   } catch {
@@ -333,6 +340,7 @@ const handleDelete = async (id: string) => {
 
 // 批量删除
 const handleBatchDelete = async () => {
+  if (selectedRows.value.length === 0) return
   try {
     await ElMessageBox.confirm(
       `确定要删除选中的 ${selectedRows.value.length} 条记录吗？`,
@@ -343,7 +351,10 @@ const handleBatchDelete = async () => {
         type: 'warning',
       }
     )
-    ElMessage.success('删除成功')
+    const ids = selectedRows.value.map((row) => row.id)
+    const res = await batchDeleteCrudItems(ids)
+    if (res.error) return
+    ElMessage.success(`成功删除 ${selectedRows.value.length} 条`)
     selectedRows.value = []
     getTableData()
   } catch {

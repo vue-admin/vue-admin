@@ -51,3 +51,15 @@ export const updateCrudItem = (payload: CrudUpdatePayload) => {
     silent: false
   })
 }
+
+export const deleteCrudItem = (id: string) => {
+  return service.post<boolean>('/api/crud/delete', { id }, {
+    silent: false
+  })
+}
+
+export const batchDeleteCrudItems = (ids: string[]) => {
+  return service.post<boolean>('/api/crud/batch-delete', { ids }, {
+    silent: false
+  })
+}

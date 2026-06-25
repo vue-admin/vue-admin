@@ -109,5 +109,35 @@ export default [
       }
       return success(crudList[index])
     }
+  },
+  {
+    url: '/api/crud/delete',
+    method: 'post',
+    response: (req) => {
+      const { id } = req.body || {}
+      if (!id) {
+        return notFound('缺少记录ID')
+      }
+      const before = crudList.length
+      crudList = crudList.filter((item) => item.id !== id)
+      if (crudList.length === before) {
+        return notFound()
+      }
+      return success(true)
+    }
+  },
+  {
+    url: '/api/crud/batch-delete',
+    method: 'post',
+    response: (req) => {
+      const { ids } = req.body || {}
+      if (!Array.isArray(ids) || ids.length === 0) {
+        return notFound('ids 不能为空')
+      }
+      const idSet = new Set(ids)
+      const before = crudList.length
+      crudList = crudList.filter((item) => !idSet.has(item.id))
+      return success(before - crudList.length)
+    }
   }
 ] as MockMethod[]

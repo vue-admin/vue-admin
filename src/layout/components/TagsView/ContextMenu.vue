@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
 import { useRouter } from 'vue-router'
-import { removeTagsView } from '@/stores/tagsView'
+import { useTagsViewStore } from '@/stores/tagsView'
 
 const props = defineProps({
   index: {
@@ -19,6 +19,9 @@ const props = defineProps({
 })
 
 const router = useRouter()
+const tagsViewStore = useTagsViewStore()
+const { removeTagsView } = tagsViewStore
+
 const onRefreshClick = () => {
   router.go(0)
 }
@@ -42,7 +45,6 @@ const onCloseAllClick = () => {
     type: 'all',
     index: props.index
   })
-
   router.push('/')
 }
 </script>
