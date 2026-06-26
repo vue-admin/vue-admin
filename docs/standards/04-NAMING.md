@@ -88,3 +88,25 @@
 - 1-2 字母变量（循环索引 `i`、`j` 除外）
 - 类型后缀（`userArray`、`userObject`）—— 用 TypeScript 表达类型
 - "魔术数字"直接出现（用 const 命名）
+
+## 十、基础设施命名
+
+| 类型 | 命名 | 备注 |
+|------|------|------|
+| HTTP 客户端导出 | `http`、`api` | `lib/http/client.ts` 导出；禁止 `service` / `request` |
+| HTTP 错误类 | `HttpError` | `lib/error/types.ts` |
+| 错误响应类型 | `ProblemDetail` | RFC 7807 |
+| 错误捕获组件 | `ErrorBoundary` | `lib/error/ErrorBoundary.vue` |
+| 监控接口 | `Monitor` | `lib/error/types.ts`；控制台默认实现 `defaultMonitor`（`lib/error/monitor.ts`） |
+| 认证服务单例 | `authService` | `lib/auth/authService.ts`（工厂创建） |
+| 认证提供方接口 | `AuthProvider` | `lib/auth/AuthProvider.ts` |
+| JWT 实现类 | `JwtAuthProvider` | `lib/auth/JwtAuthProvider.ts` |
+| Token 存储接口 | `TokenStorage` | `lib/auth/TokenStorage.ts` |
+| 内存默认实现 | `MemorySessionTokenStorage` | `lib/auth/TokenStorage.ts` |
+| Token 读取接口 | `TokenReader` | `lib/http/token.ts` |
+| 动态路由装载 | `registerDynamicRoutes` | `lib/router/dynamic.ts` |
+| 路由守卫安装 | `installGuards` | `lib/router/guards.ts` |
+| 权限指令 | `vPermission` | `app/directives/permission.ts`；模板中用 `v-permission` |
+| 全局用户 store | `useUserStore` | `app/stores/user.ts` |
+| 全局权限 store | `usePermissionStore` | `app/stores/permission.ts` |
+

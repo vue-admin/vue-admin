@@ -2,109 +2,96 @@
 
 > 本文档规定项目的**目录结构、组件分层、依赖方向**。命名细节见 [04-NAMING.md](./04-NAMING.md)。
 
-## 一、顶层目录
+## 一、四层目录
 
 ```
-vue-admin/
-├── docs/                 # 所有文档
-│   └── standards/        # 规范文档集（本目录）
-├── public/               # 静态资源（直接拷贝）
-├── src/
-│   ├── apis/             # API 接口封装（按业务域分目录）
-│   ├── assets/           # 会被构建处理的资源
-│   ├── components/       # 跨页面公共组件
-│   ├── layout/           # 布局组件
-│   ├── mock/             # Mock API
-│   ├── router/           # 路由配置
-│   ├── stores/           # Pinia store
-│   ├── utils/            # 纯函数工具
-│   ├── views/            # 业务页面
-│   ├── App.vue
-│   └── main.ts
-├── .github/              # CI / Issue 模板
-├── CLAUDE.md             # AI 工程上下文索引
-├── CONTRIBUTING.md       # 贡献指南
-└── README.md
+src/
+├── lib/         # 基础设施：与业务无关（http、auth、router、error、monitor）
+├── app/         # 应用骨架：组装层（main.ts、stores、directives）
+├── modules/     # 业务领域：按 domain 聚合（auth、system 等）
+└── shared/      # 跨模块共享：类型、常量
 ```
 
-## 二、`src/apis/` 业务域划分
+其余历史目录：
 
-每个业务域一个目录，**禁止**所有 API 平铺在根下。
+| 目录 | 状态 | 备注 |
+|------|------|------|
+| `src/assets/` | 保留 | 会被构建处理的资源 |
+| `src/components/` | 保留 | 跨页面公共组件 |
+| `src/layout/` | 保留 | 布局组件 |
+| `src/mock/` | 保留 | Mock API（开发环境用） |
+| `src/router/` | 保留 | 静态路由表 + router 实例 |
+| `src/views/` | **历史** | M5 后续将迁移至 `src/modules/<domain>/views/` |
+| `src/apis/` | **历史** | M5 后续将迁移至 `src/modules/<domain>/api.ts` |
+| `src/stores/` | **历史** | 已迁至 `src/app/stores/` |
+| `src/utils/` | **历史** | 待评估合并至 `src/lib/` 或删除 |
 
-```
-src/apis/
-├── client/               # HTTP 客户端（仅 service 单例）
-│   ├── service.ts        # 业务级 HTTP 客户端
-│   └── request.ts        # 仅类型定义
-├── common.ts             # 全局通用类型
-└── <domain>/             # 业务域：user / role / dict / ...
-    └── index.ts
-```
-
-API 函数命名：`fetch / create / update / delete / batchDelete` + `<Domain>`。详见 [02-API.md](./02-API.md)。
-
-## 三、`src/components/` 公共组件分层
-
-按"功能域"分子目录，**不**按"页面归属"。
-
-| 子目录 | 职责 | 可依赖 |
-|--------|------|--------|
-| `base/` | 通用 UI 原子（Form、Table、Search） | Element Plus、utils |
-| `business/` | 跨页面复用的业务块 | 基础组件、apis、stores |
-| `icons/` | SVG / 图标封装 | - |
-
-依赖方向：**业务 → 基础**，禁止反向。基础组件禁止 `import service`。
-
-## 四、`src/views/` 业务页面
-
-按业务域分子目录，复杂页面拆分。
+## 二、依赖方向
 
 ```
-src/views/
-├── system/
-│   ├── user/
-│   ├── role/
-│   └── dict/
-│       ├── List.vue          # 列表容器（编排）
-│       ├── DictTree.vue      # 子视图
-│       ├── DictDetail.vue
-│       ├── DictFormDrawer.vue
-│       └── hooks/
-│           └── useDictTree.ts
-└── Login.vue
+modules ──→ app ──→ lib
+              ▲
+shared  ──────┘
 ```
 
-### 复杂页面拆分红线
+依赖单向：`modules` 可依赖 `app` 与 `lib`；`app` 可依赖 `lib`；`shared` 只能被依赖、不能依赖任何业务层或基础设施层。
 
-| 信号 | 动作 |
-|------|------|
-| `.vue` 文件 > 300 行 | 考虑拆 |
-| `.vue` 文件 > 500 行 | **必须拆**，PR 不通过 |
-| template > 100 行 | 抽 sub-component |
-| 3+ 独立交互区 | 拆为容器 + 子视图 |
+### 边界强制
 
-拆分模板：
+- **`lib/` 禁止** import `@/app/*`、`@/modules/*`、`@/views/*`、`@/apis/*`、`@/router/*`、`@/stores/*`、`@/layout/*`、`@/components/*`
+- **`shared/` 禁止** import `@/app/*`、`@/modules/*`、`@/views/*`、`@/apis/*`、`@/router/*`、`@/stores/*`、`@/layout/*`、`@/components/*`、`@/lib/*`
+- 例外：`src/lib/router/guards.ts` 反向 import `@/app/stores/*` 是允许的（路由守卫需要拉取 user/permission store 完成权限检查；**禁止**的是依赖 `@/modules/*` 业务模块）
+- 由 `eslint.config.js` 的 `no-restricted-imports` 规则强制
+
+## 三、`src/modules/` 业务领域
+
+每个 domain 一个目录：
 
 ```
-List.vue                  # 容器
-<Feature>.vue             # 子视图
-<Feature>Drawer.vue       # 弹窗
-<Feature>Form.vue         # 表单
-hooks/use<Feature>.ts     # 业务逻辑（与 UI 解耦）
-types.ts                  # 仅当类型定义 > 50 行时拆出
+src/modules/
+├── auth/                    # 认证领域
+│   ├── views/
+│   │   └── Login.vue
+│   └── api.ts               # （可选）模块内 API 封装
+├── system/                  # 系统管理领域
+│   ├── views/
+│   │   ├── admin/
+│   │   ├── dict/
+│   │   └── role/
+│   └── store.ts             # （可选）仅模块内使用的 store
+└── <domain>/                # 其他业务域
 ```
 
-## 五、`src/stores/` 状态管理
+模块内文件按需新增：`views/`、`api.ts`、`store.ts`、`types.ts`、`hooks/`。
 
-一个业务域一个 store 文件，命名 `use<Domain>Store`。
+## 四、`src/lib/` 基础设施
 
-详见 [03-STATE.md](./03-STATE.md)。
+| 子目录 | 职责 |
+|--------|------|
+| `lib/http/` | HTTP 客户端（`http` 单例 + `api` 辅助函数 + 拦截器 + ProblemDetail 解析 + ElMessage 通知） |
+| `lib/auth/` | 认证服务（`authService` 单例 + `AuthProvider` 接口 + `TokenStorage` 接口 + JwtAuthProvider） |
+| `lib/router/` | 路由工具（动态路由装载 + 守卫 + MenuDTO 类型） |
+| `lib/error/` | 错误处理（`HttpError` + `Monitor` 接口 + `ErrorBoundary.vue` + 控制台 Monitor 默认实现） |
 
-## 六、`src/utils/` 工具函数
+`lib/` 内部代码必须**与业务无关**，可被任何业务模块复用。
 
-只放**纯函数**：无副作用、不依赖 Vue 响应式、可被任何上下文调用。
+## 五、`src/app/` 应用骨架
 
-需要响应式的工具放 `src/composables/`（待建）。
+| 子目录 | 职责 |
+|--------|------|
+| `app/main.ts` | 应用入口：注册插件、指令、守卫、provide monitor |
+| `app/App.vue` | 根组件：包裹 ErrorBoundary |
+| `app/stores/` | 全局 Pinia store：`user.ts`、`permission.ts` |
+| `app/directives/` | 全局指令：`v-permission` |
+
+## 六、`src/shared/` 共享层
+
+跨模块共享的**纯类型**与**纯常量**。
+
+- 类型：领域 DTO、枚举、共享 interface
+- 常量：跨模块用的 magic string / number
+
+**禁止**放业务逻辑、Vue 响应式代码、依赖任何业务层。
 
 ## 七、组件设计原则
 
@@ -124,7 +111,7 @@ const emit = defineEmits<{
 </script>
 ```
 
-禁止 Options API、禁止 `any`、禁止 `as unknown as T` 双重断言。
+禁止 Options API、禁止 `any`、禁止 `as unknown as T` 双重断言（路由 RecordRaw 等第三方类型联合体除外，须加注释说明）。
 
 ### 7.2 文件内顺序
 
@@ -148,32 +135,30 @@ const emit = defineEmits<{
 
 其他场景禁止暴露内部状态，破坏封装。
 
-### 7.5 容器 vs 展示
+### 7.5 复杂页面拆分红线
 
-- **容器组件**（页面/业务）：管理数据、调 API、与 store 交互
-- **展示组件**（基础）：纯 UI，数据全靠 props
+| 信号 | 动作 |
+|------|------|
+| `.vue` 文件 > 300 行 | 考虑拆 |
+| `.vue` 文件 > 500 行 | **必须拆**，PR 不通过 |
+| template > 100 行 | 抽 sub-component |
+| 3+ 独立交互区 | 拆为容器 + 子视图 |
 
-不严格分离，但**避免基础组件里直接 import service**。
-
-### 7.6 列表/表单页标准结构
-
-参考 `src/views/crud/Index.vue`、`src/views/system/dict/`：
+拆分模板：
 
 ```
-[搜索区域 Card]  — 搜索表单 + 操作按钮
-[表格区域 Card]  — 数据表格 + 分页
-[详情/编辑 Drawer] — 新增/编辑/查看共用
+<Page>.vue                 # 容器
+<Feature>.vue              # 子视图
+<Feature>Drawer.vue        # 弹窗
+<Feature>Form.vue          # 表单
+hooks/use<Feature>.ts      # 业务逻辑（与 UI 解耦）
+types.ts                   # 仅当类型定义 > 50 行时拆出
 ```
-
-### 7.7 加载与错误态
-
-- 列表/详情必须有 `loading` 状态
-- 接口失败必须 `ElMessage.error`（除非 `silent: true`）
-- 空数据用 `<el-empty>`
 
 ## 八、禁止
 
-- `src/utils/` / `src/components/` 出现特定页面专属代码
-- `src/apis/` 出现 UI 提示（`ElMessage`）—— 错误提示只在 `service` 层
-- `src/views/` 出现直接的 `axios` 调用 —— 必须通过 `apis/` 封装
+- `src/lib/` 出现业务领域代码（user/system/auth 等具体业务）
+- `src/shared/` 出现业务逻辑或 Vue 响应式代码
+- `src/modules/<domain>/api.ts` 出现 UI 提示（`ElMessage`）—— 错误提示只在 `lib/http` 拦截器层
+- 任何业务代码直接 `import axios` —— 必须通过 `lib/http/client` 导出的 `http` / `api`
 - 任何目录出现"暂存"、"备份"性质的文件（`xxx.bak.vue`、`old-xxx.ts`）
