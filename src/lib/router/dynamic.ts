@@ -1,5 +1,4 @@
 import type { Router, RouteRecordRaw } from 'vue-router'
-import { inject } from 'vue'
 import type { MenuDTO } from './types-menu'
 import type { Monitor } from '@/lib/error/types'
 
@@ -40,9 +39,4 @@ export function registerDynamicRoutes(
     }
   }
   walk(menus)
-}
-
-// 组合式便捷获取 monitor（在 setup 中使用）
-export function useMonitor(): Monitor {
-  return inject<Monitor>('monitor')!
 }
