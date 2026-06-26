@@ -78,14 +78,22 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { toggleDark, isDark } from '@/stores/dark'
-import type { FormInstance, FormRules } from 'element-plus'
-import { fetchUsers } from '@/apis/user/login'
+import type { FormInstance, FormItemRule, FormRules } from 'element-plus'
+import { authService } from '@/lib/auth/authService'
+import { useUserStore } from '@/app/stores/user'
 
 const ruleFormRef = ref<FormInstance>()
 const router = useRouter()
+const userStore = useUserStore()
+const submitting = ref(false)
 
-const validateEmpty = (rule: any, value: any, callback: any) => {
-  if (value === '') {
+// 强类型校验器：禁止 any，类型由 FormItemRule['validator'] 推导
+const validateEmpty: NonNullable<FormItemRule['validator']> = (
+  _rule,
+  value,
+  callback,
+) => {
+  if (value === '' || value == null) {
     callback(new Error('字段不能为空'))
   } else {
     callback()
@@ -94,30 +102,31 @@ const validateEmpty = (rule: any, value: any, callback: any) => {
 
 const ruleForm = reactive({
   username: '',
-  password: ''
+  password: '',
 })
 
 const rules = reactive<FormRules>({
   username: [{ validator: validateEmpty, trigger: 'blur' }],
-  password: [{ validator: validateEmpty, trigger: 'blur' }]
+  password: [{ validator: validateEmpty, trigger: 'blur' }],
 })
 
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   try {
     await formEl.validate()
-  } catch (error) {
-    console.log('error submit!', error)
+  } catch {
     return
   }
-  const { error, data, response } = await fetchUsers(ruleForm)
-  if (error) {
-    console.log(response)
-    return
+  submitting.value = true
+  try {
+    await authService.login(ruleForm)
+    await userStore.loadProfile()
+    router.push('/')
+  } catch (e) {
+    // 拦截器已通过 ElMessage 提示，这里仅 debug 日志
+    console.debug('[login] failed', e)
+  } finally {
+    submitting.value = false
   }
-  if (data?.token) {
-    localStorage.setItem('token', data.token)
-  }
-  router.push('/')
 }
 </script>
