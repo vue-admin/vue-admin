@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import { setActivePinia, createPinia } from 'pinia'
-import { installGuards } from '@/lib/router/guards'
 import { useUserStore } from '@/app/stores/user'
 import type { UserProfile } from '@/lib/auth/types'
 
@@ -16,7 +15,30 @@ vi.mock('@/lib/auth/authService', () => ({
   },
 }))
 
+// Mock api：默认空菜单，避免守卫卡在 reject
+vi.mock('@/lib/http/client', () => ({
+  api: {
+    get: vi.fn<(url: string) => Promise<unknown[]>>(async () => []),
+    post: vi.fn(),
+    put: vi.fn(),
+    patch: vi.fn(),
+    del: vi.fn(),
+  },
+}))
+
+// Mock registerDynamicRoutes：验证调用而不真正注册路由
+// 用 vi.hoisted 把变量提升到 vi.mock 之前，避免 ReferenceError
+const { mockRegisterDynamicRoutes } = vi.hoisted(() => ({
+  mockRegisterDynamicRoutes: vi.fn<(router: unknown, menus: unknown, monitor: unknown) => void>(),
+}))
+
+vi.mock('@/lib/router/dynamic', () => ({
+  registerDynamicRoutes: mockRegisterDynamicRoutes,
+}))
+
 import { authService } from '@/lib/auth/authService'
+import { api } from '@/lib/http/client'
+import { _resetMenusRegistered, installGuards } from '@/lib/router/guards'
 
 function makeRouter(routes: RouteRecordRaw[] = []): ReturnType<typeof createRouter> {
   return createRouter({
@@ -42,6 +64,10 @@ describe('guards', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
+    // 每个用例重置 menusRegistered 标志，确保 bootstrap 子步骤可重复触发
+    _resetMenusRegistered()
+    // 默认空菜单：守卫会调用 api.get 拉菜单，必须给个 resolved 值
+    vi.mocked(api.get).mockResolvedValue([])
   })
 
   it('public 路由直接放行', async () => {
