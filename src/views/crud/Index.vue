@@ -329,13 +329,13 @@ const handleDelete = async (id: string) => {
       cancelButtonText: '取消',
       type: 'warning',
     })
-    const res = await deleteCrudItem(id)
-    if (res.error) return
-    ElMessage.success('删除成功')
-    getTableData()
   } catch {
     ElMessage.info('已取消删除')
+    return
   }
+  await deleteCrudItem(id)
+  ElMessage.success('删除成功')
+  getTableData()
 }
 
 // 批量删除
@@ -349,17 +349,17 @@ const handleBatchDelete = async () => {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
-      }
+      },
     )
-    const ids = selectedRows.value.map((row) => row.id)
-    const res = await batchDeleteCrudItems(ids)
-    if (res.error) return
-    ElMessage.success(`成功删除 ${selectedRows.value.length} 条`)
-    selectedRows.value = []
-    getTableData()
   } catch {
     ElMessage.info('已取消删除')
+    return
   }
+  const ids = selectedRows.value.map((row) => row.id)
+  await batchDeleteCrudItems(ids)
+  ElMessage.success(`成功删除 ${selectedRows.value.length} 条`)
+  selectedRows.value = []
+  getTableData()
 }
 
 // 导出
