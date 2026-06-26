@@ -9,7 +9,10 @@ import { getTokenStorage } from './TokenStorage'
 export function createAuthService(provider: AuthProvider, storage: TokenStorage) {
   let refreshPromise: Promise<AuthResult> | null = null
 
-  // 把 storage 注册到 http 层（让拦截器能读 token）
+  // SIDE EFFECT: 把 storage 注册到 http 拦截器层（M2.3 setTokenReader 是模块级单例）
+  // 工厂每次调用都会重新注册——生产路径只调用一次（module-level authService 单例），
+  // 测试路径靠 beforeEach 重置 mock storage 才能保持隔离。
+  // 未来若需要多实例隔离，把 setTokenReader 调用提到工厂外，由 app/main.ts 显式执行。
   setTokenReader({
     getAccessToken: () => storage.getAccessToken(),
   })

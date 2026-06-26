@@ -32,7 +32,7 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitForm(ruleFormRef)"
+            <el-button type="primary" :loading="submitting" @click="submitForm(ruleFormRef)"
               >登录</el-button
             >
           </el-form-item>
