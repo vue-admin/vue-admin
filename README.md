@@ -1,12 +1,31 @@
-# vue-admin
+# Vue Admin
 
-## 技术栈
+> Vue 3 + Element Plus 企业级后台管理前端基座
 
-vue3 + vite + typescript + element-plus + pinia + vue-router + axios
+## 特性
 
-## DEMO
+- 🏗️ 四层架构（lib / app / modules / shared）+ ESLint 边界强制
+- 🔒 RBAC 权限系统：`v-permission` 指令 + 4 步路由守卫 + 超级管理员短路
+- 🌐 RFC 7807 错误契约（ProblemDetail）+ 全局 ElMessage 提示
+- 🔑 JWT 认证：`authService` 单例 + 并发刷新保护 + 可插拔 `TokenStorage`
+- 🎨 Element Plus 2.5 + 暗黑模式 + 完整图标自动注册
+- 🧪 Vitest + jsdom + @vue/test-utils
 
-[http://demo.cncf.vip/vue-admin/](http://demo.cncf.vip/vue-admin/)
+## 快速开始
+
+```bash
+pnpm i
+pnpm dev          # 启动开发服务器（含 vite-plugin-mock）
+```
+
+浏览器打开 http://localhost:5173/
+
+## Mock 账号
+
+| 用户名 | 密码 | 角色 | 权限 |
+|---|---|---|---|
+| admin | 123456 | super_admin | 全部（`*`） |
+| user | 123456 | user | `user:read` |
 
 ## 界面
 
@@ -18,26 +37,56 @@ vue3 + vite + typescript + element-plus + pinia + vue-router + axios
 
 ![暗模式](docs/images/vue-admin-dark.png)
 
-## 使用
+## 常用命令
 
-### 安装依赖
-
-```sh
-pnpm i
+```bash
+pnpm i              # 安装
+pnpm dev            # 启动开发服务器
+pnpm build          # 构建（含 type-check）
+pnpm build-only     # 仅构建（不 type-check）
+pnpm type-check     # vue-tsc 类型检查
+pnpm lint           # ESLint flat config 检查
+pnpm lint:fix       # ESLint 自动修复
+pnpm test           # Vitest 单次运行
+pnpm test:watch     # Vitest watch 模式
+pnpm preview        # 预览生产构建
 ```
 
-### 启动 dev
+## 架构
 
-```sh
-pnpm dev
+四层目录，单向依赖：
+
+```
+modules ──→ app ──→ lib
+              ▲
+shared  ──────┘
 ```
 
-### 浏览器打开
+- `src/lib/`：基础设施（http / auth / router / error / monitor），与业务无关
+- `src/app/`：应用骨架（main.ts、stores、directives）
+- `src/modules/`：业务领域（按 domain 聚合，如 auth/system）
+- `src/shared/`：跨模块共享类型与常量
 
-http://localhost:5173/
+详见 [docs/standards/01-ARCHITECTURE.md](./docs/standards/01-ARCHITECTURE.md)。
 
-### 构建
+## 文档
 
-```sh
-pnpm build
-```
+- [项目定位](./docs/standards/00-OVERVIEW.md)
+- [架构规范](./docs/standards/01-ARCHITECTURE.md)
+- [HTTP 客户端规范](./docs/standards/02-API.md)
+- [状态管理规范](./docs/standards/03-STATE.md)
+- [命名规范](./docs/standards/04-NAMING.md)
+- [基础模块设计 spec](./docs/superpowers/specs/2026-06-25-foundation-design.md)
+- [实施计划](./docs/superpowers/plans/2026-06-25-foundation-implementation.md)
+
+## 技术栈
+
+Vue 3.4 + Vite 4.5 + TypeScript 4.8 + Element Plus 2.5 + Pinia 2.1 + Vue Router 4.3 + Axios + Vitest 1.6 + ESLint 9
+
+## DEMO
+
+[http://demo.cncf.vip/vue-admin/](http://demo.cncf.vip/vue-admin/)
+
+## License
+
+MIT
