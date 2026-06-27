@@ -17,7 +17,7 @@
 | 文档语言 | 仅中文 |
 | License | MIT |
 | 作者署名 | 如水 <rushui@qq.com> |
-| GitHub owner | rushui/vue-admin |
+| GitHub owner | vue-admin/vue-admin |
 | CI 矩阵 | lint + type-check + test + build（4 件套） |
 | Coverage | Codecov 上报（首发不卡阈值） |
 | CHANGELOG 工具 | git-cliff（GitHub Action `orhun/git-cliff-action`） |
@@ -184,13 +184,13 @@ pnpm exec commitlint --edit "$1"
   "type": "module",
   "license": "MIT",
   "author": "如水 <rushui@qq.com>",
-  "homepage": "https://github.com/rushui/vue-admin",
+  "homepage": "https://github.com/vue-admin/vue-admin",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rushui/vue-admin.git"
+    "url": "git+https://github.com/vue-admin/vue-admin.git"
   },
   "bugs": {
-    "url": "https://github.com/rushui/vue-admin/issues",
+    "url": "https://github.com/vue-admin/vue-admin/issues",
     "email": "rushui@qq.com"
   },
   "keywords": [
@@ -282,7 +282,7 @@ pnpm exec commitlint --edit "$1"
 blank_issues_enabled: false
 contact_links:
   - name: 💬 提问与讨论
-    url: https://github.com/rushui/vue-admin/discussions
+    url: https://github.com/vue-admin/vue-admin/discussions
     about: 使用问题请到 Discussions 讨论
 ```
 

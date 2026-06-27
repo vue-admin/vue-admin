@@ -5,7 +5,7 @@
 ## 1. 快速开始
 
 ```bash
-git clone https://github.com/rushui/vue-admin.git
+git clone https://github.com/vue-admin/vue-admin.git
 cd vue-admin
 pnpm install
 pnpm dev          # 启动开发服务器（含 vite-plugin-mock）
@@ -83,7 +83,7 @@ PR 必须全部通过：
 
 - Bug 报告：使用 Bug Report 模板
 - 功能请求：使用 Feature Request 模板
-- 使用问题：到 [Discussions](https://github.com/rushui/vue-admin/discussions) 讨论
+- 使用问题：到 [Discussions](https://github.com/vue-admin/vue-admin/discussions) 讨论
 
 ## 9. 行为准则
 
@@ -92,5 +92,5 @@ PR 必须全部通过：
 ## 10. 联系方式
 
 - 安全问题：rushui@qq.com（参见 [SECURITY.md](./SECURITY.md)）
-- 一般讨论：[GitHub Discussions](https://github.com/rushui/vue-admin/discussions)
-- Bug 报告：[GitHub Issues](https://github.com/rushui/vue-admin/issues)
+- 一般讨论：[GitHub Discussions](https://github.com/vue-admin/vue-admin/discussions)
+- Bug 报告：[GitHub Issues](https://github.com/vue-admin/vue-admin/issues)

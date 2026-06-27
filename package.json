@@ -4,13 +4,13 @@
   "type": "module",
   "license": "MIT",
   "author": "如水 <rushui@qq.com>",
-  "homepage": "https://github.com/rushui/vue-admin",
+  "homepage": "https://github.com/vue-admin/vue-admin",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rushui/vue-admin.git"
+    "url": "git+https://github.com/vue-admin/vue-admin.git"
   },
   "bugs": {
-    "url": "https://github.com/rushui/vue-admin/issues",
+    "url": "https://github.com/vue-admin/vue-admin/issues",
     "email": "rushui@qq.com"
   },
   "keywords": [
