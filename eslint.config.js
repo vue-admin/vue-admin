@@ -10,7 +10,7 @@ import globals from 'globals'
 export default [
   // 全局忽略：产物、依赖、文档、mock（mock 为 M5.3 MSW 迁移前的过渡）
   {
-    ignores: ['dist/**', 'node_modules/**', 'docs/**', 'src/mock/**'],
+    ignores: ['dist/**', 'node_modules/**', 'docs/**', 'src/mock/**', 'coverage/**'],
   },
   js.configs.recommended,
   ...vue.configs['flat/recommended'],
