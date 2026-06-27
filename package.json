@@ -1,8 +1,36 @@
 {
   "name": "vue-admin",
-  "version": "0.0.1",
-  "private": true,
+  "version": "0.1.0",
   "type": "module",
+  "license": "MIT",
+  "author": "如水 <rushui@qq.com>",
+  "homepage": "https://github.com/rushui/vue-admin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rushui/vue-admin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rushui/vue-admin/issues",
+    "email": "rushui@qq.com"
+  },
+  "keywords": [
+    "vue3",
+    "vite",
+    "typescript",
+    "element-plus",
+    "admin",
+    "admin-dashboard",
+    "rbac",
+    "starter",
+    "boilerplate",
+    "pinia",
+    "vue-router"
+  ],
+  "engines": {
+    "node": ">=22.0.0 <23.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check build-only",
