@@ -372,12 +372,6 @@ const quickActions = ref<QuickAction[]>([
     path: '/crud/list'
   },
   {
-    icon: 'Setting',
-    label: '系统配置',
-    color: '#e6a23c',
-    path: '/system/config'
-  },
-  {
     icon: 'Avatar',
     label: '管理员',
     color: '#f56c6c',

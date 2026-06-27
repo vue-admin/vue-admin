@@ -72,38 +72,6 @@ const menus: RouteRecordRaw[] = [
     ]
   },
   {
-    path: '/multi',
-    name: 'multi',
-    component: () => import('@/modules/multi/views/Level1.vue'),
-    meta: {
-      title: '多级菜单',
-      icon: 'ForkSpoon',
-      showMenu: true
-    },
-    children: [
-      {
-        path: '/multi/two',
-        name: 'multiLevel2',
-        component: () => import('@/modules/multi/views/Level2.vue'),
-        meta: {
-          title: '二级菜单',
-          showMenu: true
-        },
-        children: [
-          {
-            path: '/multi/two/list',
-            name: 'multiLevel3',
-            component: () => import('@/modules/multi/views/Level3.vue'),
-            meta: {
-              title: '三级菜单',
-              showMenu: true
-            }
-          }
-        ]
-      }
-    ]
-  },
-  {
     path: '/system',
     name: 'system',
     meta: {
@@ -149,16 +117,6 @@ const menus: RouteRecordRaw[] = [
         meta: {
           title: '字典管理',
           icon: 'DataBoard',
-          showMenu: true
-        }
-      },
-      {
-        path: '/system/config',
-        name: 'systemConfig',
-        component: () => import('@/modules/system/views/config/Config.vue'),
-        meta: {
-          title: '系统配置',
-          icon: 'Setting',
           showMenu: true
         }
       },
