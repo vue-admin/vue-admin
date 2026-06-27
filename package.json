@@ -54,6 +54,8 @@
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19",
+    "@commitlint/config-conventional": "^19",
     "@eslint/js": "^9",
     "@types/node": "^18.19.17",
     "@types/nprogress": "^0.2.3",
