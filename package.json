@@ -44,7 +44,9 @@
     "prepare": "husky",
     "changelog": "git-cliff -o CHANGELOG.md --unreleased",
     "changelog:latest": "git-cliff -o CHANGELOG.md latest",
-    "release:dry": "git-cliff --unreleased --strip header"
+    "release:dry": "git-cliff --unreleased --strip header",
+    "smoke": "playwright test",
+    "smoke:ui": "playwright test --ui"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
@@ -60,6 +62,7 @@
     "@commitlint/cli": "^19",
     "@commitlint/config-conventional": "^19",
     "@eslint/js": "^9",
+    "@playwright/test": "^1.48",
     "@types/node": "^22.20.0",
     "@types/nprogress": "^0.2.3",
     "@typescript-eslint/eslint-plugin": "^8",

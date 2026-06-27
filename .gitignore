@@ -31,3 +31,6 @@ auto-imports.d.ts
 components.d.ts
 
 .playwright-mcp/
+test-results/
+playwright-report/
+playwright/.cache/
