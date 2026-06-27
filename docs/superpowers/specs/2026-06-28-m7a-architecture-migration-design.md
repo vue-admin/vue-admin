@@ -34,15 +34,17 @@ src/lib/http/client  ← 新 HTTP 客户端（仅 router guard 在用）
 
 ### 3.1 API 层迁移
 
+> 模块标准化决策：原 `user` 模块合并入 `system/user`（详见 §3.4）。下表已按新归属排列。
+
 | 旧路径 | 新路径 | 引用处 |
 |---|---|---|
-| `src/apis/user/index.ts` | `src/modules/user/api.ts` | `modules/user/views/List.vue` |
-| `src/apis/user/info.ts` | 合并入 `src/modules/user/api.ts` | 检查实际引用 |
+| `src/apis/user/index.ts` | `src/modules/system/user/api.ts` | `modules/system/user/views/List.vue` |
+| `src/apis/user/info.ts` | 合并入 `src/modules/system/user/api.ts` | 检查实际引用 |
 | `src/apis/user/login.ts` | 合并入 `src/modules/auth/api.ts`（仅保留必要部分） | 检查实际引用 |
-| `src/apis/admin/index.ts` | `src/modules/system/api/admin.ts` | `modules/system/views/admin/List.vue` |
-| `src/apis/role/index.ts` | `src/modules/system/api/role.ts` | `modules/system/views/role/List.vue` |
-| `src/apis/permission/index.ts` | `src/modules/system/api/permission.ts` | `modules/system/views/permission/List.vue` |
-| `src/apis/dict/index.ts` | `src/modules/system/api/dict.ts` | `modules/system/views/dict/hooks/useDictTree.ts`、`modules/crud/views/Detail.vue` |
+| `src/apis/admin/index.ts` | `src/modules/system/admin/api.ts` | `modules/system/admin/views/List.vue` |
+| `src/apis/role/index.ts` | `src/modules/system/role/api.ts` | `modules/system/role/views/List.vue` |
+| `src/apis/permission/index.ts` | `src/modules/system/permission/api.ts` | `modules/system/permission/views/List.vue` |
+| `src/apis/dict/index.ts` | `src/modules/system/dict/api.ts` | `modules/system/dict/hooks/useDictTree.ts`、`modules/crud/views/Detail.vue` |
 | `src/apis/crud/index.ts` | `src/modules/crud/api.ts` | `modules/crud/views/Index.vue`、`Detail.vue` |
 | `src/apis/client/service.ts` | **删除**（业务统一用 `@/lib/http/client` 的 `http` / `api`） | 旧 api 内部用 |
 
@@ -53,7 +55,7 @@ src/lib/http/client  ← 新 HTTP 客户端（仅 router guard 在用）
 | `src/stores/user.ts` | 合并入 `src/app/stores/user.ts` | 全局用户状态，已存在新版 |
 | `src/stores/collapse.ts` | `src/app/stores/sidebar.ts` | UI 全局状态 |
 | `src/stores/dark.ts` | `src/app/stores/theme.ts` | UI 全局状态 |
-| `src/stores/tagsView.ts` | `src/app/stores/tagsView.ts` | UI 全局状态 |
+| `src/stores/tagsView.ts` | `src/app/stores/tagsView.ts`（迁移时在 `ContextMenu.vue` 补「关闭当前」菜单项，闭环 5 项操作：刷新/关闭当前/关闭右侧/关闭其他/关闭全部） | UI 全局状态 |
 | `src/stores/storage.ts` | `src/lib/storage/index.ts`（若纯工具）或 `src/app/stores/storage.ts` | 看实现性质 |
 | `src/stores/counter.ts` | **删除** | Vue 脚手架示例，无引用 |
 
@@ -62,8 +64,50 @@ src/lib/http/client  ← 新 HTTP 客户端（仅 router guard 在用）
 | 旧位置 | 新位置 | 理由 |
 |---|---|---|
 | `src/components/icons/IconLogo.vue` | `src/layout/components/Sidebar/IconLogo.vue` | 仅 Sidebar 引用 |
-| `src/app/views/NotFound.vue` | `src/modules/about/views/NotFound.vue` 或保留 | 看路由配置决定 |
+| `src/app/views/NotFound.vue` | `src/modules/about/views/NotFound.vue` | 业务页面归 modules |
+| `src/utils/nprogress/index.ts` | `src/lib/nprogress/index.ts` | `utils/` 是旧脚手架路径，CLAUDE.md 标准是 `lib/` |
 | `src/apis/.DS_Store` | **删除** + `.gitignore` 加 `**/.DS_Store` | macOS 残留 |
+
+### 3.4 业务模块标准化（新增）
+
+**对照 vue-element-admin / vue-vben-admin / naive-ui-admin / soybean-admin / vue-pure-admin 5 个主流框架验证后的最终清单**：
+
+```
+src/modules/
+├── auth/             # 登录、token 管理（保留）
+├── dashboard/        # 首页/工作台（原 home，重命名；5/5 框架都用 dashboard/workbench）
+├── system/           # 系统管理（保留，子模块重组）
+│   ├── user/         # 用户（原 modules/user 合并入 system/user）
+│   ├── role/         # 角色（保留）
+│   ├── permission/   # 权限（保留）
+│   ├── menu/         # 菜单（新增；5/5 框架都有 menu 子项）
+│   └── dict/         # 字典（保留）
+├── profile/          # 个人中心（原 system/portrait 提到顶层并改名）
+├── crud/             # CRUD 完整闭环示例（保留）
+├── docs/             # 文档站嵌入（保留，开源加分项）
+└── about/            # 关于（保留，404 也归此）
+```
+
+**操作清单**：
+
+| 操作 | 旧位置 | 新位置 |
+|---|---|---|
+| 重命名 | `modules/home/` | `modules/dashboard/` |
+| 合并 | `modules/user/` | `modules/system/user/` |
+| 提升+改名 | `modules/system/views/portrait/` | `modules/profile/views/` |
+| 新增 | —— | `modules/system/menu/`（含 views/List.vue + api.ts + mock 菜单数据） |
+| 删除 | `modules/multi/` | ——（参考框架不做"为演示而演示"的多级菜单） |
+| 删除 | `modules/system/views/config/` | ——（空壳，主流框架无对应概念） |
+
+**菜单路由同步更新**（`src/router/menus.ts`）：
+- `/` 仍指向 `dashboard/views/Home.vue`（保持根路径）
+- 删除 `/multi/*` 整段
+- 删除 `/system/config` 整段
+- `/system/portrait` → `/profile`，`showMenu: false` 不变
+- `/user/list` → `/system/user/list`
+- 新增 `/system/menu`
+
+**Mock 同步**（`src/mock/apis/`）：菜单接口返回结构按新模块清单调整（M4.6 已权限感知，沿用其结构）。
 
 ## 四、ESLint 强制规则
 
@@ -188,12 +232,16 @@ smoke:
 
 - [ ] 所有 `@/apis` / `@/stores` 引用清零（grep 验证）
 - [ ] `src/apis/` 与 `src/stores/` 目录删除
+- [ ] `src/utils/` 与 `src/components/icons/` 目录清空（迁移至 `lib/` 与 `layout/`）
+- [ ] 业务模块清单为 8 个（auth/dashboard/system/profile/crud/docs/about + system 含 5 子项）
+- [ ] `modules/multi/` `modules/system/views/config/` 删除
+- [ ] TagsView 右键菜单 5 项完整（含「关闭当前」）
 - [ ] ESLint `no-restricted-imports` 规则生效
 - [ ] 3 个 smoke test 本地全绿
 - [ ] CI smoke job 在 GitHub Actions 上跑通
 - [ ] lint / type-check / test 51+ / build 全绿
 - [ ] 手动浏览器冒烟：登录 / 跳转 / 列表加载 / 暗黑切换 / 退出登录 全部通过
-- [ ] 文档同步：`CLAUDE.md`、`docs/standards/01-ARCHITECTURE.md`、`README.md` 反映迁移后路径
+- [ ] 文档同步：`CLAUDE.md`、`docs/standards/01-ARCHITECTURE.md`、`README.md` 反映迁移后路径与模块清单
 
 ## 八、不做的事（YAGNI）
 
