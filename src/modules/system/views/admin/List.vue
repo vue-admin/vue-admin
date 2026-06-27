@@ -1,6 +1,9 @@
 <template>
   <!-- 搜索和工具栏区域 -->
-  <el-card shadow="never" class="search-card">
+  <el-card
+    shadow="never"
+    class="search-card"
+  >
     <div class="search-toolbar">
       <!-- 搜索区域 -->
       <div class="search-area">
@@ -22,8 +25,14 @@
           style="width: 100px"
           @clear="handleSearch"
         >
-          <el-option label="超级管理员" value="super" />
-          <el-option label="普通管理员" value="admin" />
+          <el-option
+            label="超级管理员"
+            value="super"
+          />
+          <el-option
+            label="普通管理员"
+            value="admin"
+          />
         </el-select>
         <el-select
           v-model="searchForm.status"
@@ -32,16 +41,37 @@
           style="width: 100px"
           @clear="handleSearch"
         >
-          <el-option label="启用" value="active" />
-          <el-option label="禁用" value="inactive" />
+          <el-option
+            label="启用"
+            value="active"
+          />
+          <el-option
+            label="禁用"
+            value="inactive"
+          />
         </el-select>
-        <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
-        <el-button :icon="Refresh" @click="handleReset">重置</el-button>
+        <el-button
+          type="primary"
+          :icon="Search"
+          @click="handleSearch"
+        >
+          搜索
+        </el-button>
+        <el-button
+          :icon="Refresh"
+          @click="handleReset"
+        >
+          重置
+        </el-button>
       </div>
 
       <!-- 操作按钮栏 -->
       <div class="action-buttons">
-        <el-button type="primary" :icon="Plus" @click="openDrawer('add')">
+        <el-button
+          type="primary"
+          :icon="Plus"
+          @click="openDrawer('add')"
+        >
           新增管理员
         </el-button>
         <el-button
@@ -52,9 +82,22 @@
         >
           批量删除
         </el-button>
-        <el-button :icon="Download" @click="handleExport">导出</el-button>
-        <el-button :icon="RefreshRight" @click="getTableData">刷新</el-button>
-        <el-text class="selected-info" v-if="selectedRows.length > 0">
+        <el-button
+          :icon="Download"
+          @click="handleExport"
+        >
+          导出
+        </el-button>
+        <el-button
+          :icon="RefreshRight"
+          @click="getTableData"
+        >
+          刷新
+        </el-button>
+        <el-text
+          v-if="selectedRows.length > 0"
+          class="selected-info"
+        >
           已选择 {{ selectedRows.length }} 项
         </el-text>
       </div>
@@ -62,7 +105,10 @@
   </el-card>
 
   <!-- 表格 -->
-  <el-card shadow="never" class="table-card">
+  <el-card
+    shadow="never"
+    class="table-card"
+  >
     <el-table
       :data="tableData"
       header-cell-class-name="table-header"
@@ -73,12 +119,39 @@
       :loading="tableLoading"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55" />
-      <el-table-column prop="username" label="用户名" min-width="120" show-overflow-tooltip />
-      <el-table-column prop="realName" label="姓名" min-width="100" show-overflow-tooltip />
-      <el-table-column prop="email" label="邮箱" min-width="180" show-overflow-tooltip />
-      <el-table-column prop="phone" label="电话" min-width="130" show-overflow-tooltip />
-      <el-table-column prop="role" label="角色" min-width="100">
+      <el-table-column
+        type="selection"
+        width="55"
+      />
+      <el-table-column
+        prop="username"
+        label="用户名"
+        min-width="120"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="realName"
+        label="姓名"
+        min-width="100"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="email"
+        label="邮箱"
+        min-width="180"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="phone"
+        label="电话"
+        min-width="130"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="role"
+        label="角色"
+        min-width="100"
+      >
         <template #default="scope">
           <el-tag
             :type="getRoleType(scope.row.role)"
@@ -88,7 +161,11 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="状态" min-width="100">
+      <el-table-column
+        prop="status"
+        label="状态"
+        min-width="100"
+      >
         <template #default="scope">
           <el-tag
             :type="scope.row.status === 'active' ? 'success' : 'danger'"
@@ -98,39 +175,54 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" min-width="180">
+      <el-table-column
+        prop="createTime"
+        label="创建时间"
+        min-width="180"
+      >
         <template #default="scope">
           {{ formatDate(scope.row.createTime) }}
         </template>
       </el-table-column>
-      <el-table-column prop="lastLoginTime" label="最后登录" min-width="180">
+      <el-table-column
+        prop="lastLoginTime"
+        label="最后登录"
+        min-width="180"
+      >
         <template #default="scope">
           {{ formatDate(scope.row.lastLoginTime) }}
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="180" fixed="right">
+      <el-table-column
+        label="操作"
+        min-width="180"
+        fixed="right"
+      >
         <template #default="scope">
           <el-button
             link
             type="primary"
             size="small"
             @click="handleView(scope.row)"
-            >查看</el-button
           >
+            查看
+          </el-button>
           <el-button
             link
             type="primary"
             size="small"
             @click="handleEdit(scope.row)"
-            >编辑</el-button
           >
+            编辑
+          </el-button>
           <el-button
             link
             type="danger"
             size="small"
             @click="handleDelete(scope.row.id)"
-            >删除</el-button
           >
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -166,161 +258,158 @@
     >
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item label="用户名" prop="username">
-            <el-input v-model="adminForm.username" placeholder="请输入用户名" />
+          <el-form-item
+            label="用户名"
+            prop="username"
+          >
+            <el-input
+              v-model="adminForm.username"
+              placeholder="请输入用户名"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="姓名" prop="realName">
-            <el-input v-model="adminForm.realName" placeholder="请输入姓名" />
+          <el-form-item
+            label="姓名"
+            prop="realName"
+          >
+            <el-input
+              v-model="adminForm.realName"
+              placeholder="请输入姓名"
+            />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model="adminForm.email" placeholder="请输入邮箱" type="email" />
+          <el-form-item
+            label="邮箱"
+            prop="email"
+          >
+            <el-input
+              v-model="adminForm.email"
+              placeholder="请输入邮箱"
+              type="email"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="电话" prop="phone">
-            <el-input v-model="adminForm.phone" placeholder="请输入电话" />
+          <el-form-item
+            label="电话"
+            prop="phone"
+          >
+            <el-input
+              v-model="adminForm.phone"
+              placeholder="请输入电话"
+            />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item label="角色" prop="role">
-            <el-select v-model="adminForm.role" placeholder="请选择角色">
-              <el-option label="超级管理员" value="super" />
-              <el-option label="普通管理员" value="admin" />
+          <el-form-item
+            label="角色"
+            prop="role"
+          >
+            <el-select
+              v-model="adminForm.role"
+              placeholder="请选择角色"
+            >
+              <el-option
+                label="超级管理员"
+                value="super"
+              />
+              <el-option
+                label="普通管理员"
+                value="admin"
+              />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="状态" prop="status">
-            <el-select v-model="adminForm.status" placeholder="请选择状态">
-              <el-option label="启用" value="active" />
-              <el-option label="禁用" value="inactive" />
+          <el-form-item
+            label="状态"
+            prop="status"
+          >
+            <el-select
+              v-model="adminForm.status"
+              placeholder="请选择状态"
+            >
+              <el-option
+                label="启用"
+                value="active"
+              />
+              <el-option
+                label="禁用"
+                value="inactive"
+              />
             </el-select>
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row :gutter="20" v-if="drawerMode === 'add' || (drawerMode === 'edit' && showPassword)">
+      <el-row
+        v-if="drawerMode === 'add' || (drawerMode === 'edit' && showPassword)"
+        :gutter="20"
+      >
         <el-col :span="12">
-          <el-form-item label="密码" prop="password">
-            <el-input v-model="adminForm.password" placeholder="请输入密码" type="password" show-password />
+          <el-form-item
+            label="密码"
+            prop="password"
+          >
+            <el-input
+              v-model="adminForm.password"
+              placeholder="请输入密码"
+              type="password"
+              show-password
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="确认密码" prop="confirmPassword">
-            <el-input v-model="adminForm.confirmPassword" placeholder="请确认密码" type="password" show-password />
+          <el-form-item
+            label="确认密码"
+            prop="confirmPassword"
+          >
+            <el-input
+              v-model="adminForm.confirmPassword"
+              placeholder="请确认密码"
+              type="password"
+              show-password
+            />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row v-if="drawerMode === 'edit'">
         <el-col :span="24">
           <el-form-item>
-            <el-checkbox v-model="showPassword">修改密码</el-checkbox>
+            <el-checkbox v-model="showPassword">
+              修改密码
+            </el-checkbox>
           </el-form-item>
         </el-col>
       </el-row>
 
       <el-form-item v-if="drawerMode !== 'view'">
-        <el-button type="primary" @click="handleFormSubmit">
+        <el-button
+          type="primary"
+          @click="handleFormSubmit"
+        >
           {{ drawerMode === 'add' ? '创建' : '保存' }}
         </el-button>
-        <el-button @click="drawerVisible = false">取消</el-button>
+        <el-button @click="drawerVisible = false">
+          取消
+        </el-button>
       </el-form-item>
       <el-form-item v-if="drawerMode === 'view'">
-        <el-button @click="drawerVisible = false">关闭</el-button>
+        <el-button @click="drawerVisible = false">
+          关闭
+        </el-button>
       </el-form-item>
     </el-form>
   </el-drawer>
 </template>
 
-<style scoped>
-.search-card {
-  margin-bottom: 16px;
-}
-
-.search-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.search-area {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.action-buttons {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.search-area .el-input,
-.search-area .el-select {
-  flex-shrink: 0;
-}
-
-.selected-info {
-  color: var(--el-color-primary);
-  font-weight: 500;
-}
-
-.table-card {
-  margin-bottom: 16px;
-}
-
-.pagination-wrapper {
-  display: flex;
-  justify-content: flex-end;
-  padding-top: 16px;
-  border-top: 1px solid var(--el-border-color-lighter);
-}
-
-.table-header {
-  background-color: #f5f7fa !important;
-  font-weight: 600;
-}
-
-/* 响应式布局 */
-@media (max-width: 768px) {
-  .search-toolbar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-area {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-area .el-input,
-  .search-area .el-select {
-    width: 100% !important;
-  }
-
-  .action-buttons {
-    justify-content: space-between;
-  }
-
-  .pagination-wrapper {
-    justify-content: center;
-  }
-}
-</style>
-
 <script lang="ts" setup>
-import { ref, onMounted, reactive, computed } from 'vue'
+import { ref, onMounted, reactive } from 'vue'
 import {
   Search,
   Refresh,
@@ -335,8 +424,6 @@ import {
   fetchAdminList,
   deleteAdmin,
   batchDeleteAdmins,
-  exportAdmins,
-  fetchAdminDetail,
   createAdmin,
   updateAdmin,
   type AdminInfo,
@@ -367,6 +454,7 @@ const totalCount = ref(0)
 const drawerVisible = ref(false)
 const drawerMode = ref<'add' | 'edit' | 'view'>('add')
 const showPassword = ref(false)
+const adminFormRef = ref<FormInstance>()
 
 // 管理员表单数据
 const adminForm = reactive<AdminCreateRequest & { confirmPassword?: string }>({
@@ -591,19 +679,18 @@ const handleExport = () => {
   ElMessage.info('导出功能开发中...')
 }
 
-// 表单操作成功回调
-const handleFormSuccess = () => {
+// TODO: M5+ 抽屉表单组件接入后挂到 emit success
+const _handleFormSuccess = () => {
   drawerVisible.value = false
   getTableData()
 }
 
 // 表单提交
 const handleFormSubmit = async () => {
-  const formRef = (window as any).adminFormRef
-  if (!formRef) return
+  if (!adminFormRef.value) return
 
   try {
-    await formRef.validate()
+    await adminFormRef.value.validate()
 
     if (drawerMode.value === 'add') {
       await createAdmin(adminForm)
@@ -626,3 +713,83 @@ const handleFormSubmit = async () => {
   }
 }
 </script>
+
+<style scoped>
+.search-card {
+  margin-bottom: 16px;
+}
+
+.search-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.search-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.search-area .el-input,
+.search-area .el-select {
+  flex-shrink: 0;
+}
+
+.selected-info {
+  color: var(--el-color-primary);
+  font-weight: 500;
+}
+
+.table-card {
+  margin-bottom: 16px;
+}
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px solid var(--el-border-color-lighter);
+}
+
+.table-header {
+  background-color: #f5f7fa !important;
+  font-weight: 600;
+}
+
+/* 响应式布局 */
+@media (max-width: 768px) {
+  .search-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-area {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-area .el-input,
+  .search-area .el-select {
+    width: 100% !important;
+  }
+
+  .action-buttons {
+    justify-content: space-between;
+  }
+
+  .pagination-wrapper {
+    justify-content: center;
+  }
+}
+</style>

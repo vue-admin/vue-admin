@@ -1,6 +1,9 @@
 <template>
   <!-- 搜索和工具栏区域 -->
-  <el-card shadow="never" class="search-card">
+  <el-card
+    shadow="never"
+    class="search-card"
+  >
     <div class="search-toolbar">
       <!-- 搜索区域 -->
       <div class="search-area">
@@ -22,16 +25,37 @@
           style="width: 100px"
           @clear="handleSearch"
         >
-          <el-option label="启用" value="active" />
-          <el-option label="禁用" value="inactive" />
+          <el-option
+            label="启用"
+            value="active"
+          />
+          <el-option
+            label="禁用"
+            value="inactive"
+          />
         </el-select>
-        <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
-        <el-button :icon="Refresh" @click="handleReset">重置</el-button>
+        <el-button
+          type="primary"
+          :icon="Search"
+          @click="handleSearch"
+        >
+          搜索
+        </el-button>
+        <el-button
+          :icon="Refresh"
+          @click="handleReset"
+        >
+          重置
+        </el-button>
       </div>
 
       <!-- 操作按钮栏 -->
       <div class="action-buttons">
-        <el-button type="primary" :icon="Plus" @click="openDrawer('add')">
+        <el-button
+          type="primary"
+          :icon="Plus"
+          @click="openDrawer('add')"
+        >
           新增角色
         </el-button>
         <el-button
@@ -42,9 +66,22 @@
         >
           批量删除
         </el-button>
-        <el-button :icon="Download" @click="handleExport">导出</el-button>
-        <el-button :icon="RefreshRight" @click="getTableData">刷新</el-button>
-        <el-text class="selected-info" v-if="selectedRows.length > 0">
+        <el-button
+          :icon="Download"
+          @click="handleExport"
+        >
+          导出
+        </el-button>
+        <el-button
+          :icon="RefreshRight"
+          @click="getTableData"
+        >
+          刷新
+        </el-button>
+        <el-text
+          v-if="selectedRows.length > 0"
+          class="selected-info"
+        >
           已选择 {{ selectedRows.length }} 项
         </el-text>
       </div>
@@ -52,7 +89,10 @@
   </el-card>
 
   <!-- 表格 -->
-  <el-card shadow="never" class="table-card">
+  <el-card
+    shadow="never"
+    class="table-card"
+  >
     <el-table
       :data="tableData"
       header-cell-class-name="table-header"
@@ -63,11 +103,33 @@
       :loading="tableLoading"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55" />
-      <el-table-column prop="name" label="角色名称" min-width="120" show-overflow-tooltip />
-      <el-table-column prop="code" label="角色代码" min-width="120" show-overflow-tooltip />
-      <el-table-column prop="description" label="描述" min-width="200" show-overflow-tooltip />
-      <el-table-column prop="status" label="状态" min-width="100">
+      <el-table-column
+        type="selection"
+        width="55"
+      />
+      <el-table-column
+        prop="name"
+        label="角色名称"
+        min-width="120"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="code"
+        label="角色代码"
+        min-width="120"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="description"
+        label="描述"
+        min-width="200"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="status"
+        label="状态"
+        min-width="100"
+      >
         <template #default="scope">
           <el-tag
             :type="scope.row.status === 'active' ? 'success' : 'danger'"
@@ -77,46 +139,62 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" min-width="180">
+      <el-table-column
+        prop="createTime"
+        label="创建时间"
+        min-width="180"
+      >
         <template #default="scope">
           {{ formatDate(scope.row.createTime) }}
         </template>
       </el-table-column>
-      <el-table-column prop="updateTime" label="更新时间" min-width="180">
+      <el-table-column
+        prop="updateTime"
+        label="更新时间"
+        min-width="180"
+      >
         <template #default="scope">
           {{ formatDate(scope.row.updateTime) }}
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="180" fixed="right">
+      <el-table-column
+        label="操作"
+        min-width="180"
+        fixed="right"
+      >
         <template #default="scope">
           <el-button
             link
             type="primary"
             size="small"
             @click="handleView(scope.row)"
-            >查看</el-button
           >
+            查看
+          </el-button>
           <el-button
             link
             type="primary"
             size="small"
             @click="handleEdit(scope.row)"
-            >编辑</el-button
           >
+            编辑
+          </el-button>
           <el-button
             link
             type="primary"
             size="small"
             @click="handlePermission(scope.row)"
-            >权限配置</el-button
           >
+            权限配置
+          </el-button>
           <el-button
             link
             type="danger"
             size="small"
             @click="handleDelete(scope.row.id)"
-            >删除</el-button
           >
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -152,42 +230,81 @@
     >
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item label="角色名称" prop="name">
-            <el-input v-model="roleForm.name" placeholder="请输入角色名称" />
+          <el-form-item
+            label="角色名称"
+            prop="name"
+          >
+            <el-input
+              v-model="roleForm.name"
+              placeholder="请输入角色名称"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="角色代码" prop="code">
-            <el-input v-model="roleForm.code" placeholder="请输入角色代码" />
+          <el-form-item
+            label="角色代码"
+            prop="code"
+          >
+            <el-input
+              v-model="roleForm.code"
+              placeholder="请输入角色代码"
+            />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="24">
-          <el-form-item label="描述" prop="description">
-            <el-input v-model="roleForm.description" placeholder="请输入角色描述" type="textarea" :rows="3" />
+          <el-form-item
+            label="描述"
+            prop="description"
+          >
+            <el-input
+              v-model="roleForm.description"
+              placeholder="请输入角色描述"
+              type="textarea"
+              :rows="3"
+            />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item label="状态" prop="status">
-            <el-select v-model="roleForm.status" placeholder="请选择状态">
-              <el-option label="启用" value="active" />
-              <el-option label="禁用" value="inactive" />
+          <el-form-item
+            label="状态"
+            prop="status"
+          >
+            <el-select
+              v-model="roleForm.status"
+              placeholder="请选择状态"
+            >
+              <el-option
+                label="启用"
+                value="active"
+              />
+              <el-option
+                label="禁用"
+                value="inactive"
+              />
             </el-select>
           </el-form-item>
         </el-col>
       </el-row>
 
       <el-form-item v-if="drawerMode !== 'view'">
-        <el-button type="primary" @click="handleFormSubmit">
+        <el-button
+          type="primary"
+          @click="handleFormSubmit"
+        >
           {{ drawerMode === 'add' ? '创建' : '保存' }}
         </el-button>
-        <el-button @click="drawerVisible = false">取消</el-button>
+        <el-button @click="drawerVisible = false">
+          取消
+        </el-button>
       </el-form-item>
       <el-form-item v-if="drawerMode === 'view'">
-        <el-button @click="drawerVisible = false">关闭</el-button>
+        <el-button @click="drawerVisible = false">
+          关闭
+        </el-button>
       </el-form-item>
     </el-form>
   </el-drawer>
@@ -208,115 +325,23 @@
         show-checkbox
         node-key="id"
         check-strictly
-        @check="handlePermissionCheck"
         class="permission-tree"
+        @check="handlePermissionCheck"
       />
       <div class="permission-action">
-        <el-button type="primary" @click="handlePermissionSave">保存</el-button>
-        <el-button @click="permissionDrawerVisible = false">取消</el-button>
+        <el-button
+          type="primary"
+          @click="handlePermissionSave"
+        >
+          保存
+        </el-button>
+        <el-button @click="permissionDrawerVisible = false">
+          取消
+        </el-button>
       </div>
     </div>
   </el-drawer>
 </template>
-
-<style scoped>
-.search-card {
-  margin-bottom: 16px;
-}
-
-.search-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.search-area {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.action-buttons {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.search-area .el-input,
-.search-area .el-select {
-  flex-shrink: 0;
-}
-
-.selected-info {
-  color: var(--el-color-primary);
-  font-weight: 500;
-}
-
-.table-card {
-  margin-bottom: 16px;
-}
-
-.pagination-wrapper {
-  display: flex;
-  justify-content: flex-end;
-  padding-top: 16px;
-  border-top: 1px solid var(--el-border-color-lighter);
-}
-
-.table-header {
-  background-color: #f5f7fa !important;
-  font-weight: 600;
-}
-
-/* 响应式布局 */
-@media (max-width: 768px) {
-  .search-toolbar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-area {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-area .el-input,
-  .search-area .el-select {
-    width: 100% !important;
-  }
-
-  .action-buttons {
-    justify-content: space-between;
-  }
-
-  .pagination-wrapper {
-    justify-content: center;
-  }
-}
-
-/* 权限配置 */
-.permission-config {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-
-  .permission-tree {
-    flex: 1;
-    overflow-y: auto;
-    margin-bottom: 20px;
-  }
-
-  .permission-action {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-  }
-}
-</style>
 
 <script lang="ts" setup>
 import { ref, onMounted, reactive } from 'vue'
@@ -334,8 +359,6 @@ import {
   fetchRoleList,
   deleteRole,
   batchDeleteRoles,
-  exportRoles,
-  fetchRoleDetail,
   createRole,
   updateRole,
   fetchRolePermissions,
@@ -372,9 +395,19 @@ const drawerVisible = ref(false)
 const drawerMode = ref<'add' | 'edit' | 'view'>('add')
 const permissionDrawerVisible = ref(false)
 const currentRole = ref<RoleInfo | null>(null)
+const roleFormRef = ref<FormInstance>()
 
 // 权限树数据
-const permissionTreeData = ref<{ id: string; name: string; code: string; children: any[] }[]>([])
+interface PermissionTreeNode {
+  id: string
+  name: string
+  code: string
+  description?: string
+  module?: string
+  status?: string
+  children?: PermissionTreeNode[]
+}
+const permissionTreeData = ref<PermissionTreeNode[]>([])
 const permissionTreeProps = {
   label: 'name',
   children: 'children',
@@ -479,7 +512,7 @@ const loadPermissionTreeData = async () => {
   try {
     const res = await fetchAllPermissions()
     // 将权限按模块分组
-    const moduleMap = new Map<string, any[]>()
+    const moduleMap = new Map<string, PermissionTreeNode[]>()
     res.data.forEach((permission: PermissionInfo) => {
       if (!moduleMap.has(permission.module)) {
         moduleMap.set(permission.module, [])
@@ -495,7 +528,7 @@ const loadPermissionTreeData = async () => {
     })
 
     // 构建树状数据
-    const treeData: { id: string; name: string; code: string; children: any[] }[] = []
+    const treeData: PermissionTreeNode[] = []
     for (const [module, permissions] of moduleMap.entries()) {
       treeData.push({
         id: module,
@@ -505,7 +538,7 @@ const loadPermissionTreeData = async () => {
       })
     }
 
-    permissionTreeData.value = treeData as any
+    permissionTreeData.value = treeData
   } catch (error) {
     console.error(error)
     ElMessage.error('获取权限数据失败')
@@ -525,7 +558,7 @@ const loadRolePermissions = async () => {
 }
 
 // 处理权限选择
-const handlePermissionCheck = (data: any, node: any) => {
+const handlePermissionCheck = (_data: PermissionTreeNode, node: { checkedKeys: string[] }) => {
   checkedPermissions.value = node.checkedKeys
 }
 
@@ -630,19 +663,18 @@ const handleExport = () => {
   ElMessage.info('导出功能开发中...')
 }
 
-// 表单操作成功回调
-const handleFormSuccess = () => {
+// TODO: M5+ 抽屉表单组件接入后挂到 emit success
+const _handleFormSuccess = () => {
   drawerVisible.value = false
   getTableData()
 }
 
 // 表单提交
 const handleFormSubmit = async () => {
-  const formRef = (window as any).roleFormRef
-  if (!formRef) return
+  if (!roleFormRef.value) return
 
   try {
-    await formRef.validate()
+    await roleFormRef.value.validate()
 
     if (drawerMode.value === 'add') {
       await createRole(roleForm)
@@ -659,3 +691,102 @@ const handleFormSubmit = async () => {
   }
 }
 </script>
+
+<style scoped>
+.search-card {
+  margin-bottom: 16px;
+}
+
+.search-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.search-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.search-area .el-input,
+.search-area .el-select {
+  flex-shrink: 0;
+}
+
+.selected-info {
+  color: var(--el-color-primary);
+  font-weight: 500;
+}
+
+.table-card {
+  margin-bottom: 16px;
+}
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px solid var(--el-border-color-lighter);
+}
+
+.table-header {
+  background-color: #f5f7fa !important;
+  font-weight: 600;
+}
+
+/* 响应式布局 */
+@media (max-width: 768px) {
+  .search-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-area {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-area .el-input,
+  .search-area .el-select {
+    width: 100% !important;
+  }
+
+  .action-buttons {
+    justify-content: space-between;
+  }
+
+  .pagination-wrapper {
+    justify-content: center;
+  }
+}
+
+/* 权限配置 */
+.permission-config {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .permission-tree {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+  }
+
+  .permission-action {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+}
+</style>

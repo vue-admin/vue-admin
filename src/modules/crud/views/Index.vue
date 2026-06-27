@@ -1,6 +1,9 @@
 <template>
   <!-- 搜索和工具栏区域 -->
-  <el-card shadow="never" class="search-card">
+  <el-card
+    shadow="never"
+    class="search-card"
+  >
     <div class="search-toolbar">
       <!-- 搜索区域 -->
       <div class="search-area">
@@ -22,17 +25,41 @@
           style="width: 120px"
           @clear="handleSearch"
         >
-          <el-option label="用户" value="1" />
-          <el-option label="文档" value="2" />
-          <el-option label="案例案例案例案例案例案例案例" value="3" />
+          <el-option
+            label="用户"
+            value="1"
+          />
+          <el-option
+            label="文档"
+            value="2"
+          />
+          <el-option
+            label="案例案例案例案例案例案例案例"
+            value="3"
+          />
         </el-select>
-        <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
-        <el-button :icon="Refresh" @click="handleReset">重置</el-button>
+        <el-button
+          type="primary"
+          :icon="Search"
+          @click="handleSearch"
+        >
+          搜索
+        </el-button>
+        <el-button
+          :icon="Refresh"
+          @click="handleReset"
+        >
+          重置
+        </el-button>
       </div>
 
       <!-- 操作按钮栏 -->
       <div class="action-buttons">
-        <el-button type="primary" :icon="Plus" @click="openDrawer('add')">
+        <el-button
+          type="primary"
+          :icon="Plus"
+          @click="openDrawer('add')"
+        >
           新增
         </el-button>
         <el-button
@@ -43,16 +70,32 @@
         >
           批量删除
         </el-button>
-        <el-button :icon="Download" @click="handleExport">导出</el-button>
-        <el-button :icon="RefreshRight" @click="getTableData">刷新</el-button>
-        <el-text class="selected-info" v-if="selectedRows.length > 0">
+        <el-button
+          :icon="Download"
+          @click="handleExport"
+        >
+          导出
+        </el-button>
+        <el-button
+          :icon="RefreshRight"
+          @click="getTableData"
+        >
+          刷新
+        </el-button>
+        <el-text
+          v-if="selectedRows.length > 0"
+          class="selected-info"
+        >
           已选择 {{ selectedRows.length }} 项
         </el-text>
       </div>
     </div>
   </el-card>
   <!-- 表格 -->
-  <el-card shadow="never" class="table-card">
+  <el-card
+    shadow="never"
+    class="table-card"
+  >
     <el-table
       :data="tableData"
       header-cell-class-name="table-header"
@@ -63,39 +106,72 @@
       :loading="tableLoading"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55" />
-      <el-table-column prop="name" label="姓名" min-width="150" show-overflow-tooltip />
-      <el-table-column prop="city" label="城市" min-width="120" show-overflow-tooltip />
-      <el-table-column prop="address" label="地址" min-width="300" show-overflow-tooltip />
-      <el-table-column prop="zip" label="邮编" min-width="100" />
-      <el-table-column prop="date" label="日期" min-width="180">
+      <el-table-column
+        type="selection"
+        width="55"
+      />
+      <el-table-column
+        prop="name"
+        label="姓名"
+        min-width="150"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="city"
+        label="城市"
+        min-width="120"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="address"
+        label="地址"
+        min-width="300"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="zip"
+        label="邮编"
+        min-width="100"
+      />
+      <el-table-column
+        prop="date"
+        label="日期"
+        min-width="180"
+      >
         <template #default="scope">
           {{ formatDate(scope.row.date) }}
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="180" fixed="right">
+      <el-table-column
+        label="操作"
+        min-width="180"
+        fixed="right"
+      >
         <template #default="scope">
           <el-button
             link
             type="primary"
             size="small"
             @click="handleView(scope.row.id)"
-            >查看</el-button
           >
+            查看
+          </el-button>
           <el-button
             link
             type="primary"
             size="small"
             @click="handleEdit(scope.row.id)"
-            >编辑</el-button
           >
+            编辑
+          </el-button>
           <el-button
             link
             type="danger"
             size="small"
             @click="handleDelete(scope.row.id)"
-            >删除</el-button
           >
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -122,86 +198,6 @@
     @change-mode="changeDrawerMode"
   />
 </template>
-
-<style scoped>
-.search-card {
-  margin-bottom: 16px;
-}
-
-.search-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.search-area {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.action-buttons {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.search-area .el-input,
-.search-area .el-select {
-  flex-shrink: 0;
-}
-
-.selected-info {
-  color: var(--el-color-primary);
-  font-weight: 500;
-}
-
-.table-card {
-  margin-bottom: 16px;
-}
-
-.pagination-wrapper {
-  display: flex;
-  justify-content: flex-end;
-  padding-top: 16px;
-  border-top: 1px solid var(--el-border-color-lighter);
-}
-
-.table-header {
-  background-color: #f5f7fa !important;
-  font-weight: 600;
-}
-
-/* 响应式布局 */
-@media (max-width: 768px) {
-  .search-toolbar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-area {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-area .el-input,
-  .search-area .el-select {
-    width: 100% !important;
-  }
-
-  .action-buttons {
-    justify-content: space-between;
-  }
-
-  .pagination-wrapper {
-    justify-content: center;
-  }
-}
-</style>
 
 <script lang="ts" setup>
 import {
@@ -367,3 +363,83 @@ const handleExport = () => {
   ElMessage.info('导出功能开发中...')
 }
 </script>
+
+<style scoped>
+.search-card {
+  margin-bottom: 16px;
+}
+
+.search-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.search-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.search-area .el-input,
+.search-area .el-select {
+  flex-shrink: 0;
+}
+
+.selected-info {
+  color: var(--el-color-primary);
+  font-weight: 500;
+}
+
+.table-card {
+  margin-bottom: 16px;
+}
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px solid var(--el-border-color-lighter);
+}
+
+.table-header {
+  background-color: #f5f7fa !important;
+  font-weight: 600;
+}
+
+/* 响应式布局 */
+@media (max-width: 768px) {
+  .search-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-area {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-area .el-input,
+  .search-area .el-select {
+    width: 100% !important;
+  }
+
+  .action-buttons {
+    justify-content: space-between;
+  }
+
+  .pagination-wrapper {
+    justify-content: center;
+  }
+}
+</style>

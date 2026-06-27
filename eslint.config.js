@@ -34,7 +34,7 @@ export default [
       ...tseslint.configs.recommended.rules,
       'vue/multi-word-component-names': 'off',
       '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
     },
   },
   // .ts/.tsx 文件没有 vue-eslint-parser 包装，必须显式设置顶层 parser

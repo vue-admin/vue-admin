@@ -18,6 +18,7 @@
       <MenuItem
         v-for="item in menus"
         v-show="item.meta?.['showMenu']"
+        :key="item.path"
         :data="item"
       />
     </el-menu>
@@ -45,7 +46,8 @@ const handleClose = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }
 
-const ruleForm = reactive({
+// TODO: M5+ 接入用户上下文后删除此占位
+const _ruleForm = reactive({
   userId: ''
 })
 </script>

@@ -21,9 +21,16 @@
       <Breadcrumb />
     </div>
     <div class="flex-grow" />
-    <el-menu-item index="/">首页</el-menu-item>
-    <el-menu-item index="/about"> 关于 </el-menu-item>
-    <div class="dark-icon" @click="toggleDark()">
+    <el-menu-item index="/">
+      首页
+    </el-menu-item>
+    <el-menu-item index="/about">
+      关于
+    </el-menu-item>
+    <div
+      class="dark-icon"
+      @click="toggleDark()"
+    >
       <el-icon>
         <Moon v-if="isDark" />
         <Sunny v-else />
@@ -36,8 +43,12 @@
         </el-icon>
         {{ user.name }}
       </template>
-      <el-menu-item index="/system/portrait">个人中心</el-menu-item>
-      <el-menu-item index="/login">退出</el-menu-item>
+      <el-menu-item index="/system/portrait">
+        个人中心
+      </el-menu-item>
+      <el-menu-item index="/login">
+        退出
+      </el-menu-item>
     </el-sub-menu>
   </el-menu>
 </template>

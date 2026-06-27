@@ -1,10 +1,17 @@
 <template>
-  <el-row class="login" justify="center" align="middle">
+  <el-row
+    class="login"
+    justify="center"
+    align="middle"
+  >
     <el-card class="box-card">
       <template #header>
         <div class="card-header">
           <span>用户登录</span>
-          <div class="dark-icon" @click="toggleDark()">
+          <div
+            class="dark-icon"
+            @click="toggleDark()"
+          >
             <el-icon>
               <Moon v-if="isDark" />
               <Sunny v-else />
@@ -21,10 +28,16 @@
           label-width="60px"
           class="demo-ruleForm"
         >
-          <el-form-item label="用户名" prop="username">
+          <el-form-item
+            label="用户名"
+            prop="username"
+          >
             <el-input v-model="ruleForm.username" />
           </el-form-item>
-          <el-form-item label="密码" prop="password">
+          <el-form-item
+            label="密码"
+            prop="password"
+          >
             <el-input
               v-model="ruleForm.password"
               type="password"
@@ -32,47 +45,19 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" :loading="submitting" @click="submitForm(ruleFormRef)"
-              >登录</el-button
+            <el-button
+              type="primary"
+              :loading="submitting"
+              @click="submitForm(ruleFormRef)"
             >
+              登录
+            </el-button>
           </el-form-item>
         </el-form>
       </div>
     </el-card>
   </el-row>
 </template>
-
-<style scoped>
-.login {
-  position: absolute;
-  top: 20%;
-  bottom: 60%;
-  width: 100%;
-}
-
-.box-card {
-  width: 450px;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.dark-icon {
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.text {
-  font-size: 14px;
-}
-
-.item {
-  margin-bottom: 18px;
-}
-</style>
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
@@ -130,3 +115,35 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   }
 }
 </script>
+
+<style scoped>
+.login {
+  position: absolute;
+  top: 20%;
+  bottom: 60%;
+  width: 100%;
+}
+
+.box-card {
+  width: 450px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dark-icon {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.text {
+  font-size: 14px;
+}
+
+.item {
+  margin-bottom: 18px;
+}
+</style>

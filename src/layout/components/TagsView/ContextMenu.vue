@@ -1,9 +1,17 @@
 <template>
   <ul class="context-menu-container">
-    <li @click="onRefreshClick">刷新</li>
-    <li @click="onCloseRightClick">关闭右侧</li>
-    <li @click="onCloseOtherClick">关闭其他</li>
-    <li @click="onCloseAllClick">关闭全部</li>
+    <li @click="onRefreshClick">
+      刷新
+    </li>
+    <li @click="onCloseRightClick">
+      关闭右侧
+    </li>
+    <li @click="onCloseOtherClick">
+      关闭其他
+    </li>
+    <li @click="onCloseAllClick">
+      关闭全部
+    </li>
   </ul>
 </template>
 

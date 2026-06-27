@@ -2,18 +2,21 @@
   <el-drawer
     :model-value="visible"
     :title="drawerTitle"
-    @close="close"
     :destroy-on-close="true"
+    @close="close"
   >
     <el-form
       ref="formRef"
+      v-loading="loading"
       :model="form"
       :rules="rules"
       label-width="auto"
       style="max-width: 600px"
-      v-loading="loading"
     >
-      <el-form-item label="日期" prop="date">
+      <el-form-item
+        label="日期"
+        prop="date"
+      >
         <el-date-picker
           v-model="form.date"
           type="date"
@@ -23,35 +26,76 @@
           :disabled="isView"
         />
       </el-form-item>
-      <el-form-item label="姓名" prop="name">
-        <el-input v-model="form.name" :disabled="isView" />
+      <el-form-item
+        label="姓名"
+        prop="name"
+      >
+        <el-input
+          v-model="form.name"
+          :disabled="isView"
+        />
       </el-form-item>
-      <el-form-item label="城市" prop="city">
+      <el-form-item
+        label="城市"
+        prop="city"
+      >
         <el-select
           v-model="form.city"
           placeholder="请选择城市"
           :disabled="isView"
         >
-          <el-option label="北京" value="beijing" />
-          <el-option label="上海" value="shanghai" />
+          <el-option
+            label="北京"
+            value="beijing"
+          />
+          <el-option
+            label="上海"
+            value="shanghai"
+          />
         </el-select>
       </el-form-item>
-      <el-form-item label="地址" prop="address">
-        <el-input v-model="form.address" type="textarea" :disabled="isView" />
+      <el-form-item
+        label="地址"
+        prop="address"
+      >
+        <el-input
+          v-model="form.address"
+          type="textarea"
+          :disabled="isView"
+        />
       </el-form-item>
-      <el-form-item label="邮编" prop="zip">
-        <el-input v-model.number="form.zip" :disabled="isView" />
+      <el-form-item
+        label="邮编"
+        prop="zip"
+      >
+        <el-input
+          v-model.number="form.zip"
+          :disabled="isView"
+        />
       </el-form-item>
       <el-form-item>
         <template v-if="isView">
-          <el-button type="primary" @click="switchToEdit">编辑</el-button>
-          <el-button @click="close">关闭</el-button>
+          <el-button
+            type="primary"
+            @click="switchToEdit"
+          >
+            编辑
+          </el-button>
+          <el-button @click="close">
+            关闭
+          </el-button>
         </template>
         <template v-else>
-          <el-button type="primary" @click="handleSubmit" :loading="submitting">
+          <el-button
+            type="primary"
+            :loading="submitting"
+            @click="handleSubmit"
+          >
             {{ isEdit ? '保存' : '创建' }}
           </el-button>
-          <el-button @click="close">取消</el-button>
+          <el-button @click="close">
+            取消
+          </el-button>
         </template>
       </el-form-item>
     </el-form>

@@ -1,6 +1,9 @@
 <template>
   <div class="multi-level">
-    <el-card shadow="never" class="level-card">
+    <el-card
+      shadow="never"
+      class="level-card"
+    >
       <template #header>
         <div class="card-header">
           <span>二级菜单页面</span>
@@ -26,6 +29,9 @@
     </el-card>
   </div>
 </template>
+
+<script lang="ts" setup>
+</script>
 
 <style lang="scss" scoped>
 .multi-level {
@@ -77,6 +83,3 @@
   }
 }
 </style>
-
-<script lang="ts" setup>
-</script>

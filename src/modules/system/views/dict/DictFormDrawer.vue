@@ -17,19 +17,34 @@
       <template v-if="formType === 'category'">
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="分类名称" prop="name">
-              <el-input v-model="form.name" placeholder="请输入分类名称" />
+            <el-form-item
+              label="分类名称"
+              prop="name"
+            >
+              <el-input
+                v-model="form.name"
+                placeholder="请输入分类名称"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="分类代码" prop="code">
-              <el-input v-model="form.code" placeholder="请输入分类代码" />
+            <el-form-item
+              label="分类代码"
+              prop="code"
+            >
+              <el-input
+                v-model="form.code"
+                placeholder="请输入分类代码"
+              />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="描述" prop="description">
+            <el-form-item
+              label="描述"
+              prop="description"
+            >
               <el-input
                 v-model="form.description"
                 placeholder="请输入描述"
@@ -41,10 +56,22 @@
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="状态" prop="status">
-              <el-select v-model="form.status" placeholder="请选择状态">
-                <el-option label="启用" value="active" />
-                <el-option label="禁用" value="inactive" />
+            <el-form-item
+              label="状态"
+              prop="status"
+            >
+              <el-select
+                v-model="form.status"
+                placeholder="请选择状态"
+              >
+                <el-option
+                  label="启用"
+                  value="active"
+                />
+                <el-option
+                  label="禁用"
+                  value="inactive"
+                />
               </el-select>
             </el-form-item>
           </el-col>
@@ -55,19 +82,34 @@
       <template v-else-if="formType === 'dict'">
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="字典名称" prop="name">
-              <el-input v-model="form.name" placeholder="请输入字典名称" />
+            <el-form-item
+              label="字典名称"
+              prop="name"
+            >
+              <el-input
+                v-model="form.name"
+                placeholder="请输入字典名称"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="字典代码" prop="code">
-              <el-input v-model="form.code" placeholder="请输入字典代码" />
+            <el-form-item
+              label="字典代码"
+              prop="code"
+            >
+              <el-input
+                v-model="form.code"
+                placeholder="请输入字典代码"
+              />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="描述" prop="description">
+            <el-form-item
+              label="描述"
+              prop="description"
+            >
               <el-input
                 v-model="form.description"
                 placeholder="请输入描述"
@@ -79,10 +121,22 @@
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="状态" prop="status">
-              <el-select v-model="form.status" placeholder="请选择状态">
-                <el-option label="启用" value="active" />
-                <el-option label="禁用" value="inactive" />
+            <el-form-item
+              label="状态"
+              prop="status"
+            >
+              <el-select
+                v-model="form.status"
+                placeholder="请选择状态"
+              >
+                <el-option
+                  label="启用"
+                  value="active"
+                />
+                <el-option
+                  label="禁用"
+                  value="inactive"
+                />
               </el-select>
             </el-form-item>
           </el-col>
@@ -93,34 +147,71 @@
       <template v-else>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="字典项名称" prop="name">
-              <el-input v-model="form.name" placeholder="请输入字典项名称" />
+            <el-form-item
+              label="字典项名称"
+              prop="name"
+            >
+              <el-input
+                v-model="form.name"
+                placeholder="请输入字典项名称"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="字典项代码" prop="code">
-              <el-input v-model="form.code" placeholder="请输入字典项代码" />
+            <el-form-item
+              label="字典项代码"
+              prop="code"
+            >
+              <el-input
+                v-model="form.code"
+                placeholder="请输入字典项代码"
+              />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="字典值" prop="value">
-              <el-input v-model="form.value" placeholder="请输入字典值" />
+            <el-form-item
+              label="字典值"
+              prop="value"
+            >
+              <el-input
+                v-model="form.value"
+                placeholder="请输入字典值"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="排序" prop="sort">
-              <el-input-number v-model="form.sort" :min="0" :max="999" />
+            <el-form-item
+              label="排序"
+              prop="sort"
+            >
+              <el-input-number
+                v-model="form.sort"
+                :min="0"
+                :max="999"
+              />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="状态" prop="status">
-              <el-select v-model="form.status" placeholder="请选择状态">
-                <el-option label="启用" value="active" />
-                <el-option label="禁用" value="inactive" />
+            <el-form-item
+              label="状态"
+              prop="status"
+            >
+              <el-select
+                v-model="form.status"
+                placeholder="请选择状态"
+              >
+                <el-option
+                  label="启用"
+                  value="active"
+                />
+                <el-option
+                  label="禁用"
+                  value="inactive"
+                />
               </el-select>
             </el-form-item>
           </el-col>
@@ -128,10 +219,16 @@
       </template>
 
       <el-form-item>
-        <el-button type="primary" :loading="submitting" @click="handleSubmit">
+        <el-button
+          type="primary"
+          :loading="submitting"
+          @click="handleSubmit"
+        >
           {{ mode === 'add' ? '创建' : '保存' }}
         </el-button>
-        <el-button @click="visible = false">取消</el-button>
+        <el-button @click="visible = false">
+          取消
+        </el-button>
       </el-form-item>
     </el-form>
   </el-drawer>
@@ -145,7 +242,6 @@ import type { DictFormState, DictTreeNode } from './hooks/useDictTree'
 const props = defineProps<{
   modelValue: boolean
   mode: 'add' | 'edit'
-  form: DictFormState
   /**
    * 新增模式下：父节点（level 0=虚拟根 / 1=分类 / 2=字典）
    * 编辑模式下：被编辑节点（level 1/2/3）
@@ -158,6 +254,9 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
   (e: 'submit'): void
 }>()
+
+// form 作为 model：子组件 v-model 双向绑定字段，符合 Vue 单向数据流
+const form = defineModel<DictFormState>('form', { required: true })
 
 const formRef = ref<FormInstance>()
 const submitting = ref(false)

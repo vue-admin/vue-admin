@@ -1,9 +1,18 @@
 <template>
-  <el-card shadow="never" class="tree-card">
+  <el-card
+    shadow="never"
+    class="tree-card"
+  >
     <template #header>
       <div class="card-header">
         <span>字典树</span>
-        <el-tag v-if="loading" type="info" size="small">加载中…</el-tag>
+        <el-tag
+          v-if="loading"
+          type="info"
+          size="small"
+        >
+          加载中…
+        </el-tag>
       </div>
     </template>
     <el-tree
@@ -24,19 +33,25 @@
             type="primary"
             size="small"
             class="level-tag"
-          >分类</el-tag>
+          >
+            分类
+          </el-tag>
           <el-tag
             v-else-if="data.level === 2"
             type="success"
             size="small"
             class="level-tag"
-          >字典</el-tag>
+          >
+            字典
+          </el-tag>
           <el-tag
             v-else-if="data.level === 3"
             type="warning"
             size="small"
             class="level-tag"
-          >字典项</el-tag>
+          >
+            字典项
+          </el-tag>
           <span class="node-label">{{ node.label }}</span>
         </div>
       </template>

@@ -6,7 +6,12 @@
     :sub-title="error.message"
   >
     <template #extra>
-      <el-button type="primary" @click="error = null">重试</el-button>
+      <el-button
+        type="primary"
+        @click="error = null"
+      >
+        重试
+      </el-button>
     </template>
   </el-result>
   <slot v-else />

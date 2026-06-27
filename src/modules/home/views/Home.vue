@@ -1,11 +1,16 @@
 <template>
   <div class="home">
     <!-- 欢迎区域 -->
-    <el-card shadow="never" class="welcome-card">
+    <el-card
+      shadow="never"
+      class="welcome-card"
+    >
       <template #header>
         <div class="card-header">
           <span>欢迎使用 Vue Admin 管理系统</span>
-          <el-tag type="success">v1.0.0</el-tag>
+          <el-tag type="success">
+            v1.0.0
+          </el-tag>
         </div>
       </template>
 
@@ -22,64 +27,110 @@
           </p>
         </div>
         <div class="welcome-image">
-          <el-empty description="系统首页展示" :image-size="120" />
+          <el-empty
+            description="系统首页展示"
+            :image-size="120"
+          />
         </div>
       </div>
     </el-card>
 
     <!-- 数据统计区域 -->
-    <el-row :gutter="16" class="stats-row">
-      <el-col :xs="12" :sm="6">
-        <el-card shadow="hover" class="stats-card">
+    <el-row
+      :gutter="16"
+      class="stats-row"
+    >
+      <el-col
+        :xs="12"
+        :sm="6"
+      >
+        <el-card
+          shadow="hover"
+          class="stats-card"
+        >
           <div class="stats-content">
             <div class="stats-icon user-icon">
               <el-icon><User /></el-icon>
             </div>
             <div class="stats-info">
-              <div class="stats-number">{{ userCount }}</div>
-              <div class="stats-label">总用户数</div>
+              <div class="stats-number">
+                {{ userCount }}
+              </div>
+              <div class="stats-label">
+                总用户数
+              </div>
             </div>
           </div>
         </el-card>
       </el-col>
 
-      <el-col :xs="12" :sm="6">
-        <el-card shadow="hover" class="stats-card">
+      <el-col
+        :xs="12"
+        :sm="6"
+      >
+        <el-card
+          shadow="hover"
+          class="stats-card"
+        >
           <div class="stats-content">
             <div class="stats-icon admin-icon">
               <el-icon><Avatar /></el-icon>
             </div>
             <div class="stats-info">
-              <div class="stats-number">{{ adminCount }}</div>
-              <div class="stats-label">管理员数</div>
+              <div class="stats-number">
+                {{ adminCount }}
+              </div>
+              <div class="stats-label">
+                管理员数
+              </div>
             </div>
           </div>
         </el-card>
       </el-col>
 
-      <el-col :xs="12" :sm="6">
-        <el-card shadow="hover" class="stats-card">
+      <el-col
+        :xs="12"
+        :sm="6"
+      >
+        <el-card
+          shadow="hover"
+          class="stats-card"
+        >
           <div class="stats-content">
             <div class="stats-icon order-icon">
               <el-icon><Document /></el-icon>
             </div>
             <div class="stats-info">
-              <div class="stats-number">{{ orderCount }}</div>
-              <div class="stats-label">订单数</div>
+              <div class="stats-number">
+                {{ orderCount }}
+              </div>
+              <div class="stats-label">
+                订单数
+              </div>
             </div>
           </div>
         </el-card>
       </el-col>
 
-      <el-col :xs="12" :sm="6">
-        <el-card shadow="hover" class="stats-card">
+      <el-col
+        :xs="12"
+        :sm="6"
+      >
+        <el-card
+          shadow="hover"
+          class="stats-card"
+        >
           <div class="stats-content">
             <div class="stats-icon revenue-icon">
               <el-icon><Money /></el-icon>
             </div>
             <div class="stats-info">
-              <div class="stats-number">{{ formatCurrency(revenue) }}</div>
-              <div class="stats-label">总营收</div>
+              <div class="stats-number">
+                {{ formatCurrency(revenue) }}
+              </div>
+              <div class="stats-label">
+                总营收
+              </div>
             </div>
           </div>
         </el-card>
@@ -87,48 +138,97 @@
     </el-row>
 
     <!-- 图表区域 -->
-    <el-row :gutter="16" class="charts-row">
-      <el-col :xs="24" :md="12">
-        <el-card shadow="hover" class="chart-card">
+    <el-row
+      :gutter="16"
+      class="charts-row"
+    >
+      <el-col
+        :xs="24"
+        :md="12"
+      >
+        <el-card
+          shadow="hover"
+          class="chart-card"
+        >
           <template #header>
             <div class="card-header">
               <span>用户增长趋势</span>
-              <el-select v-model="timeRange" size="small" style="width: 120px">
-                <el-option label="近7天" value="7d" />
-                <el-option label="近30天" value="30d" />
-                <el-option label="近90天" value="90d" />
+              <el-select
+                v-model="timeRange"
+                size="small"
+                style="width: 120px"
+              >
+                <el-option
+                  label="近7天"
+                  value="7d"
+                />
+                <el-option
+                  label="近30天"
+                  value="30d"
+                />
+                <el-option
+                  label="近90天"
+                  value="90d"
+                />
               </el-select>
             </div>
           </template>
 
           <div class="chart-container">
-            <el-empty description="图表展示区域" :image-size="150" />
+            <el-empty
+              description="图表展示区域"
+              :image-size="150"
+            />
           </div>
         </el-card>
       </el-col>
 
-      <el-col :xs="24" :md="12">
-        <el-card shadow="hover" class="chart-card">
+      <el-col
+        :xs="24"
+        :md="12"
+      >
+        <el-card
+          shadow="hover"
+          class="chart-card"
+        >
           <template #header>
             <div class="card-header">
               <span>用户角色分布</span>
-              <el-button type="primary" size="small" link>查看详情</el-button>
+              <el-button
+                type="primary"
+                size="small"
+                link
+              >
+                查看详情
+              </el-button>
             </div>
           </template>
 
           <div class="chart-container">
-            <el-empty description="图表展示区域" :image-size="150" />
+            <el-empty
+              description="图表展示区域"
+              :image-size="150"
+            />
           </div>
         </el-card>
       </el-col>
     </el-row>
 
     <!-- 更新模块 -->
-    <el-card shadow="hover" class="activity-card">
+    <el-card
+      shadow="hover"
+      class="activity-card"
+    >
       <template #header>
         <div class="card-header">
           <span>更新</span>
-          <el-button type="primary" size="small" link>{{ currentDate }}</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            link
+          >
+            {{ currentDate }}
+          </el-button>
         </div>
       </template>
 
@@ -153,7 +253,10 @@
     </el-card>
 
     <!-- 快速操作区域 -->
-    <el-card shadow="hover" class="quick-actions-card">
+    <el-card
+      shadow="hover"
+      class="quick-actions-card"
+    >
       <template #header>
         <div class="card-header">
           <span>快速操作</span>
@@ -162,20 +265,27 @@
 
       <el-row :gutter="16">
         <el-col
-          :xs="12"
-          :sm="6"
           v-for="(action, index) in quickActions"
           :key="index"
+          :xs="12"
+          :sm="6"
         >
           <el-card
             shadow="never"
             class="action-card"
             @click="handleQuickAction(action)"
           >
-            <div class="action-icon" :style="{ backgroundColor: action.color }">
-              <el-icon :size="24">{{ action.icon }}</el-icon>
+            <div
+              class="action-icon"
+              :style="{ backgroundColor: action.color }"
+            >
+              <el-icon :size="24">
+                {{ action.icon }}
+              </el-icon>
             </div>
-            <div class="action-label">{{ action.label }}</div>
+            <div class="action-label">
+              {{ action.label }}
+            </div>
           </el-card>
         </el-col>
       </el-row>
@@ -242,7 +352,13 @@ const activities = ref([
 ])
 
 // 快速操作
-const quickActions = ref([
+interface QuickAction {
+  icon: string
+  label: string
+  color: string
+  path?: string
+}
+const quickActions = ref<QuickAction[]>([
   {
     icon: 'User',
     label: '用户管理',
@@ -276,7 +392,7 @@ const quickActions = ref([
 ])
 
 // 处理快速操作
-const handleQuickAction = (action: any) => {
+const handleQuickAction = (action: QuickAction) => {
   if (action.path) {
     router.push(action.path)
   } else {

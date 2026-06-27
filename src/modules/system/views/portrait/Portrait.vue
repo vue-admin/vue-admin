@@ -1,68 +1,129 @@
 <template>
   <div class="user-portrait">
-    <el-card shadow="never" class="portrait-card">
+    <el-card
+      shadow="never"
+      class="portrait-card"
+    >
       <template #header>
         <div class="card-header">
           <span>个人中心</span>
-          <el-button type="primary" size="small" @click="handleEdit"
-            >编辑资料</el-button
+          <el-button
+            type="primary"
+            size="small"
+            @click="handleEdit"
           >
+            编辑资料
+          </el-button>
         </div>
       </template>
 
       <div class="portrait-content">
         <!-- 用户头像 -->
         <div class="avatar-section">
-          <el-avatar :size="120" :src="userInfo.avatar">
+          <el-avatar
+            :size="120"
+            :src="userInfo.avatar"
+          >
             <el-icon><User /></el-icon>
           </el-avatar>
-          <div class="username">{{ userInfo.name }}</div>
-          <div class="role">{{ userInfo.role }}</div>
+          <div class="username">
+            {{ userInfo.name }}
+          </div>
+          <div class="role">
+            {{ userInfo.role }}
+          </div>
         </div>
 
         <!-- 基本信息 -->
-        <el-divider content-position="left">基本信息</el-divider>
-        <el-descriptions :column="2" border>
-          <el-descriptions-item label="用户名">{{
-            userInfo.username
-          }}</el-descriptions-item>
-          <el-descriptions-item label="邮箱">{{
-            userInfo.email
-          }}</el-descriptions-item>
-          <el-descriptions-item label="手机号">{{
-            userInfo.phone
-          }}</el-descriptions-item>
-          <el-descriptions-item label="性别">{{
-            userInfo.gender
-          }}</el-descriptions-item>
-          <el-descriptions-item label="部门">{{
-            userInfo.department
-          }}</el-descriptions-item>
-          <el-descriptions-item label="职位">{{
-            userInfo.position
-          }}</el-descriptions-item>
-          <el-descriptions-item label="入职时间">{{
-            userInfo.joinDate
-          }}</el-descriptions-item>
-          <el-descriptions-item label="最后登录">{{
-            userInfo.lastLogin
-          }}</el-descriptions-item>
+        <el-divider content-position="left">
+          基本信息
+        </el-divider>
+        <el-descriptions
+          :column="2"
+          border
+        >
+          <el-descriptions-item label="用户名">
+            {{
+              userInfo.username
+            }}
+          </el-descriptions-item>
+          <el-descriptions-item label="邮箱">
+            {{
+              userInfo.email
+            }}
+          </el-descriptions-item>
+          <el-descriptions-item label="手机号">
+            {{
+              userInfo.phone
+            }}
+          </el-descriptions-item>
+          <el-descriptions-item label="性别">
+            {{
+              userInfo.gender
+            }}
+          </el-descriptions-item>
+          <el-descriptions-item label="部门">
+            {{
+              userInfo.department
+            }}
+          </el-descriptions-item>
+          <el-descriptions-item label="职位">
+            {{
+              userInfo.position
+            }}
+          </el-descriptions-item>
+          <el-descriptions-item label="入职时间">
+            {{
+              userInfo.joinDate
+            }}
+          </el-descriptions-item>
+          <el-descriptions-item label="最后登录">
+            {{
+              userInfo.lastLogin
+            }}
+          </el-descriptions-item>
         </el-descriptions>
 
         <!-- 个人设置 -->
-        <el-divider content-position="left">个人设置</el-divider>
-        <el-card shadow="never" class="settings-card">
-          <el-form :model="settings" label-width="100px">
+        <el-divider content-position="left">
+          个人设置
+        </el-divider>
+        <el-card
+          shadow="never"
+          class="settings-card"
+        >
+          <el-form
+            :model="settings"
+            label-width="100px"
+          >
             <el-form-item label="语言">
-              <el-select v-model="settings.language" style="width: 100%">
-                <el-option label="中文" value="zh-CN" />
-                <el-option label="英文" value="en-US" />
+              <el-select
+                v-model="settings.language"
+                style="width: 100%"
+              >
+                <el-option
+                  label="中文"
+                  value="zh-CN"
+                />
+                <el-option
+                  label="英文"
+                  value="en-US"
+                />
               </el-select>
             </el-form-item>
             <el-form-item label="时区">
-              <el-select v-model="settings.timezone" style="width: 100%">
-                <el-option label="UTC+8" value="Asia/Shanghai" />
-                <el-option label="UTC+0" value="Europe/London" />
+              <el-select
+                v-model="settings.timezone"
+                style="width: 100%"
+              >
+                <el-option
+                  label="UTC+8"
+                  value="Asia/Shanghai"
+                />
+                <el-option
+                  label="UTC+0"
+                  value="Europe/London"
+                />
               </el-select>
             </el-form-item>
             <el-form-item label="通知设置">
@@ -77,8 +138,15 @@
     </el-card>
 
     <!-- 编辑资料对话框 -->
-    <el-dialog title="编辑资料" v-model="dialogVisible" width="50%">
-      <el-form :model="userInfo" label-width="100px">
+    <el-dialog
+      v-model="dialogVisible"
+      title="编辑资料"
+      width="50%"
+    >
+      <el-form
+        :model="userInfo"
+        label-width="100px"
+      >
         <el-form-item label="姓名">
           <el-input v-model="userInfo.name" />
         </el-form-item>
@@ -90,8 +158,12 @@
         </el-form-item>
         <el-form-item label="性别">
           <el-radio-group v-model="userInfo.gender">
-            <el-radio value="男">男</el-radio>
-            <el-radio value="女">女</el-radio>
+            <el-radio value="男">
+              男
+            </el-radio>
+            <el-radio value="女">
+              女
+            </el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="部门">
@@ -104,7 +176,10 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="handleSave">保存</el-button>
+          <el-button
+            type="primary"
+            @click="handleSave"
+          >保存</el-button>
         </span>
       </template>
     </el-dialog>

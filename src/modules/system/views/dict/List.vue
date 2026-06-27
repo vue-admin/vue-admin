@@ -1,6 +1,9 @@
 <template>
   <!-- 搜索和工具栏区域 -->
-  <el-card shadow="never" class="search-card">
+  <el-card
+    shadow="never"
+    class="search-card"
+  >
     <div class="search-toolbar">
       <div class="search-area">
         <el-input
@@ -14,26 +17,48 @@
             <el-icon><Search /></el-icon>
           </template>
         </el-input>
-        <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
-        <el-button :icon="Refresh" @click="handleReset">重置</el-button>
+        <el-button
+          type="primary"
+          :icon="Search"
+          @click="handleSearch"
+        >
+          搜索
+        </el-button>
+        <el-button
+          :icon="Refresh"
+          @click="handleReset"
+        >
+          重置
+        </el-button>
       </div>
 
       <div class="action-buttons">
         <el-dropdown @command="handleDropdownCommand">
-          <el-button type="primary" :icon="Plus">
-            新增<el-icon class="el-icon--right"><ArrowDown /></el-icon>
+          <el-button
+            type="primary"
+            :icon="Plus"
+          >
+            新增<el-icon class="el-icon--right">
+              <ArrowDown />
+            </el-icon>
           </el-button>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item command="addCategory">新增分类</el-dropdown-item>
+              <el-dropdown-item command="addCategory">
+                新增分类
+              </el-dropdown-item>
               <el-dropdown-item
                 command="addDict"
                 :disabled="!selectedNode || selectedNode.level !== 1"
-              >新增字典</el-dropdown-item>
+              >
+                新增字典
+              </el-dropdown-item>
               <el-dropdown-item
                 command="addItem"
                 :disabled="!selectedNode || selectedNode.level !== 2"
-              >新增字典项</el-dropdown-item>
+              >
+                新增字典项
+              </el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -42,21 +67,38 @@
           :icon="Edit"
           :disabled="!selectedNode"
           @click="handleEdit"
-        >编辑</el-button>
+        >
+          编辑
+        </el-button>
         <el-button
           type="danger"
           :icon="Delete"
           :disabled="!selectedNode"
           @click="handleDelete"
-        >删除</el-button>
-        <el-button :icon="Download" @click="handleExport">导出</el-button>
-        <el-button :icon="RefreshRight" @click="handleRefresh">刷新</el-button>
+        >
+          删除
+        </el-button>
+        <el-button
+          :icon="Download"
+          @click="handleExport"
+        >
+          导出
+        </el-button>
+        <el-button
+          :icon="RefreshRight"
+          @click="handleRefresh"
+        >
+          刷新
+        </el-button>
       </div>
     </div>
   </el-card>
 
   <!-- 字典树和详情区域 -->
-  <el-card shadow="never" class="main-card">
+  <el-card
+    shadow="never"
+    class="main-card"
+  >
     <el-row :gutter="20">
       <el-col :span="6">
         <DictTree
@@ -92,11 +134,17 @@
       <el-icon><Plus /></el-icon>
       <span>新增子节点</span>
     </div>
-    <div class="context-menu-item" @click="handleContextMenuEdit">
+    <div
+      class="context-menu-item"
+      @click="handleContextMenuEdit"
+    >
       <el-icon><Edit /></el-icon>
       <span>编辑</span>
     </div>
-    <div class="context-menu-item danger" @click="handleContextMenuDelete">
+    <div
+      class="context-menu-item danger"
+      @click="handleContextMenuDelete"
+    >
       <el-icon><Delete /></el-icon>
       <span>删除</span>
     </div>
@@ -104,85 +152,13 @@
 
   <DictFormDrawer
     v-model="drawerVisible"
+    v-model:form="form"
     :mode="drawerMode"
-    :form="form"
     :parent-node="selectedParentNode"
     :selected-node="selectedNode"
     @submit="handleSubmit"
   />
 </template>
-
-<style scoped>
-.search-card {
-  margin-bottom: 16px;
-}
-
-.search-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.search-area {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.action-buttons {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.main-card {
-  margin-bottom: 16px;
-}
-
-.context-menu {
-  position: fixed;
-  z-index: 3000;
-  min-width: 140px;
-  background: #fff;
-  border: 1px solid var(--el-border-color-lighter);
-  border-radius: 4px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  padding: 4px 0;
-}
-
-.context-menu-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-size: 14px;
-  color: var(--el-text-color-regular);
-}
-
-.context-menu-item:hover {
-  background-color: var(--el-fill-color-light);
-}
-
-.context-menu-item.danger:hover {
-  color: var(--el-color-danger);
-}
-
-@media (max-width: 768px) {
-  .search-toolbar,
-  .search-area {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .action-buttons {
-    justify-content: space-between;
-  }
-}
-</style>
 
 <script lang="ts" setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
@@ -345,3 +321,75 @@ const handleSubmit = async () => {
   await submit()
 }
 </script>
+
+<style scoped>
+.search-card {
+  margin-bottom: 16px;
+}
+
+.search-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.search-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.main-card {
+  margin-bottom: 16px;
+}
+
+.context-menu {
+  position: fixed;
+  z-index: 3000;
+  min-width: 140px;
+  background: #fff;
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  padding: 4px 0;
+}
+
+.context-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--el-text-color-regular);
+}
+
+.context-menu-item:hover {
+  background-color: var(--el-fill-color-light);
+}
+
+.context-menu-item.danger:hover {
+  color: var(--el-color-danger);
+}
+
+@media (max-width: 768px) {
+  .search-toolbar,
+  .search-area {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .action-buttons {
+    justify-content: space-between;
+  }
+}
+</style>

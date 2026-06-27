@@ -1,36 +1,54 @@
 <template>
   <div class="sys-config">
-    <el-card shadow="never" class="sys-card">
+    <el-card
+      shadow="never"
+      class="sys-card"
+    >
       <template #header>
         <div class="card-header">
           <span>系统配置</span>
         </div>
       </template>
 
-      <el-tabs v-model="activeTab" type="card">
+      <el-tabs
+        v-model="activeTab"
+        type="card"
+      >
         <!-- 基本配置 -->
-        <el-tab-pane label="基本配置" name="basic">
+        <el-tab-pane
+          label="基本配置"
+          name="basic"
+        >
           <el-form
             ref="basicFormRef"
             :model="basicForm"
             label-width="120px"
             class="sys-form"
           >
-            <el-form-item label="网站名称" prop="siteName">
+            <el-form-item
+              label="网站名称"
+              prop="siteName"
+            >
               <el-input
                 v-model="basicForm.siteName"
                 placeholder="请输入网站名称"
               />
             </el-form-item>
 
-            <el-form-item label="网站标题" prop="siteTitle">
+            <el-form-item
+              label="网站标题"
+              prop="siteTitle"
+            >
               <el-input
                 v-model="basicForm.siteTitle"
                 placeholder="请输入网站标题"
               />
             </el-form-item>
 
-            <el-form-item label="网站描述" prop="siteDescription">
+            <el-form-item
+              label="网站描述"
+              prop="siteDescription"
+            >
               <el-input
                 v-model="basicForm.siteDescription"
                 placeholder="请输入网站描述"
@@ -39,14 +57,20 @@
               />
             </el-form-item>
 
-            <el-form-item label="网站关键词" prop="siteKeywords">
+            <el-form-item
+              label="网站关键词"
+              prop="siteKeywords"
+            >
               <el-input
                 v-model="basicForm.siteKeywords"
                 placeholder="请输入网站关键词，用逗号分隔"
               />
             </el-form-item>
 
-            <el-form-item label="联系邮箱" prop="contactEmail">
+            <el-form-item
+              label="联系邮箱"
+              prop="contactEmail"
+            >
               <el-input
                 v-model="basicForm.contactEmail"
                 placeholder="请输入联系邮箱"
@@ -54,21 +78,30 @@
               />
             </el-form-item>
 
-            <el-form-item label="联系电话" prop="contactPhone">
+            <el-form-item
+              label="联系电话"
+              prop="contactPhone"
+            >
               <el-input
                 v-model="basicForm.contactPhone"
                 placeholder="请输入联系电话"
               />
             </el-form-item>
 
-            <el-form-item label="版权信息" prop="copyright">
+            <el-form-item
+              label="版权信息"
+              prop="copyright"
+            >
               <el-input
                 v-model="basicForm.copyright"
                 placeholder="请输入版权信息"
               />
             </el-form-item>
 
-            <el-form-item label="ICP备案号" prop="icpNumber">
+            <el-form-item
+              label="ICP备案号"
+              prop="icpNumber"
+            >
               <el-input
                 v-model="basicForm.icpNumber"
                 placeholder="请输入ICP备案号"
@@ -76,35 +109,55 @@
             </el-form-item>
 
             <el-form-item>
-              <el-button type="primary" @click="handleBasicSubmit"
-                >保存设置</el-button
+              <el-button
+                type="primary"
+                @click="handleBasicSubmit"
               >
-              <el-button @click="handleBasicReset">重置</el-button>
+                保存设置
+              </el-button>
+              <el-button @click="handleBasicReset">
+                重置
+              </el-button>
             </el-form-item>
           </el-form>
         </el-tab-pane>
 
         <!-- 功能配置 -->
-        <el-tab-pane label="功能配置" name="features">
+        <el-tab-pane
+          label="功能配置"
+          name="features"
+        >
           <el-form
             ref="featuresFormRef"
             :model="featuresForm"
             label-width="120px"
             class="sys-form"
           >
-            <el-form-item label="是否开启评论" prop="enableComment">
+            <el-form-item
+              label="是否开启评论"
+              prop="enableComment"
+            >
               <el-switch v-model="featuresForm.enableComment" />
             </el-form-item>
 
-            <el-form-item label="是否开启注册" prop="enableRegister">
+            <el-form-item
+              label="是否开启注册"
+              prop="enableRegister"
+            >
               <el-switch v-model="featuresForm.enableRegister" />
             </el-form-item>
 
-            <el-form-item label="是否开启验证码" prop="enableCaptcha">
+            <el-form-item
+              label="是否开启验证码"
+              prop="enableCaptcha"
+            >
               <el-switch v-model="featuresForm.enableCaptcha" />
             </el-form-item>
 
-            <el-form-item label="每页显示条数" prop="pageSize">
+            <el-form-item
+              label="每页显示条数"
+              prop="pageSize"
+            >
               <el-input-number
                 v-model="featuresForm.pageSize"
                 :min="5"
@@ -114,7 +167,10 @@
               />
             </el-form-item>
 
-            <el-form-item label="上传文件大小限制" prop="maxFileSize">
+            <el-form-item
+              label="上传文件大小限制"
+              prop="maxFileSize"
+            >
               <el-input-number
                 v-model="featuresForm.maxFileSize"
                 :min="1"
@@ -126,23 +182,34 @@
             </el-form-item>
 
             <el-form-item>
-              <el-button type="primary" @click="handleFeaturesSubmit"
-                >保存设置</el-button
+              <el-button
+                type="primary"
+                @click="handleFeaturesSubmit"
               >
-              <el-button @click="handleFeaturesReset">重置</el-button>
+                保存设置
+              </el-button>
+              <el-button @click="handleFeaturesReset">
+                重置
+              </el-button>
             </el-form-item>
           </el-form>
         </el-tab-pane>
 
         <!-- 安全配置 -->
-        <el-tab-pane label="安全配置" name="security">
+        <el-tab-pane
+          label="安全配置"
+          name="security"
+        >
           <el-form
             ref="securityFormRef"
             :model="securityForm"
             label-width="120px"
             class="sys-form"
           >
-            <el-form-item label="登录失败次数限制" prop="loginFailedLimit">
+            <el-form-item
+              label="登录失败次数限制"
+              prop="loginFailedLimit"
+            >
               <el-input-number
                 v-model="securityForm.loginFailedLimit"
                 :min="0"
@@ -153,7 +220,10 @@
               <span style="margin-left: 8px">次</span>
             </el-form-item>
 
-            <el-form-item label="登录失败锁定时间" prop="loginLockTime">
+            <el-form-item
+              label="登录失败锁定时间"
+              prop="loginLockTime"
+            >
               <el-input-number
                 v-model="securityForm.loginLockTime"
                 :min="0"
@@ -164,7 +234,10 @@
               <span style="margin-left: 8px">分钟</span>
             </el-form-item>
 
-            <el-form-item label="密码最小长度" prop="passwordMinLength">
+            <el-form-item
+              label="密码最小长度"
+              prop="passwordMinLength"
+            >
               <el-input-number
                 v-model="securityForm.passwordMinLength"
                 :min="6"
@@ -175,7 +248,10 @@
               <span style="margin-left: 8px">位</span>
             </el-form-item>
 
-            <el-form-item label="密码最大长度" prop="passwordMaxLength">
+            <el-form-item
+              label="密码最大长度"
+              prop="passwordMaxLength"
+            >
               <el-input-number
                 v-model="securityForm.passwordMaxLength"
                 :min="6"
@@ -186,11 +262,17 @@
               <span style="margin-left: 8px">位</span>
             </el-form-item>
 
-            <el-form-item label="密码必须包含数字" prop="passwordIncludeNumber">
+            <el-form-item
+              label="密码必须包含数字"
+              prop="passwordIncludeNumber"
+            >
               <el-switch v-model="securityForm.passwordIncludeNumber" />
             </el-form-item>
 
-            <el-form-item label="密码必须包含字母" prop="passwordIncludeLetter">
+            <el-form-item
+              label="密码必须包含字母"
+              prop="passwordIncludeLetter"
+            >
               <el-switch v-model="securityForm.passwordIncludeLetter" />
             </el-form-item>
 
@@ -202,30 +284,44 @@
             </el-form-item>
 
             <el-form-item>
-              <el-button type="primary" @click="handleSecuritySubmit"
-                >保存设置</el-button
+              <el-button
+                type="primary"
+                @click="handleSecuritySubmit"
               >
-              <el-button @click="handleSecurityReset">重置</el-button>
+                保存设置
+              </el-button>
+              <el-button @click="handleSecurityReset">
+                重置
+              </el-button>
             </el-form-item>
           </el-form>
         </el-tab-pane>
 
         <!-- 邮件配置 -->
-        <el-tab-pane label="邮件配置" name="email">
+        <el-tab-pane
+          label="邮件配置"
+          name="email"
+        >
           <el-form
             ref="emailFormRef"
             :model="emailForm"
             label-width="120px"
             class="sys-form"
           >
-            <el-form-item label="SMTP服务器地址" prop="smtpHost">
+            <el-form-item
+              label="SMTP服务器地址"
+              prop="smtpHost"
+            >
               <el-input
                 v-model="emailForm.smtpHost"
                 placeholder="请输入SMTP服务器地址"
               />
             </el-form-item>
 
-            <el-form-item label="SMTP服务器端口" prop="smtpPort">
+            <el-form-item
+              label="SMTP服务器端口"
+              prop="smtpPort"
+            >
               <el-input-number
                 v-model="emailForm.smtpPort"
                 :min="1"
@@ -235,7 +331,10 @@
               />
             </el-form-item>
 
-            <el-form-item label="发件人邮箱" prop="fromEmail">
+            <el-form-item
+              label="发件人邮箱"
+              prop="fromEmail"
+            >
               <el-input
                 v-model="emailForm.fromEmail"
                 placeholder="请输入发件人邮箱"
@@ -243,21 +342,30 @@
               />
             </el-form-item>
 
-            <el-form-item label="发件人名称" prop="fromName">
+            <el-form-item
+              label="发件人名称"
+              prop="fromName"
+            >
               <el-input
                 v-model="emailForm.fromName"
                 placeholder="请输入发件人名称"
               />
             </el-form-item>
 
-            <el-form-item label="SMTP认证用户名" prop="smtpUsername">
+            <el-form-item
+              label="SMTP认证用户名"
+              prop="smtpUsername"
+            >
               <el-input
                 v-model="emailForm.smtpUsername"
                 placeholder="请输入SMTP认证用户名"
               />
             </el-form-item>
 
-            <el-form-item label="SMTP认证密码" prop="smtpPassword">
+            <el-form-item
+              label="SMTP认证密码"
+              prop="smtpPassword"
+            >
               <el-input
                 v-model="emailForm.smtpPassword"
                 placeholder="请输入SMTP认证密码"
@@ -266,15 +374,23 @@
               />
             </el-form-item>
 
-            <el-form-item label="是否启用SSL" prop="enableSsl">
+            <el-form-item
+              label="是否启用SSL"
+              prop="enableSsl"
+            >
               <el-switch v-model="emailForm.enableSsl" />
             </el-form-item>
 
             <el-form-item>
-              <el-button type="primary" @click="handleEmailSubmit"
-                >保存设置</el-button
+              <el-button
+                type="primary"
+                @click="handleEmailSubmit"
               >
-              <el-button @click="handleEmailReset">重置</el-button>
+                保存设置
+              </el-button>
+              <el-button @click="handleEmailReset">
+                重置
+              </el-button>
             </el-form-item>
           </el-form>
         </el-tab-pane>
@@ -283,31 +399,9 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
-.sys-card {
-  margin-bottom: 16px;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 600;
-  font-size: 16px;
-}
-
-.sys-form {
-  max-width: 600px;
-}
-
-.sys-form .el-form-item {
-  margin-bottom: 20px;
-}
-</style>
-
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 
 // 激活的 tab
@@ -356,8 +450,8 @@ const emailForm = reactive({
   enableSsl: true
 })
 
-// 表单验证规则
-const basicFormRules = reactive<FormRules>({
+// TODO: M5+ el-form 接入后挂到 :rules
+const _basicFormRules = reactive<FormRules>({
   siteName: [
     { required: true, message: '请输入网站名称', trigger: 'blur' },
     {
@@ -428,7 +522,7 @@ const basicFormRules = reactive<FormRules>({
   ]
 })
 
-const featuresFormRules = reactive<FormRules>({
+const _featuresFormRules = reactive<FormRules>({
   pageSize: [
     { required: true, message: '请输入每页显示条数', trigger: 'blur' }
   ],
@@ -437,7 +531,7 @@ const featuresFormRules = reactive<FormRules>({
   ]
 })
 
-const securityFormRules = reactive<FormRules>({
+const _securityFormRules = reactive<FormRules>({
   loginFailedLimit: [
     { required: true, message: '请输入登录失败次数限制', trigger: 'blur' }
   ],
@@ -452,7 +546,7 @@ const securityFormRules = reactive<FormRules>({
   ]
 })
 
-const emailFormRules = reactive<FormRules>({
+const _emailFormRules = reactive<FormRules>({
   smtpHost: [
     { required: true, message: '请输入SMTP服务器地址', trigger: 'blur' }
   ],
@@ -593,3 +687,25 @@ const handleEmailReset = () => {
   ElMessage.info('已重置为默认设置')
 }
 </script>
+
+<style lang="scss" scoped>
+.sys-card {
+  margin-bottom: 16px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.sys-form {
+  max-width: 600px;
+}
+
+.sys-form .el-form-item {
+  margin-bottom: 20px;
+}
+</style>

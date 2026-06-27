@@ -2,27 +2,31 @@
   <div class="tags-view-container">
     <el-scrollbar class="tags-view-wrapper">
       <router-link
+        v-for="(tag, index) in tagsViewList"
+        :key="tag.fullPath"
         class="tags-view-item"
         :style="{
           backgroundColor: isActive(tag) ? 'var(--el-menu-hover-bg-color)' : '',
           color: isActive(tag) ? 'var(--el-menu-active-color)' : '',
           borderColor: isActive(tag) ? '' : ''
         }"
-        v-for="(tag, index) in tagsViewList"
-        :key="tag.fullPath"
         :to="{ path: tag.fullPath }"
         @contextmenu.prevent="openMenu($event, index)"
       >
         {{ tag.title }}
         <template v-if="!isAffiix(tag)">
           <Close
-            @click.prevent.stop="onCloseClick(index, tag)"
             class="el-icon-close"
+            @click.prevent.stop="onCloseClick(index, tag)"
           />
         </template>
       </router-link>
     </el-scrollbar>
-    <context-menu v-show="visible" :style="menuStyle" :index="selectIndex" />
+    <context-menu
+      v-show="visible"
+      :style="menuStyle"
+      :index="selectIndex"
+    />
   </div>
 </template>
 
@@ -55,7 +59,7 @@ const menuStyle = reactive({
   top: '0'
 })
 
-const openMenu = (e: any, index: number) => {
+const openMenu = (e: MouseEvent, index: number) => {
   const { x, y } = e
   menuStyle.left = x + 'px'
   menuStyle.top = y + 'px'
@@ -106,7 +110,7 @@ const getTitle = (route: RouteLocationNormalizedLoaded) => {
 watch(
   route,
   (to) => {
-    const { fullPath, meta, name, params, path, query } = to
+    const { fullPath, meta: _meta, name: _name, params, path, query } = to
     let affix = false
     if (path === '/') {
       affix = true

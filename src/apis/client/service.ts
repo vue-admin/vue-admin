@@ -22,7 +22,7 @@ interface LegacyResponse<T> {
 
 function adapt<T>(
   promise: Promise<T>,
-  options?: LegacyRequestOptions,
+  _options?: LegacyRequestOptions,
 ): Promise<LegacyResponse<T>> {
   // silent → _silent 已在调用处通过 config 传递；这里仅做形状包装
   return promise.then(data => ({ data })) as Promise<LegacyResponse<T>>

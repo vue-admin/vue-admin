@@ -1,5 +1,8 @@
 <template>
-  <el-watermark :font="font" :content="['wang', 'vue-admin']">
+  <el-watermark
+    :font="font"
+    :content="['wang', 'vue-admin']"
+  >
     <el-container>
       <Sidebar />
       <el-container>
