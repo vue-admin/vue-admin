@@ -6,10 +6,11 @@
 本格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，
 版本号遵循 [Semantic Versioning](https://semver.org/lang/zh-CN/)。
 
-## [未发布]
+## [0.1.0-rc.1] - 2026-06-27
 
 ### Bug Fixes
 
+- Rename SideBar → Sidebar to match import path (CI case-sensitive)
 - Address M3 review findings (loadProfile race, submitting binding, side-effect doc)
 - Address M2 review findings (mock revert, grouping, status, view cleanup)
 
@@ -22,11 +23,16 @@
 
 ### CI/CD
 
+- Checkout main branch to allow CHANGELOG push
+- Use bundled git-cliff instead of third-party action
 - Add release.yml for tag-triggered CHANGELOG and GitHub Release
 - Add lint/type-check/test/build jobs with Codecov upload
 
 ### Documentation
 
+- Align repository URL to vue-admin/vue-admin
+- Enrich with full feature list, tech stack table, and governance links
+- Refresh unreleased section
 - Add CONTRIBUTING, CODE_OF_CONDUCT, SECURITY
 - Add MIT LICENSE and README badges
 - Add M6 open-source readiness spec and implementation plan
