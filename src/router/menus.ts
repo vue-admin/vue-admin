@@ -4,7 +4,7 @@ const menus: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'home',
-    component: () => import('@/views/Home.vue'),
+    component: () => import('@/modules/home/views/Home.vue'),
     meta: {
       title: '首页',
       icon: 'menu',
@@ -14,7 +14,7 @@ const menus: RouteRecordRaw[] = [
   {
     path: '/doc',
     name: 'doc',
-    component: () => import('@/views/Documents.vue'),
+    component: () => import('@/modules/docs/views/Documents.vue'),
     meta: {
       title: '文档',
       icon: 'document',
@@ -33,7 +33,7 @@ const menus: RouteRecordRaw[] = [
       {
         path: '/crud/list',
         name: 'crudList',
-        component: () => import('@/views/crud/Index.vue'),
+        component: () => import('@/modules/crud/views/Index.vue'),
         meta: {
           title: '列表',
           showMenu: true
@@ -44,7 +44,7 @@ const menus: RouteRecordRaw[] = [
   {
     path: '/about',
     name: 'about',
-    component: () => import('@/views/About.vue'),
+    component: () => import('@/modules/about/views/About.vue'),
     meta: {
       title: '关于',
       icon: 'InfoFilled',
@@ -63,7 +63,7 @@ const menus: RouteRecordRaw[] = [
       {
         path: '/user/list',
         name: 'userList',
-        component: () => import('@/views/user/List.vue'),
+        component: () => import('@/modules/user/views/List.vue'),
         meta: {
           title: '用户列表',
           showMenu: true
@@ -74,7 +74,7 @@ const menus: RouteRecordRaw[] = [
   {
     path: '/multi',
     name: 'multi',
-    component: () => import('@/views/multi/Level1.vue'),
+    component: () => import('@/modules/multi/views/Level1.vue'),
     meta: {
       title: '多级菜单',
       icon: 'ForkSpoon',
@@ -84,7 +84,7 @@ const menus: RouteRecordRaw[] = [
       {
         path: '/multi/two',
         name: 'multiLevel2',
-        component: () => import('@/views/multi/Level2.vue'),
+        component: () => import('@/modules/multi/views/Level2.vue'),
         meta: {
           title: '二级菜单',
           showMenu: true
@@ -93,7 +93,7 @@ const menus: RouteRecordRaw[] = [
           {
             path: '/multi/two/list',
             name: 'multiLevel3',
-            component: () => import('@/views/multi/Level3.vue'),
+            component: () => import('@/modules/multi/views/Level3.vue'),
             meta: {
               title: '三级菜单',
               showMenu: true
@@ -115,7 +115,7 @@ const menus: RouteRecordRaw[] = [
       {
         path: '/system/admin',
         name: 'systemAdmin',
-        component: () => import('@/views/system/admin/List.vue'),
+        component: () => import('@/modules/system/views/admin/List.vue'),
         meta: {
           title: '管理员',
           icon: 'Avatar',
@@ -125,7 +125,7 @@ const menus: RouteRecordRaw[] = [
       {
         path: '/system/role',
         name: 'systemRole',
-        component: () => import('@/views/system/role/List.vue'),
+        component: () => import('@/modules/system/views/role/List.vue'),
         meta: {
           title: '角色管理',
           icon: 'User',
@@ -135,7 +135,7 @@ const menus: RouteRecordRaw[] = [
       {
         path: '/system/permission',
         name: 'systemPermission',
-        component: () => import('@/views/system/permission/List.vue'),
+        component: () => import('@/modules/system/views/permission/List.vue'),
         meta: {
           title: '权限管理',
           icon: 'Lock',
@@ -145,7 +145,7 @@ const menus: RouteRecordRaw[] = [
       {
         path: '/system/dict',
         name: 'systemDict',
-        component: () => import('@/views/system/dict/List.vue'),
+        component: () => import('@/modules/system/views/dict/List.vue'),
         meta: {
           title: '字典管理',
           icon: 'DataBoard',
@@ -155,7 +155,7 @@ const menus: RouteRecordRaw[] = [
       {
         path: '/system/config',
         name: 'systemConfig',
-        component: () => import('@/views/system/config/Config.vue'),
+        component: () => import('@/modules/system/views/config/Config.vue'),
         meta: {
           title: '系统配置',
           icon: 'Setting',
@@ -165,7 +165,7 @@ const menus: RouteRecordRaw[] = [
       {
         path: '/system/portrait',
         name: 'systemPortrait',
-        component: () => import('@/views/system/portrait/Portrait.vue'),
+        component: () => import('@/modules/system/views/portrait/Portrait.vue'),
         meta: {
           title: '个人中心',
           icon: 'User',
@@ -177,7 +177,7 @@ const menus: RouteRecordRaw[] = [
   {
     path: '/404',
     name: 'notFound',
-    component: () => import('@/views/NotFound.vue')
+    component: () => import('@/app/views/NotFound.vue')
   }
 ]
 

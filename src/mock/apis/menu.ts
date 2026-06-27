@@ -5,7 +5,7 @@ const ALL_MENUS = [
   {
     path: '/',
     name: 'home',
-    component: 'Home',
+    component: 'home/views/Home',
     meta: { title: '首页', icon: 'menu', showMenu: true },
   },
   {
@@ -16,7 +16,7 @@ const ALL_MENUS = [
       {
         path: '/system/admin',
         name: 'systemAdmin',
-        component: 'system/admin/List',
+        component: 'system/views/admin/List',
         meta: {
           title: '管理员',
           icon: 'Avatar',
@@ -27,7 +27,7 @@ const ALL_MENUS = [
       {
         path: '/system/dict',
         name: 'systemDict',
-        component: 'system/dict/List',
+        component: 'system/views/dict/List',
         meta: {
           title: '字典管理',
           icon: 'DataBoard',
