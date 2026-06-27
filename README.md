@@ -1,3 +1,7 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/rushui/vue-admin/blob/main/LICENSE)
+[![CI](https://github.com/rushui/vue-admin/actions/workflows/ci.yml/badge.svg)](https://github.com/rushui/vue-admin/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/rushui/vue-admin/graph/badge.svg)](https://codecov.io/gh/rushui/vue-admin)
+
 # Vue Admin
 
 > Vue 3 + Element Plus 企业级后台管理前端基座
@@ -89,4 +93,4 @@ Vue 3.4 + Vite 4.5 + TypeScript 4.8 + Element Plus 2.5 + Pinia 2.1 + Vue Router 
 
 ## License
 
-MIT
+[MIT](./LICENSE) © 2026 如水 <rushui@qq.com>
