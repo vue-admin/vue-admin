@@ -11,6 +11,7 @@ import { viteMockServe } from 'vite-plugin-mock'
 export default defineConfig({
   base: process.env.NODE_ENV === 'production' ? '/vue-admin/' : '',
   server: {
+    host: true,
     watch: { usePolling: true },
     hmr: true
   },
