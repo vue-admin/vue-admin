@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 提问与讨论
+    url: https://github.com/rushui/vue-admin/discussions
+    about: 使用问题、最佳实践等请到 Discussions 讨论
+  - name: 🔒 安全漏洞
+    url: https://github.com/rushui/vue-admin/security/policy
+    about: 安全问题请勿公开报告，请参阅 SECURITY.md

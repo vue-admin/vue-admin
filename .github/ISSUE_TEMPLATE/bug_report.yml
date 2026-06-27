@@ -1,0 +1,75 @@
+name: 🐛 Bug 报告
+description: 报告一个可复现的问题
+title: "[BUG] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢你抽出时间报告 bug！请先搜索 [已有 Issue](https://github.com/rushui/vue-admin/issues?q=is%3Aissue) 避免重复。
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Bug 描述
+      description: 简要描述发生了什么问题
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 复现步骤
+      description: 详细步骤让我们能复现问题
+      placeholder: |
+        1. 进入页面 '...'
+        2. 点击 '...'
+        3. 看到 '...'
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望行为
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Vue Admin 版本
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node 版本
+      placeholder: "22.x"
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: 浏览器
+      placeholder: "Chrome 126"
+  - type: textarea
+    id: logs
+    attributes:
+      label: 控制台/日志输出
+      render: shell
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: 截图
+      description: 如适用，粘贴截图或 GIF
+  - type: checkboxes
+    id: pr-offer
+    attributes:
+      label: 我愿意提交 PR
+      options:
+        - label: 我愿意为该问题提交 PR
+          required: false
