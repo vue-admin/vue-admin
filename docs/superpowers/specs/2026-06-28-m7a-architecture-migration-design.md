@@ -194,18 +194,30 @@ smoke:
         cache: pnpm
     - run: pnpm install --frozen-lockfile
     - run: pnpm exec playwright install --with-deps chromium
-    - run: pnpm build
-    - run: nohup pnpm preview &
-    - run: sleep 3
+    - run: nohup pnpm dev --host 127.0.0.1 --strictPort &
+    - run: |
+        for i in $(seq 1 30); do
+          curl -sf http://127.0.0.1:5173/ > /dev/null && break
+          sleep 1
+        done
     - run: pnpm smoke
       env:
-        SMOKE_BASE_URL: http://localhost:4173/vue-admin/
+        SMOKE_BASE_URL: http://127.0.0.1:5173/
 ```
 
-**关键决策**：smoke 跑 **production build**（`pnpm preview`），不跑 dev server。理由：
+**关键决策（2026-06-28 修订）**：smoke 跑 **dev server**（`pnpm dev`），不跑 production preview。
+
+**修订理由（Task 3 实施时发现）**：vite-plugin-mock 通过 Vite 的 `configureServer` 钩子注入 middleware，该钩子**只在 dev 模式触发**，`vite preview` 完全不调用。因此 preview server 下 `/api/*` 请求会被 SPA fallback 拦截返回 HTML 而非 JSON，所有依赖登录态的 smoke 测试（登录、列表渲染）物理上无法跑通。
+
+**修订前的决策原意**：
 - 更接近真实部署
-- 避免本次"dev IPv6 only" 类问题再次漏过
-- preview server 默认监听 0.0.0.0，CI 上无 IPv6 问题
+- 避免 dev IPv6 only 问题再次漏过
+
+**修订后这两点评估**：
+- "更接近真实部署"的前提是 mock 在 prod 可达，当前过渡期（M5.3 MSW 迁移尚未实施）不成立
+- IPv6 问题已在 M6 通过 `vite.config.ts` `server.host: true` 解决；dev 命令显式锁 `--host 127.0.0.1 --strictPort` 进一步消除端口漂移与协议歧义
+
+**何时切回 prod preview**：M5.3 完成 MSW 或后端真实接入后，mock 不再依赖 vite-plugin-mock 的 dev 钩子，届时本节可切回 `pnpm preview`，并恢复 baseURL 为 `http://localhost:4173/vue-admin/`。
 
 ## 六、实施顺序（TDD 节奏）
 

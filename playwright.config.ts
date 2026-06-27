@@ -8,7 +8,7 @@ export default defineConfig({
   workers: 1,
   reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
   use: {
-    baseURL: process.env.SMOKE_BASE_URL || 'http://localhost:4173/vue-admin/',
+    baseURL: process.env.SMOKE_BASE_URL || 'http://localhost:5173/',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure'
   },

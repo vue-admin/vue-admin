@@ -30,7 +30,7 @@
 - Modify: `.gitignore`（加 `test-results/` `playwright-report/` `playwright/.cache/`）
 
 **Interfaces:**
-- Produces: `pnpm smoke` 命令、`SMOKE_BASE_URL` 环境变量约定（默认 `http://localhost:4173/vue-admin/`）
+- Produces: `pnpm smoke` 命令、`SMOKE_BASE_URL` 环境变量约定（默认 `http://localhost:5173/`，dev server）
 
 - [ ] **Step 1: 安装依赖**
 
@@ -52,7 +52,7 @@ export default defineConfig({
   workers: 1,
   reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
   use: {
-    baseURL: process.env.SMOKE_BASE_URL || 'http://localhost:4173/vue-admin/',
+    baseURL: process.env.SMOKE_BASE_URL || 'http://localhost:5173/',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure'
   },
@@ -118,24 +118,26 @@ import { test, expect } from '@playwright/test'
 test('未登录访问根路径 → 跳转 /login', async ({ page }) => {
   await page.goto('/')
   await expect(page).toHaveURL(/\/login/)
-  await expect(page.locator('input[placeholder*="用户名"]')).toBeVisible()
+  // Login.vue 用 el-form-item label 包裹 el-input，无 placeholder，需用 label 文本定位
+  await expect(page.locator('.el-form-item', { hasText: '用户名' })).toBeVisible()
 })
 ```
 
-- [ ] **Step 2: 启动 preview server 验证失败**
+- [ ] **Step 2: 启动 dev server 验证失败**
+
+> **架构约束（2026-06-28 修订）**：smoke 跑 dev server 而非 preview，因为 `vite-plugin-mock` 仅在 `configureServer` 钩子（dev only）注入 middleware。详见 spec §5.3。
 
 ```bash
-pnpm build
-nohup pnpm preview &
-sleep 3
+nohup pnpm dev --host 127.0.0.1 --strictPort > /tmp/vite-dev.log 2>&1 &
+for i in $(seq 1 30); do curl -sf http://127.0.0.1:5173/ > /dev/null && break; sleep 1; done
 pnpm smoke
 ```
 Expected: 1 passed（守卫已支持 `/login` public 跳转，M6 已修复）。若失败需立即排查守卫逻辑。
 
-- [ ] **Step 3: 关闭 preview server**
+- [ ] **Step 3: 关闭 dev server**
 
 ```bash
-kill %1 2>/dev/null || pkill -f "vite preview"
+lsof -ti:5173 | xargs kill 2>/dev/null || true
 ```
 
 - [ ] **Step 4: Commit**
@@ -186,10 +188,10 @@ test.describe.serial('登录态流程', () => {
 - [ ] **Step 2: 验证 3 个测试全绿**
 
 ```bash
-pnpm build && nohup pnpm preview &
-sleep 3
+nohup pnpm dev --host 127.0.0.1 --strictPort > /tmp/vite-dev.log 2>&1 &
+for i in $(seq 1 30); do curl -sf http://127.0.0.1:5173/ > /dev/null && break; sleep 1; done
 pnpm smoke
-kill %1 2>/dev/null || pkill -f "vite preview"
+lsof -ti:5173 | xargs kill 2>/dev/null || true
 ```
 Expected: 3 passed。
 
@@ -229,10 +231,10 @@ git rm -r src/modules/system/views/config
 ```bash
 pnpm type-check
 pnpm lint
-pnpm build && nohup pnpm preview &
-sleep 3
+nohup pnpm dev --host 127.0.0.1 --strictPort > /tmp/vite-dev.log 2>&1 &
+for i in $(seq 1 30); do curl -sf http://127.0.0.1:5173/ > /dev/null && break; sleep 1; done
 pnpm smoke
-kill %1 2>/dev/null || pkill -f "vite preview"
+lsof -ti:5173 | xargs kill 2>/dev/null || true
 ```
 Expected: 全绿，3 smoke 通过。
 
@@ -285,10 +287,10 @@ rmdir src/modules/system/views/portrait 2>/dev/null || true
 
 ```bash
 pnpm type-check && pnpm lint
-pnpm build && nohup pnpm preview &
-sleep 3
+nohup pnpm dev --host 127.0.0.1 --strictPort > /tmp/vite-dev.log 2>&1 &
+for i in $(seq 1 30); do curl -sf http://127.0.0.1:5173/ > /dev/null && break; sleep 1; done
 pnpm smoke
-kill %1 2>/dev/null || pkill -f "vite preview"
+lsof -ti:5173 | xargs kill 2>/dev/null || true
 ```
 Expected: 全绿。
 
@@ -335,9 +337,9 @@ component: () => import('@/modules/dashboard/views/Home.vue'),
 - [ ] **Step 4: 验证**
 
 ```bash
-pnpm type-check && pnpm lint && pnpm build && pnpm smoke
+pnpm type-check && pnpm lint && pnpm build
+# 然后启 dev server 跑 smoke（启停片段同 Task 2 Step 2-3）
 ```
-（preview/smoke 启停同前）
 
 - [ ] **Step 5: Commit**
 
@@ -520,10 +522,10 @@ export const getUserInfo = () =>
 
 ```bash
 pnpm type-check && pnpm lint && pnpm test
-pnpm build && nohup pnpm preview &
-sleep 3
+nohup pnpm dev --host 127.0.0.1 --strictPort > /tmp/vite-dev.log 2>&1 &
+for i in $(seq 1 30); do curl -sf http://127.0.0.1:5173/ > /dev/null && break; sleep 1; done
 pnpm smoke
-kill %1 2>/dev/null || pkill -f "vite preview"
+lsof -ti:5173 | xargs kill 2>/dev/null || true
 ```
 
 - [ ] **Step 5: Commit**
@@ -717,7 +719,8 @@ const onCloseCurrentClick = () => {
 - [ ] **Step 9: 验证**
 
 ```bash
-pnpm type-check && pnpm lint && pnpm test && pnpm build && pnpm smoke
+pnpm type-check && pnpm lint && pnpm test && pnpm build
+# 然后启 dev server 跑 smoke（启停片段同 Task 2 Step 2-3）
 ```
 Expected: 全绿，3 smoke 通过，包括 TagsView 右键菜单 5 项可见（手动抽样）。
 
@@ -781,7 +784,8 @@ import nprogress from '@/lib/nprogress'
 - [ ] **Step 4: 验证**
 
 ```bash
-pnpm type-check && pnpm lint && pnpm test && pnpm build && pnpm smoke
+pnpm type-check && pnpm lint && pnpm test && pnpm build
+# 然后启 dev server 跑 smoke（启停片段同 Task 2 Step 2-3）
 ```
 
 - [ ] **Step 5: Commit**
@@ -860,7 +864,8 @@ git rm -r src/apis src/stores src/components src/utils
 
 ```bash
 pnpm lint
-pnpm type-check && pnpm test && pnpm build && pnpm smoke
+pnpm type-check && pnpm test && pnpm build
+# 然后启 dev server 跑 smoke（启停片段同 Task 2 Step 2-3）
 ```
 Expected: lint 全绿（强制规则启用后旧路径已不存在，不触发）。
 
@@ -904,12 +909,17 @@ smoke:
         cache: pnpm
     - run: pnpm install --frozen-lockfile
     - run: pnpm exec playwright install --with-deps chromium
-    - run: pnpm build
-    - run: nohup pnpm preview &
-    - run: sleep 3
+    - run: nohup pnpm dev --host 127.0.0.1 --strictPort > /tmp/vite-dev.log 2>&1 &
+    - name: Wait for dev server
+      run: |
+        for i in $(seq 1 60); do
+          curl -sf http://127.0.0.1:5173/ > /dev/null && break
+          sleep 1
+        done
+        curl -sf http://127.0.0.1:5173/ > /dev/null || (cat /tmp/vite-dev.log && exit 1)
     - run: pnpm smoke
       env:
-        SMOKE_BASE_URL: http://localhost:4173/vue-admin/
+        SMOKE_BASE_URL: http://127.0.0.1:5173/
 ```
 
 - [ ] **Step 2: 更新 `CLAUDE.md`**
@@ -931,9 +941,10 @@ smoke:
 
 ```bash
 pnpm lint && pnpm type-check && pnpm test && pnpm build
-nohup pnpm preview & sleep 3
+nohup pnpm dev --host 127.0.0.1 --strictPort > /tmp/vite-dev.log 2>&1 &
+for i in $(seq 1 30); do curl -sf http://127.0.0.1:5173/ > /dev/null && break; sleep 1; done
 pnpm smoke
-kill %1 2>/dev/null || pkill -f "vite preview"
+lsof -ti:5173 | xargs kill 2>/dev/null || true
 ```
 Expected: 4 件套 + 3 smoke 全绿。
 
