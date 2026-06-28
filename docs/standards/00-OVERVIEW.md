@@ -43,7 +43,7 @@
 - [x] 用户/角色/字典 CRUD 全闭环
 - [x] 通用组件库：`SearchTable`、`FormDrawer`、`PageContainer`
 - [x] 主题系统：CSS Variables 规范化（主色派生色算法 + 命名修复，暗黑模式已有）
-- [ ] 国际化（vue-i18n）骨架
+- [x] 国际化（vue-i18n）骨架（lib/i18n 单例 + locale 持久化 + SettingsDrawer 切换器，业务页面渐进迁移）
 - [x] 错误边界 + 全局 loading + 确认对话框组件
 
 ### L3 平台化（生态，3-6 月）
