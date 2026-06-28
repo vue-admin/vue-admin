@@ -109,6 +109,16 @@ const menus: RouteRecordRaw[] = [
           icon: 'DataBoard',
           showMenu: true
         }
+      },
+      {
+        path: '/system/menu',
+        name: 'systemMenu',
+        component: () => import('@/modules/system/menu/views/List.vue'),
+        meta: {
+          title: '菜单管理',
+          icon: 'Menu',
+          showMenu: true
+        }
       }
     ]
   },
