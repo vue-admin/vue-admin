@@ -20,6 +20,8 @@ pnpm lint           # ESLint flat config 检查
 pnpm lint:fix       # ESLint 自动修复
 pnpm test           # Vitest 单次运行
 pnpm test:watch     # Vitest watch 模式
+pnpm smoke          # Playwright smoke 测试（需先启动 dev server）
+pnpm smoke:ui       # Playwright smoke UI 模式
 pnpm preview        # 预览生产构建
 ```
 
@@ -59,7 +61,7 @@ pnpm preview        # 预览生产构建
 
 6. **错误处理三层**：lib/http 拦截器（全局 ElMessage 提示）→ modules api 函数（不提示，透传 HttpError）→ views / 组件（检查 HttpError 做领域内反馈）。`_silent: true` 反转默认提示。
 
-7. **目录扁平**：业务页面按域分子目录，单 `.vue` 文件不超过 500 行。
+7. **目录扁平**：业务页面按域分子目录，单 `.vue` 文件不超过 500 行。当前 8 个模块：`auth` / `dashboard` / `system`（含 `admin`/`user`/`role`/`permission`/`menu`/`dict` 6 子项）/ `profile` / `crud` / `docs` / `about`。
 
 ## 认证 / 权限（M3 + M4 已实现）
 

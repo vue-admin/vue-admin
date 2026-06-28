@@ -6,25 +6,22 @@
 
 ```
 src/
-├── lib/         # 基础设施：与业务无关（http、auth、router、error、monitor）
+├── lib/         # 基础设施：与业务无关（http、auth、router、error、nprogress、storage）
 ├── app/         # 应用骨架：组装层（main.ts、stores、directives）
-├── modules/     # 业务领域：按 domain 聚合（auth、system 等）
+├── modules/     # 业务领域：按 domain 聚合（auth、dashboard、system、profile、crud、docs、about）
 └── shared/      # 跨模块共享：类型、常量
 ```
 
-其余历史目录：
+其余目录：
 
 | 目录 | 状态 | 备注 |
 |------|------|------|
 | `src/assets/` | 保留 | 会被构建处理的资源 |
-| `src/components/` | 保留 | 跨页面公共组件 |
 | `src/layout/` | 保留 | 布局组件 |
 | `src/mock/` | 保留 | Mock API（开发环境用） |
 | `src/router/` | 保留 | 静态路由表 + router 实例 |
-| `src/views/` | **历史** | M5 后续将迁移至 `src/modules/<domain>/views/` |
-| `src/apis/` | **历史** | M5 后续将迁移至 `src/modules/<domain>/api.ts` |
-| `src/stores/` | **历史** | 已迁至 `src/app/stores/` |
-| `src/utils/` | **历史** | 待评估合并至 `src/lib/` 或删除 |
+
+> M7-A 已完成历史目录清退：`src/views/` / `src/apis/` / `src/stores/` / `src/utils/` / `src/components/` 全部迁移至 `src/modules/<domain>/` 或 `src/app/stores/`，目录已物理删除，并由 ESLint `no-restricted-imports` 阻止回退。
 
 ## 二、依赖方向
 
@@ -53,12 +50,41 @@ src/modules/
 │   ├── views/
 │   │   └── Login.vue
 │   └── api.ts               # （可选）模块内 API 封装
-├── system/                  # 系统管理领域
-│   ├── views/
-│   │   ├── admin/
-│   │   ├── dict/
-│   │   └── role/
-│   └── store.ts             # （可选）仅模块内使用的 store
+├── dashboard/               # 仪表盘（首页）
+│   └── views/
+│       └── Home.vue
+├── system/                  # 系统管理领域（按子领域拆分）
+│   ├── admin/               # 管理员
+│   │   └── api.ts
+│   ├── dict/                # 字典
+│   │   └── api.ts
+│   ├── menu/                # 菜单
+│   │   └── views/
+│   │       └── List.vue
+│   ├── permission/          # 权限
+│   │   └── api.ts
+│   ├── role/                # 角色
+│   │   └── api.ts
+│   ├── user/                # 用户
+│   │   ├── api.ts
+│   │   └── views/
+│   │       └── List.vue
+│   └── views/               # 系统模块共享视图（admin/dict/permission/role 等子组件）
+├── profile/                 # 个人中心
+│   └── views/
+│       └── Profile.vue
+├── crud/                    # CRUD 示例
+│   ├── api.ts
+│   └── views/
+│       ├── Index.vue
+│       └── Detail.vue
+├── docs/                    # 文档
+│   └── views/
+│       └── Documents.vue
+├── about/                   # 关于
+│   └── views/
+│       ├── About.vue
+│       └── NotFound.vue
 └── <domain>/                # 其他业务域
 ```
 
@@ -72,6 +98,8 @@ src/modules/
 | `lib/auth/` | 认证服务（`authService` 单例 + `AuthProvider` 接口 + `TokenStorage` 接口 + JwtAuthProvider） |
 | `lib/router/` | 路由工具（动态路由装载 + 守卫 + MenuDTO 类型） |
 | `lib/error/` | 错误处理（`HttpError` + `Monitor` 接口 + `ErrorBoundary.vue` + 控制台 Monitor 默认实现） |
+| `lib/nprogress/` | 路由进度条封装（`nprogress` 单例 + 类型声明） |
+| `lib/storage/` | 本地存储抽象（`localStorage` / `sessionStorage` 统一接口，供 `TokenStorage` 等使用） |
 
 `lib/` 内部代码必须**与业务无关**，可被任何业务模块复用。
 
@@ -81,7 +109,7 @@ src/modules/
 |--------|------|
 | `app/main.ts` | 应用入口：注册插件、指令、守卫、provide monitor |
 | `app/App.vue` | 根组件：包裹 ErrorBoundary |
-| `app/stores/` | 全局 Pinia store：`user.ts`、`permission.ts` |
+| `app/stores/` | 全局 Pinia store：`user.ts` / `permission.ts` / `sidebar.ts` / `tagsView.ts` / `theme.ts` |
 | `app/directives/` | 全局指令：`v-permission` |
 
 ## 六、`src/shared/` 共享层

@@ -16,7 +16,9 @@
 
 - 🏗️ **四层架构**（`lib` / `app` / `modules` / `shared`），由 ESLint `no-restricted-imports` 强制单向依赖
 - 🎯 **目录扁平**，业务页面按领域聚合，单文件不超过 500 行
-- 🧪 **Vitest 3 + jsdom + @vue/test-utils** 测试栈
+- 🧱 **8 模块标准化布局**：`auth` / `dashboard` / `system`（含 `admin`/`user`/`role`/`permission`/`menu`/`dict`）/ `profile` / `crud` / `docs` / `about`
+- 🧪 **Vitest 3 + jsdom + @vue/test-utils** 单元测试栈
+- 🌫️ **Playwright smoke 测试自动化**：CI 中跑登录重定向 + 登录 + 列表渲染 3 个端到端用例
 - 🔍 **ESLint 9 flat config**，集成 Vue / TypeScript / Import 插件
 - 🪝 **Husky + lint-staged + commitlint**，提交前自动校验
 
@@ -104,6 +106,8 @@ pnpm lint           # ESLint 检查
 pnpm lint:fix       # ESLint 自动修复
 pnpm test           # Vitest 单次运行
 pnpm test:watch     # Vitest watch 模式
+pnpm smoke          # Playwright smoke 测试（需先启动 dev server）
+pnpm smoke:ui       # Playwright smoke UI 模式
 pnpm preview        # 预览生产构建
 pnpm changelog      # 重新生成 CHANGELOG（基于 conventional commits）
 pnpm release:dry    # 预览下一次 release 的 changelog 片段（不写文件）
@@ -121,9 +125,9 @@ shared  ──────┘
 
 | 层级 | 路径 | 职责 |
 |---|---|---|
-| 基础设施 | `src/lib/` | http / auth / router / error / monitor，与业务无关 |
+| 基础设施 | `src/lib/` | http / auth / router / error / nprogress / storage，与业务无关 |
 | 应用骨架 | `src/app/` | `main.ts` / 全局 stores / 全局 directives |
-| 业务领域 | `src/modules/<domain>/` | 按 domain 聚合（如 `auth`、`system`） |
+| 业务领域 | `src/modules/<domain>/` | 按 domain 聚合（`auth` / `dashboard` / `system` / `profile` / `crud` / `docs` / `about`） |
 | 跨模块共享 | `src/shared/` | 类型定义与常量 |
 
 **例外**：`src/lib/router/guards.ts` 允许反向引用 `app/stores/*`（路由守卫需要做权限检查），由 ESLint 显式豁免。详见 [docs/standards/01-ARCHITECTURE.md](./docs/standards/01-ARCHITECTURE.md)。
