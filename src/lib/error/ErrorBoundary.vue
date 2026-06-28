@@ -36,6 +36,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   title: '页面出错了',
+  message: undefined,
   maxRetries: 3,
 })
 

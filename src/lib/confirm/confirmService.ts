@@ -1,5 +1,5 @@
 import { ElMessageBox } from 'element-plus'
-import type { MessageBoxOptions } from 'element-plus'
+import type { ElMessageBoxOptions } from 'element-plus'
 
 export interface ConfirmDefaults {
   confirmButtonText?: string
@@ -11,7 +11,7 @@ export interface ConfirmService {
   showConfirm(
     message: string,
     title?: string,
-    options?: Omit<Partial<MessageBoxOptions>, 'message' | 'title'>
+    options?: Omit<Partial<ElMessageBoxOptions>, 'message' | 'title'>
   ): Promise<boolean>
 }
 
@@ -26,7 +26,7 @@ export function createConfirmService(
   const showConfirm = async (
     message: string,
     title = '提示',
-    options?: Omit<Partial<MessageBoxOptions>, 'message' | 'title'>
+    options?: Omit<Partial<ElMessageBoxOptions>, 'message' | 'title'>
   ): Promise<boolean> => {
     try {
       await messageBox.confirm(message, title, {
