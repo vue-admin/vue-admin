@@ -1,7 +1,8 @@
 import type { MockMethod } from 'vite-plugin-mock'
 
 // 全部菜单（带权限元信息）
-const ALL_MENUS = [
+// 导出供 menu-manage.ts 共享数据源，避免两份维护
+export const ALL_MENUS = [
   {
     path: '/',
     name: 'home',
