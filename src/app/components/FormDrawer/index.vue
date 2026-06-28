@@ -17,13 +17,14 @@
       >
         <el-row :gutter="16">
           <el-col
-            v-for="field in fields"
+            v-for="field in visibleFields"
             :key="field.prop"
             :span="field.span || 24"
           >
             <el-form-item
               :label="field.label"
               :prop="field.prop"
+              :rules="field.rules"
             >
               <slot
                 :name="`field-${field.prop}`"
@@ -33,7 +34,7 @@
                   :is="resolveComponent(field.type)"
                   v-model="formData[field.prop]"
                   :placeholder="field.placeholder || `请输入${field.label}`"
-                  :disabled="field.disabled || loading"
+                  :disabled="field.disabled || loading || mode === 'view'"
                   v-bind="resolveExtraProps(field)"
                 >
                   <template v-if="field.type === 'select'">
@@ -53,6 +54,17 @@
                       {{ opt.label }}
                     </el-radio>
                   </template>
+                  <template v-if="field.type === 'treeSelect'">
+                    <el-tree-select
+                      v-model="formData[field.prop]"
+                      :data="field.treeData"
+                      :props="field.treeProps || { label: 'label', children: 'children' }"
+                      node-key="id"
+                      check-strictly
+                      :placeholder="field.placeholder || `请选择${field.label}`"
+                      :disabled="field.disabled || loading || mode === 'view'"
+                    />
+                  </template>
                 </component>
               </slot>
             </el-form-item>
@@ -62,28 +74,37 @@
     </div>
 
     <template #footer>
-      <el-button @click="handleCancel">
-        取消
-      </el-button>
       <el-button
-        type="primary"
-        :loading="loading"
-        @click="handleConfirm"
+        v-if="mode === 'view'"
+        @click="handleCancel"
       >
-        确认
+        关闭
       </el-button>
+      <template v-else>
+        <el-button @click="handleCancel">
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          :loading="loading"
+          @click="handleConfirm"
+        >
+          确认
+        </el-button>
+      </template>
     </template>
   </el-drawer>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import type { FormInstance } from 'element-plus'
 import type { FormDrawerProps, FormField, FormFieldType } from './types'
 
 const props = withDefaults(defineProps<FormDrawerProps>(), {
   loading: false,
-  width: '500px'
+  width: '500px',
+  mode: 'add'
 })
 
 const emit = defineEmits<{
@@ -101,15 +122,29 @@ const componentMap: Record<FormFieldType, string> = {
   radio: 'el-radio-group',
   checkbox: 'el-checkbox-group',
   switch: 'el-switch',
-  date: 'el-date-picker'
+  date: 'el-date-picker',
+  password: 'el-input',
+  treeSelect: 'el-tree-select',
+  cascader: 'el-cascader'
 }
 
 const resolveComponent = (type: FormField['type']): string => componentMap[type] || 'el-input'
 
 const resolveExtraProps = (field: FormField): Record<string, unknown> => {
   if (field.type === 'textarea') return { type: 'textarea', rows: 3 }
+  if (field.type === 'password') return { type: 'password', showPassword: true }
   return {}
 }
+
+/** 声明式显隐：字段的 dependencies 全部 show 返回 true 时才可见 */
+const visibleFields = computed(() => {
+  return props.fields.filter((field) => {
+    if (!field.dependencies || field.dependencies.length === 0) return true
+    return field.dependencies.every((dep) =>
+      dep.show(props.formData, { mode: props.mode })
+    )
+  })
+})
 
 const handleCancel = (): void => emit('update:modelValue', false)
 
@@ -122,11 +157,15 @@ const handleConfirm = async (): Promise<void> => {
     // 校验失败，element-plus 会显示错误
   }
 }
+
+defineExpose({
+  /** 暴露 formRef 供调用方手动触发关联字段重校验 */
+  validateField: (prop: string) => formRef.value?.validateField(prop)
+})
 </script>
 
 <style lang="scss" scoped>
 .form-drawer-body {
-  // 让 v-loading 遮罩能正确覆盖表单区域
   min-height: 100%;
 }
 </style>
