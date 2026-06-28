@@ -1,0 +1,12 @@
+[build]
+  command = "pnpm build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# SPA：所有未匹配静态文件的请求回退到 index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

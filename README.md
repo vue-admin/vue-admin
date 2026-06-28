@@ -64,6 +64,13 @@
 
 ## 🚀 快速开始
 
+### 一键部署
+
+Fork 仓库后可一键部署到 Vercel 或 Netlify（部署后需自行接入后端 API，生产构建不含 mock）。
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvue-admin%2Fvue-admin&project-name=vue-admin&repository-name=vue-admin)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/vue-admin/vue-admin)
+
 ### 环境要求
 
 - **Node.js** `>=22.0.0 <23.0.0`（推荐 22.22.0 LTS）

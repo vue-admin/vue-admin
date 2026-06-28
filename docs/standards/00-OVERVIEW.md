@@ -54,7 +54,7 @@
 - [ ] 与 **vadm** 脚手架对接：`pnpm create vadm` 选模板 → 派生本项目
 - [x] 文档站点（VitePress）—— `docs-site/` 复用 `docs/standards/` 内容，`pnpm docs:dev/build/preview`，CI 部署 GitHub Pages
 - [x] 组件预览（VitePress 组件演示页）—— `docs-site/components/` 渲染 SearchTable/FormDrawer/PageContainer 实际组件，与文档站点合二为一
-- [ ] 在线 Demo + 一键部署模板（Vercel/Netlify）
+- [x] 一键部署模板（Vercel/Netlify）—— `netlify.toml` + `vercel.json` 部署配置，README 提供 Deploy 按钮
 
 ## 三、依赖治理原则
 
