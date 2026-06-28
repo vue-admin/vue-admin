@@ -10,10 +10,10 @@
       @close="handleClose"
     >
       <div class="sidebar-logo-container">
-        <el-icon>
+        <el-icon v-if="layoutStore.showLogo">
           <IconLogo />
         </el-icon>
-        <span v-if="!sidebarStore.collapsed"> 后台管理系统 </span>
+        <span v-if="!sidebarStore.collapsed && layoutStore.showLogo"> 后台管理系统 </span>
       </div>
       <MenuItem
         v-for="item in menus"
@@ -29,11 +29,13 @@
 import { ref, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useSidebarStore } from '@/app/stores/sidebar'
+import { useLayoutStore } from '@/app/stores/layout'
 import MenuItem from '../Menu/MenuItem.vue'
 import IconLogo from './IconLogo.vue'
 import menus from '@/router/menus'
 
 const sidebarStore = useSidebarStore()
+const layoutStore = useLayoutStore()
 
 // 菜单激活的路由
 const route = useRoute()

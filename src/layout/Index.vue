@@ -9,11 +9,11 @@
         <el-header>
           <Header />
         </el-header>
-        <TagView />
+        <TagView v-if="layoutStore.showTagsView" />
         <el-main>
           <RouterView />
         </el-main>
-        <Footer />
+        <Footer v-if="layoutStore.showFooter" />
       </el-container>
     </el-container>
   </el-watermark>
@@ -27,9 +27,11 @@ import Footer from './components/Footer.vue'
 import { reactive, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useThemeStore } from '@/app/stores/theme'
+import { useLayoutStore } from '@/app/stores/layout'
 
 const themeStore = useThemeStore()
 const { isDark } = storeToRefs(themeStore)
+const layoutStore = useLayoutStore()
 
 const font = reactive({
   color: 'rgba(0, 0, 0, .05)'

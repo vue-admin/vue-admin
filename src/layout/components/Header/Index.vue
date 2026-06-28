@@ -18,7 +18,7 @@
       </a>
     </div>
     <div class="breadcrumb">
-      <Breadcrumb />
+      <Breadcrumb v-if="layoutStore.showBreadcrumb" />
     </div>
     <div class="flex-grow" />
     <el-menu-item index="/">
@@ -68,6 +68,7 @@ import { Setting } from '@element-plus/icons-vue'
 import { useSidebarStore } from '@/app/stores/sidebar'
 import { useThemeStore } from '@/app/stores/theme'
 import { useUserStore } from '@/app/stores/user'
+import { useLayoutStore } from '@/app/stores/layout'
 import Breadcrumb from '../Breadcrumb/Index.vue'
 import SettingsDrawer from '../SettingsDrawer.vue'
 const activeIndex = ref('1')
@@ -79,6 +80,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
 const sidebarStore = useSidebarStore()
 const themeStore = useThemeStore()
 const userStore = useUserStore()
+const layoutStore = useLayoutStore()
 
 // 旧版 Header 引用 `user.name`（来自 useStorage demo）；M3+ user store 已通过
 // authService 加载 profile，优先展示 nickname，回退到 username
