@@ -103,7 +103,19 @@
         {{ formatDate(row.createTime) }}
       </template>
 
+      <template #col-lastLoginTime="{ row }">
+        {{ formatDate(row.lastLoginTime) }}
+      </template>
+
       <template #col-actions="{ row }">
+        <el-button
+          link
+          type="primary"
+          size="small"
+          @click="openDrawer('view', row)"
+        >
+          查看
+        </el-button>
         <el-button
           link
           type="primary"
@@ -186,14 +198,15 @@ const columns: ColumnDef[] = [
   { prop: 'role', label: '角色', minWidth: 100, slot: 'role' },
   { prop: 'status', label: '状态', minWidth: 90, slot: 'status' },
   { prop: 'createTime', label: '创建时间', minWidth: 170, slot: 'createTime' },
-  { prop: 'actions', label: '操作', width: 140, fixed: 'right', slot: 'actions' },
+  { prop: 'lastLoginTime', label: '最后登录', minWidth: 170, slot: 'lastLoginTime' },
+  { prop: 'actions', label: '操作', width: 200, fixed: 'right', slot: 'actions' },
 ]
 
 const drawerVisible = ref(false)
-const drawerMode = ref<'add' | 'edit'>('add')
+const drawerMode = ref<'add' | 'edit' | 'view'>('add')
 const editingUser = ref<UserInfo | null>(null)
 
-const openDrawer = (mode: 'add' | 'edit', user?: UserInfo) => {
+const openDrawer = (mode: 'add' | 'edit' | 'view', user?: UserInfo) => {
   drawerMode.value = mode
   editingUser.value = user ?? null
   drawerVisible.value = true

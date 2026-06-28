@@ -1,7 +1,9 @@
 <template>
   <FormDrawer
+    ref="formDrawerRef"
     v-model="visible"
-    :title="mode === 'add' ? '新增用户' : '编辑用户'"
+    :title="drawerTitle"
+    :mode="mode"
     :form-data="formData"
     :fields="fields"
     :rules="rules"
@@ -14,7 +16,7 @@
 <script lang="ts" setup>
 import { ref, watch, reactive, computed } from 'vue'
 import { FormDrawer } from '@/app/components'
-import type { FormField } from '@/app/components/FormDrawer/types'
+import type { FormField, FormDrawerMode } from '@/app/components/FormDrawer/types'
 import { ElMessage } from 'element-plus'
 import {
   createUser,
@@ -25,7 +27,7 @@ import {
 
 const props = defineProps<{
   modelValue: boolean
-  mode: 'add' | 'edit'
+  mode: FormDrawerMode
   data: UserInfo | null
 }>()
 
@@ -36,6 +38,7 @@ const emit = defineEmits<{
 
 const visible = ref(props.modelValue)
 const submitting = ref(false)
+const formDrawerRef = ref<InstanceType<typeof FormDrawer>>()
 
 watch(() => props.modelValue, (v) => {
   visible.value = v
@@ -43,7 +46,7 @@ watch(() => props.modelValue, (v) => {
 })
 watch(visible, (v) => emit('update:modelValue', v))
 
-const formData = reactive<UserCreateRequest>({
+const formData = reactive<UserCreateRequest & { confirmPassword: string }>({
   username: '',
   realName: '',
   email: '',
@@ -51,6 +54,13 @@ const formData = reactive<UserCreateRequest>({
   role: 'user',
   status: 'active',
   password: '',
+  confirmPassword: '',
+})
+
+const drawerTitle = computed(() => {
+  if (props.mode === 'add') return '新增用户'
+  if (props.mode === 'edit') return '编辑用户'
+  return '查看用户'
 })
 
 const fields = computed<FormField[]>(() => [
@@ -82,11 +92,51 @@ const fields = computed<FormField[]>(() => [
   {
     prop: 'password',
     label: '密码',
-    type: 'input',
-    span: 24,
+    type: 'password',
+    span: 12,
     placeholder: props.mode === 'edit' ? '编辑时留空表示不修改' : '请输入密码',
+    dependencies: [
+      { trigger: 'mode', show: (_, ctx) => ctx.mode !== 'view' }
+    ],
+    rules: [
+      { required: props.mode === 'add', message: '请输入密码', trigger: 'blur' },
+      { min: 6, message: '密码长度至少6个字符', trigger: 'blur' },
+    ],
+  },
+  {
+    prop: 'confirmPassword',
+    label: '确认密码',
+    type: 'password',
+    span: 12,
+    dependencies: [
+      { trigger: 'mode', show: (_, ctx) => ctx.mode !== 'view' }
+    ],
+    rules: [
+      {
+        required: props.mode === 'add',
+        message: '请再次输入密码',
+        trigger: 'blur',
+      },
+      {
+        validator: (_rule, value, cb) => {
+          if (value !== formData.password) {
+            cb(new Error('两次输入的密码不一致'))
+          } else {
+            cb()
+          }
+        },
+        trigger: ['blur', 'change'],
+      },
+    ],
   },
 ])
+
+// password 字段变化时手动触发 confirmPassword 重校验（EP 2.11 不支持 relations prop）
+watch(() => formData.password, () => {
+  if (formData.confirmPassword) {
+    formDrawerRef.value?.validateField('confirmPassword')
+  }
+})
 
 const rules = {
   username: [
@@ -107,25 +157,18 @@ const rules = {
   ],
   role: [{ required: true, message: '请选择角色', trigger: 'change' }],
   status: [{ required: true, message: '请选择状态', trigger: 'change' }],
-  password: [
-    {
-      required: props.mode === 'add',
-      message: '请输入密码',
-      trigger: 'blur',
-    },
-    { min: 6, message: '密码长度至少6个字符', trigger: 'blur' },
-  ],
 }
 
 const initForm = () => {
-  const empty: UserCreateRequest = {
+  const empty = {
     username: '',
     realName: '',
     email: '',
     phone: '',
-    role: 'user',
-    status: 'active',
+    role: 'user' as const,
+    status: 'active' as const,
     password: '',
+    confirmPassword: '',
   }
   if (props.mode === 'edit' && props.data) {
     const u = props.data
@@ -137,6 +180,7 @@ const initForm = () => {
       role: u.role,
       status: u.status,
       password: '',
+      confirmPassword: '',
     })
   } else {
     Object.assign(formData, empty)
@@ -146,7 +190,8 @@ const initForm = () => {
 const handleSubmit = async (data: Record<string, unknown>) => {
   submitting.value = true
   try {
-    const payload = { ...formData, ...data } as UserCreateRequest
+    const { confirmPassword: _omit, ...rest } = formData
+    const payload = { ...rest, ...data } as UserCreateRequest
     // 编辑模式下若密码留空，则不修改密码
     if (props.mode === 'edit' && !payload.password) {
       delete payload.password
