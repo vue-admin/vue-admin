@@ -113,7 +113,7 @@ import {
   type CrudCreatePayload,
   type CrudUpdatePayload,
   type item
-} from '@/apis/crud'
+} from '../api'
 
 type DrawerMode = 'add' | 'edit' | 'view'
 
@@ -213,7 +213,7 @@ const loadDetail = async (id: string | number) => {
   if (!id) return
   loading.value = true
   try {
-    const { data } = await fetchCrudDetail({ id })
+    const data = await fetchCrudDetail({ id })
     fillForm(data)
   } catch (error) {
     console.error(error)
@@ -243,15 +243,13 @@ const handleSubmit = async () => {
     }
     let result: CrudUpdatePayload | undefined
     if (isEdit.value) {
-      result = (
-        await updateCrudItem({
-          ...payload,
-          id: form.id
-        })
-      ).data
+      result = await updateCrudItem({
+        ...payload,
+        id: form.id
+      })
       ElMessage.success('修改成功')
     } else {
-      result = (await createCrudItem(payload)).data
+      result = await createCrudItem(payload)
       ElMessage.success('创建成功')
     }
     emit('submit', result)

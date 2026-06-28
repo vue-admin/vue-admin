@@ -205,7 +205,7 @@ import {
   deleteCrudItem,
   batchDeleteCrudItems,
   type item
-} from '@/apis/crud'
+} from '../api'
 import { ref, onMounted, reactive } from 'vue'
 import {
   Search,
@@ -238,11 +238,11 @@ const totalCount = ref(0)
 const getTableData = async () => {
   tableLoading.value = true
   try {
-    const res = await fetchCrud({ name: searchForm.keyword })
-    tableData.value = res.data.records
-    currentPage4.value = res.data.current
-    pageSize4.value = res.data.size
-    totalCount.value = res.data.total || 400
+    const data = await fetchCrud({ name: searchForm.keyword })
+    tableData.value = data.records
+    currentPage4.value = data.current
+    pageSize4.value = data.size
+    totalCount.value = data.total || 400
   } catch (error) {
     console.error(error)
     ElMessage.error('获取数据失败')
