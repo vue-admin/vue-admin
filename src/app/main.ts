@@ -11,6 +11,7 @@ import { vPermission } from '@/app/directives/permission'
 import { installGuards } from '@/lib/router/guards'
 import { useLayoutStore } from '@/app/stores/layout'
 import { applyPrimaryColor } from '@/lib/theme/colors'
+import { i18n, setLocale } from '@/lib/i18n'
 
 import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
@@ -45,6 +46,16 @@ watch(
   () => layoutStore.primaryColor,
   (color) => {
     applyPrimaryColor(color)
+  },
+  { immediate: true }
+)
+
+// 国际化：注册 vue-i18n + 同步 layout store.locale
+app.use(i18n)
+watch(
+  () => layoutStore.locale,
+  (l) => {
+    setLocale(l)
   },
   { immediate: true }
 )
