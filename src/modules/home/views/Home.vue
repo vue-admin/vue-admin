@@ -381,7 +381,7 @@ const quickActions = ref<QuickAction[]>([
     icon: 'UserFilled',
     label: '个人中心',
     color: '#909399',
-    path: '/system/portrait'
+    path: '/profile'
   }
 ])
 

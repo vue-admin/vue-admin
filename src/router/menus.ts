@@ -119,18 +119,18 @@ const menus: RouteRecordRaw[] = [
           icon: 'DataBoard',
           showMenu: true
         }
-      },
-      {
-        path: '/system/portrait',
-        name: 'systemPortrait',
-        component: () => import('@/modules/system/views/portrait/Portrait.vue'),
-        meta: {
-          title: '个人中心',
-          icon: 'User',
-          showMenu: false
-        }
       }
     ]
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: () => import('@/modules/profile/views/Profile.vue'),
+    meta: {
+      title: '个人中心',
+      icon: 'User',
+      showMenu: false
+    }
   },
   {
     path: '/404',

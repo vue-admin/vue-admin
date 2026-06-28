@@ -43,7 +43,7 @@
         </el-icon>
         {{ user.name }}
       </template>
-      <el-menu-item index="/system/portrait">
+      <el-menu-item index="/profile">
         个人中心
       </el-menu-item>
       <el-menu-item index="/login">
