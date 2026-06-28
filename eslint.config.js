@@ -82,6 +82,33 @@ export default [
       }],
     },
   },
+  // 业务层（modules/layout/app）禁止引用已删除的旧目录路径
+  // 旧目录在 Task 13 已物理删除，此规则作为防回退护栏：新代码若尝试 import 旧路径立即报错
+  {
+    files: ['src/modules/**/*', 'src/layout/**/*', 'src/app/**/*'],
+    rules: {
+      'no-restricted-imports': ['error', {
+        patterns: [
+          {
+            group: ['@/apis', '@/apis/*'],
+            message: '禁止引用旧 src/apis/，请改用 @/modules/<domain>/api 或 @/lib/http/client',
+          },
+          {
+            group: ['@/stores', '@/stores/*'],
+            message: '禁止引用旧 src/stores/，请改用 @/app/stores/* 或 @/modules/<domain>/store',
+          },
+          {
+            group: ['@/utils', '@/utils/*'],
+            message: '禁止引用旧 src/utils/，请改用 @/lib/*',
+          },
+          {
+            group: ['@/components', '@/components/*'],
+            message: '禁止引用旧 src/components/，请改用 @/layout/components/* 或 @/modules/<x>/components/*',
+          },
+        ],
+      }],
+    },
+  },
   // 例外：路由守卫需要拉取 user/permission store 做权限检查
   // 项目 plan M4.4 全局约束明确允许此反向依赖（lib→app/stores）
   // 禁止的是 lib→modules/* 业务模块依赖

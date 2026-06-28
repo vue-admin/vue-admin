@@ -34,3 +34,6 @@ components.d.ts
 test-results/
 playwright-report/
 playwright/.cache/
+
+# macOS Finder metadata
+**/.DS_Store
