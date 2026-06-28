@@ -44,7 +44,7 @@
 - [x] 通用组件库：`SearchTable`、`FormDrawer`、`PageContainer`
 - [ ] 主题系统：CSS Variables 规范化（已有暗黑，需整理）
 - [ ] 国际化（vue-i18n）骨架
-- [ ] 错误边界 + 全局 loading + 确认对话框组件
+- [x] 错误边界 + 全局 loading + 确认对话框组件
 
 ### L3 平台化（生态，3-6 月）
 
