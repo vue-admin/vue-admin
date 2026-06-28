@@ -30,6 +30,7 @@ import { ref, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useSidebarStore } from '@/app/stores/sidebar'
 import MenuItem from '../Menu/MenuItem.vue'
+import IconLogo from './IconLogo.vue'
 import menus from '@/router/menus'
 
 const sidebarStore = useSidebarStore()

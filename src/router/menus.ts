@@ -135,7 +135,7 @@ const menus: RouteRecordRaw[] = [
   {
     path: '/404',
     name: 'notFound',
-    component: () => import('@/app/views/NotFound.vue')
+    component: () => import('@/modules/about/views/NotFound.vue')
   }
 ]
 

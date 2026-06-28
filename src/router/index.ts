@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Layout from '@/layout/Index.vue'
-import nprogress from '@/utils/nprogress'
+import nprogress from '@/lib/nprogress'
 import menus from './menus'
 
 const router = createRouter({
