@@ -8,8 +8,8 @@
     @select="handleSelect"
   >
     <div class="el-collapse-icon">
-      <a @click="toggleCollapse()">
-        <el-icon v-if="isCollapse">
+      <a @click="sidebarStore.toggleCollapsed()">
+        <el-icon v-if="sidebarStore.collapsed">
           <Expand />
         </el-icon>
         <el-icon v-else>
@@ -29,10 +29,10 @@
     </el-menu-item>
     <div
       class="dark-icon"
-      @click="toggleDark()"
+      @click="themeStore.toggleDark()"
     >
       <el-icon>
-        <Moon v-if="isDark" />
+        <Moon v-if="themeStore.isDark" />
         <Sunny v-else />
       </el-icon>
     </div>
@@ -41,7 +41,7 @@
         <el-icon>
           <Avatar />
         </el-icon>
-        {{ user.name }}
+        {{ displayName }}
       </template>
       <el-menu-item index="/profile">
         个人中心
@@ -54,15 +54,25 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { toggleCollapse, isCollapse } from '@/stores/collapse'
-import { toggleDark, isDark } from '@/stores/dark'
-import { user } from '@/stores/user'
+import { ref, computed } from 'vue'
+import { useSidebarStore } from '@/app/stores/sidebar'
+import { useThemeStore } from '@/app/stores/theme'
+import { useUserStore } from '@/app/stores/user'
 import Breadcrumb from '../Breadcrumb/Index.vue'
 const activeIndex = ref('1')
 const handleSelect = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }
+
+const sidebarStore = useSidebarStore()
+const themeStore = useThemeStore()
+const userStore = useUserStore()
+
+// 旧版 Header 引用 `user.name`（来自 useStorage demo）；M3+ user store 已通过
+// authService 加载 profile，优先展示 nickname，回退到 username
+const displayName = computed(
+  () => userStore.profile?.nickname || userStore.profile?.username || ''
+)
 </script>
 
 <style scoped>

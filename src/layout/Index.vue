@@ -25,7 +25,11 @@ import Header from './components/Header/Index.vue'
 import TagView from './components/TagsView/Index.vue'
 import Footer from './components/Footer.vue'
 import { reactive, watch } from 'vue'
-import { isDark } from '@/stores/dark'
+import { storeToRefs } from 'pinia'
+import { useThemeStore } from '@/app/stores/theme'
+
+const themeStore = useThemeStore()
+const { isDark } = storeToRefs(themeStore)
 
 const font = reactive({
   color: 'rgba(0, 0, 0, .05)'

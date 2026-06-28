@@ -10,10 +10,10 @@
           <span>用户登录</span>
           <div
             class="dark-icon"
-            @click="toggleDark()"
+            @click="themeStore.toggleDark()"
           >
             <el-icon>
-              <Moon v-if="isDark" />
+              <Moon v-if="themeStore.isDark" />
               <Sunny v-else />
             </el-icon>
           </div>
@@ -62,7 +62,7 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { toggleDark, isDark } from '@/stores/dark'
+import { useThemeStore } from '@/app/stores/theme'
 import type { FormInstance, FormItemRule, FormRules } from 'element-plus'
 import { authService } from '@/lib/auth/authService'
 import { useUserStore } from '@/app/stores/user'
@@ -70,6 +70,7 @@ import { useUserStore } from '@/app/stores/user'
 const ruleFormRef = ref<FormInstance>()
 const router = useRouter()
 const userStore = useUserStore()
+const themeStore = useThemeStore()
 const submitting = ref(false)
 
 // 强类型校验器：禁止 any，类型由 FormItemRule['validator'] 推导

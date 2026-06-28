@@ -1,9 +1,9 @@
 <template>
-  <el-aside :class="isCollapse ? 'el-aside--collapse' : ''">
+  <el-aside :class="sidebarStore.collapsed ? 'el-aside--collapse' : ''">
     <el-menu
       :default-active="activePath"
       class="el-menu-aside"
-      :collapse="isCollapse"
+      :collapse="sidebarStore.collapsed"
       :router="true"
       :collapse-transition="false"
       @open="handleOpen"
@@ -13,7 +13,7 @@
         <el-icon>
           <IconLogo />
         </el-icon>
-        <span v-if="!isCollapse"> 后台管理系统 </span>
+        <span v-if="!sidebarStore.collapsed"> 后台管理系统 </span>
       </div>
       <MenuItem
         v-for="item in menus"
@@ -26,11 +26,13 @@
 </template>
 
 <script lang="ts" setup>
-import { isCollapse } from '@/stores/collapse'
 import { ref, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useSidebarStore } from '@/app/stores/sidebar'
 import MenuItem from '../Menu/MenuItem.vue'
 import menus from '@/router/menus'
+
+const sidebarStore = useSidebarStore()
 
 // 菜单激活的路由
 const route = useRoute()

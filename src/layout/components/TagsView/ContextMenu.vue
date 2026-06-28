@@ -3,6 +3,9 @@
     <li @click="onRefreshClick">
       刷新
     </li>
+    <li @click="onCloseCurrentClick">
+      关闭当前
+    </li>
     <li @click="onCloseRightClick">
       关闭右侧
     </li>
@@ -17,7 +20,8 @@
 
 <script lang="ts" setup>
 import { useRouter } from 'vue-router'
-import { useTagsViewStore } from '@/stores/tagsView'
+import { useTagsViewStore } from '@/app/stores/tagsView'
+import { useTagsViewClose } from './useTagsViewClose'
 
 const props = defineProps({
   index: {
@@ -30,8 +34,15 @@ const router = useRouter()
 const tagsViewStore = useTagsViewStore()
 const { removeTagsView } = tagsViewStore
 
+const { closeCurrent } = useTagsViewClose()
+
 const onRefreshClick = () => {
   router.go(0)
+}
+
+const onCloseCurrentClick = () => {
+  // 关闭当前 + 必要时跳转相邻 tag（与 Index.vue 的关闭按钮共享逻辑）
+  closeCurrent(props.index)
 }
 
 const onCloseRightClick = () => {

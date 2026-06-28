@@ -32,17 +32,19 @@
 
 <script lang="ts" setup>
 import ContextMenu from './ContextMenu.vue'
+import { useTagsViewClose } from './useTagsViewClose'
 import { ref, reactive, watch } from 'vue'
-import { RouteLocationNormalizedLoaded, useRoute, useRouter } from 'vue-router'
+import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { useTagsViewStore, type TagsViewItem } from '@/stores/tagsView'
+import { useTagsViewStore, type TagsViewItem } from '@/app/stores/tagsView'
 
-const router = useRouter()
 const route = useRoute()
 
 const tagsViewStore = useTagsViewStore()
 const { tagsViewList } = storeToRefs(tagsViewStore)
-const { addTagsViewList, removeTagsView } = tagsViewStore
+const { addTagsViewList } = tagsViewStore
+
+const { closeCurrent } = useTagsViewClose()
 
 const isActive = (tag: TagsViewItem) => {
   return tag.path === route.path
@@ -67,20 +69,10 @@ const openMenu = (e: MouseEvent, index: number) => {
   visible.value = true
 }
 
-const onCloseClick = (index: number, tag: TagsViewItem) => {
-  removeTagsView({
-    type: 'index',
-    index: index
-  })
-  if (isActive(tag)) {
-    if (index == 0 && tagsViewList.value.length >= 1) {
-      router.push(tagsViewList.value[0].fullPath)
-    } else if (tagsViewList.value.length == 0) {
-      router.push('/')
-    } else {
-      router.push(tagsViewList.value[index - 1].fullPath)
-    }
-  }
+const onCloseClick = (index: number, _tag: TagsViewItem) => {
+  // 跳转逻辑（关当前激活 tag 后回退到相邻 tag 或首页）已抽到
+  // useTagsViewClose composable，与 ContextMenu 的「关闭当前」共享
+  closeCurrent(index)
 }
 
 const closeMenu = () => {
