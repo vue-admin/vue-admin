@@ -363,7 +363,7 @@ const quickActions = ref<QuickAction[]>([
     icon: 'User',
     label: '用户管理',
     color: '#409eff',
-    path: '/user/list'
+    path: '/system/user'
   },
   {
     icon: 'Document',

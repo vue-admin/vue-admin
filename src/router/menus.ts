@@ -52,26 +52,6 @@ const menus: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/user',
-    name: 'userCenter',
-    meta: {
-      title: '用户中心',
-      icon: 'location',
-      showMenu: true
-    },
-    children: [
-      {
-        path: '/user/list',
-        name: 'userList',
-        component: () => import('@/modules/user/views/List.vue'),
-        meta: {
-          title: '用户列表',
-          showMenu: true
-        }
-      }
-    ]
-  },
-  {
     path: '/system',
     name: 'system',
     meta: {
@@ -87,6 +67,16 @@ const menus: RouteRecordRaw[] = [
         meta: {
           title: '管理员',
           icon: 'Avatar',
+          showMenu: true
+        }
+      },
+      {
+        path: '/system/user',
+        name: 'systemUser',
+        component: () => import('@/modules/system/user/views/List.vue'),
+        meta: {
+          title: '用户管理',
+          icon: 'User',
           showMenu: true
         }
       },

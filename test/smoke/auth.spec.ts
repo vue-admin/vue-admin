@@ -29,8 +29,8 @@ test.describe.serial('登录态流程', () => {
     await page.getByRole('textbox', { name: '密码' }).fill('123456')
     await page.getByRole('button', { name: '登录' }).click()
     await expect(page).toHaveURL(/\/(\?.*)?$/)
-    // 路由现状：/user/list（Task 7 完成 user 模块合并后改为 /system/user/list）
-    await page.goto('user/list')
+    // 路由现状：/system/user（Task 7 完成 user 模块合并入 system/user，遵循 system 子项无 /list 后缀风格）
+    await page.goto('system/user')
     await expect(page.locator('.el-table').first()).toBeVisible()
   })
 })
