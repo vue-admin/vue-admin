@@ -308,16 +308,16 @@ el-tree draggable 是 Element Plus 原生能力，无需 vue-draggable-next 或 
 
 ## 十、DoD
 
-- [ ] 4 件套全绿（lint / type-check / test / build）
-- [ ] 9 smoke 全绿
-- [ ] admin/role/permission List.vue 重构后 < 250 行
-- [ ] dict/List.vue 仅包裹 PageContainer，子组件不动
-- [ ] FormDrawer 增强：mode + dependencies + field-level validator + 新增 password/treeSelect 字段类型
-- [ ] user/List.vue 补齐 view 模式 + lastLoginTime 列 + 密码跨字段校验
-- [ ] system/menu 树形 CRUD 可用（el-tree draggable + MenuFormDrawer）
-- [ ] 零新依赖
-- [ ] 文档同步（CLAUDE.md / 01-ARCHITECTURE.md / README.md）
-- [ ] push 到 origin/main，CI 5 作业全绿
+- [x] 4 件套全绿（lint / type-check / test / build）
+- [x] 9 smoke 全绿
+- [x] admin/role/permission List.vue 重构后 < 250 行
+- [x] dict/List.vue 仅包裹 PageContainer，子组件不动
+- [x] FormDrawer 增强：mode + dependencies + field-level validator + 新增 password/treeSelect 字段类型
+- [x] user/List.vue 补齐 view 模式 + lastLoginTime 列 + 密码跨字段校验
+- [x] system/menu 树形 CRUD 可用（el-tree draggable + MenuFormDrawer）
+- [x] 零新依赖
+- [x] 文档同步（CLAUDE.md / 01-ARCHITECTURE.md / README.md）
+- [x] push 到 origin/main，CI 5 作业全绿
 
 ## 十一、任务估算
 

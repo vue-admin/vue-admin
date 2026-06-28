@@ -33,7 +33,7 @@
 **Interfaces:**
 - Produces: `FormDrawerMode` 类型、`FormFieldDependency` 接口、`FormField` 增加 `dependencies`/`rules` 字段、`FormDrawerProps` 增加 `mode` 字段、`FormFieldType` 增加 `password`/`treeSelect`/`cascader`
 
-- [ ] **Step 1: 写完整新 types.ts**
+- [x] **Step 1: 写完整新 types.ts**
 
 替换 `src/app/components/FormDrawer/types.ts` 全部内容：
 
@@ -107,7 +107,7 @@ export interface FormDrawerProps {
 }
 ```
 
-- [ ] **Step 2: 验证 type-check**
+- [x] **Step 2: 验证 type-check**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm type-check
@@ -115,7 +115,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm type-check
 
 Expected: 0 error（types 改动是纯增量，旧用法 `FormField` 不带 `dependencies`/`rules` 仍兼容）
 
-- [ ] **Step 3: 验证现有 FormDrawer 测试仍绿**
+- [x] **Step 3: 验证现有 FormDrawer 测试仍绿**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm test FormDrawer
@@ -123,7 +123,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm test FormDrawer
 
 Expected: 3 passed（types 扩展不影响运行时）
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git add src/app/components/FormDrawer/types.ts
@@ -142,7 +142,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git commit -m "feat(
 - Consumes: Task 1 的 `FormDrawerMode` / `FormFieldDependency` / `FormFieldRule` / 新 `FormFieldType`
 - Produces: `<FormDrawer>` 支持 `mode` prop（view 全字段 disabled + footer 关闭按钮）、字段 `dependencies` 显隐联动、字段 `rules` field-level 校验、`password`/`treeSelect` 字段类型
 
-- [ ] **Step 1: 写 4 个失败测试**
+- [x] **Step 1: 写 4 个失败测试**
 
 在 `test/app/components/FormDrawer.spec.ts` 文件末尾（现有 3 个测试后）追加：
 
@@ -245,7 +245,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git commit -m "feat(
 import { flushPromises } from '@vue/test-utils'
 ```
 
-- [ ] **Step 2: 运行测试确认失败**
+- [x] **Step 2: 运行测试确认失败**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm test FormDrawer
@@ -253,7 +253,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm test FormDrawer
 
 Expected: 4 个新测试 FAIL（mode 默认未生效、dependencies 未实现、footer 未按 mode 切换）
 
-- [ ] **Step 3: 实现 FormDrawer/index.vue 完整版**
+- [x] **Step 3: 实现 FormDrawer/index.vue 完整版**
 
 替换 `src/app/components/FormDrawer/index.vue` 全部内容：
 
@@ -428,7 +428,7 @@ defineExpose({
 </style>
 ```
 
-- [ ] **Step 4: 运行测试确认通过**
+- [x] **Step 4: 运行测试确认通过**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm test FormDrawer
@@ -436,7 +436,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm test FormDrawer
 
 Expected: 7 passed（原 3 + 新 4）
 
-- [ ] **Step 5: 验证全套**
+- [x] **Step 5: 验证全套**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm type-check
@@ -446,7 +446,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm test
 
 Expected: type-check 0 error / lint 0 error / 全套测试绿
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git add src/app/components/FormDrawer/index.vue test/app/components/FormDrawer.spec.ts
@@ -465,7 +465,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git commit -m "feat(
 - Consumes: Task 2 的 FormDrawer `mode` prop、`dependencies`、`rules` field-level、`validateField` expose、`password` 字段类型
 - Produces: UserFormDrawer 支持 view 模式 + confirmPassword 跨字段校验；List.vue 有查看按钮 + lastLoginTime 列
 
-- [ ] **Step 1: 重写 UserFormDrawer.vue**
+- [x] **Step 1: 重写 UserFormDrawer.vue**
 
 替换 `src/modules/system/user/views/UserFormDrawer.vue` 全部内容：
 
@@ -685,7 +685,7 @@ const handleSubmit = async (data: Record<string, unknown>) => {
 
 注意：`const { confirmPassword: _omit, ...rest } = formData` 解构会触发 ESLint `no-unused-vars`，需在变量前加 `_` 前缀（项目 ESLint 配置已忽略 `_` 开头的未用变量）。
 
-- [ ] **Step 2: 修改 List.vue**
+- [x] **Step 2: 修改 List.vue**
 
 修改 `src/modules/system/user/views/List.vue` 两处：
 
@@ -765,7 +765,7 @@ const openDrawer = (mode: 'add' | 'edit', user?: UserInfo) => {
 const openDrawer = (mode: 'add' | 'edit' | 'view', user?: UserInfo) => {
 ```
 
-- [ ] **Step 3: 验证全套**
+- [x] **Step 3: 验证全套**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm type-check
@@ -776,7 +776,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm build
 
 Expected: 4 件套全绿
 
-- [ ] **Step 4: smoke 验证**
+- [x] **Step 4: smoke 验证**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" nohup pnpm dev --host 127.0.0.1 --strictPort > /tmp/vite-dev.log 2>&1 &
@@ -787,7 +787,7 @@ lsof -ti:5173 | xargs kill 2>/dev/null || true
 
 Expected: 5 passed（现有 smoke 不受影响）
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git add src/modules/system/user/views/UserFormDrawer.vue src/modules/system/user/views/List.vue
@@ -807,7 +807,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git commit -m "feat(
 - Consumes: `src/modules/system/admin/api.ts` 的 `fetchAdminList` / `deleteAdmin` / `batchDeleteAdmins` / `createAdmin` / `updateAdmin` / `AdminInfo` / `AdminSearchRequest` / `AdminCreateRequest`
 - Produces: admin/List.vue < 250 行，功能含 view/edit/add + 密码跨字段校验 + lastLoginTime 列
 
-- [ ] **Step 1: 创建 AdminFormDrawer.vue**
+- [x] **Step 1: 创建 AdminFormDrawer.vue**
 
 `src/modules/system/views/admin/AdminFormDrawer.vue`:
 
@@ -1005,7 +1005,7 @@ const handleSubmit = async (data: Record<string, unknown>) => {
 </script>
 ```
 
-- [ ] **Step 2: 重写 List.vue**
+- [x] **Step 2: 重写 List.vue**
 
 替换 `src/modules/system/views/admin/List.vue` 全部内容：
 
@@ -1191,7 +1191,7 @@ onMounted(fetchList)
 </script>
 ```
 
-- [ ] **Step 3: 验证全套 + smoke**
+- [x] **Step 3: 验证全套 + smoke**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm type-check
@@ -1206,7 +1206,7 @@ lsof -ti:5173 | xargs kill 2>/dev/null || true
 
 Expected: 4 件套全绿 + 5 smoke 全绿 + `wc -l src/modules/system/views/admin/List.vue` < 250
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git add src/modules/system/views/admin/List.vue src/modules/system/views/admin/AdminFormDrawer.vue
@@ -1228,7 +1228,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git commit -m "refac
 - Consumes: `src/modules/system/permission/api.ts` 的 `fetchAllPermissions` / `PermissionInfo`
 - Produces: role/List.vue < 250 行，含权限分配独立 drawer
 
-- [ ] **Step 1: 创建 RoleFormDrawer.vue**
+- [x] **Step 1: 创建 RoleFormDrawer.vue**
 
 `src/modules/system/views/role/RoleFormDrawer.vue`:
 
@@ -1359,7 +1359,7 @@ const handleSubmit = async (data: Record<string, unknown>) => {
 </script>
 ```
 
-- [ ] **Step 2: 创建 RolePermissionDrawer.vue**
+- [x] **Step 2: 创建 RolePermissionDrawer.vue**
 
 `src/modules/system/views/role/RolePermissionDrawer.vue`:
 
@@ -1505,7 +1505,7 @@ const handleSave = async () => {
 </style>
 ```
 
-- [ ] **Step 3: 重写 role/List.vue**
+- [x] **Step 3: 重写 role/List.vue**
 
 替换 `src/modules/system/views/role/List.vue` 全部内容：
 
@@ -1690,7 +1690,7 @@ onMounted(fetchList)
 </script>
 ```
 
-- [ ] **Step 4: 验证全套 + smoke + 行数**
+- [x] **Step 4: 验证全套 + smoke + 行数**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm type-check
@@ -1706,7 +1706,7 @@ wc -l src/modules/system/views/role/List.vue
 
 Expected: 4 件套全绿 + 5 smoke 全绿 + List.vue < 250 行
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git add src/modules/system/views/role/List.vue src/modules/system/views/role/RoleFormDrawer.vue src/modules/system/views/role/RolePermissionDrawer.vue
@@ -1726,7 +1726,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git commit -m "refac
 - Consumes: `src/modules/system/permission/api.ts` 的 `fetchPermissionList` / `deletePermission` / `batchDeletePermissions` / `createPermission` / `updatePermission` / `PermissionInfo` / `PermissionSearchRequest` / `PermissionCreateRequest`
 - Produces: permission/List.vue < 250 行
 
-- [ ] **Step 1: 创建 PermissionFormDrawer.vue**
+- [x] **Step 1: 创建 PermissionFormDrawer.vue**
 
 `src/modules/system/views/permission/PermissionFormDrawer.vue`:
 
@@ -1869,7 +1869,7 @@ const handleSubmit = async (data: Record<string, unknown>) => {
 </script>
 ```
 
-- [ ] **Step 2: 重写 permission/List.vue**
+- [x] **Step 2: 重写 permission/List.vue**
 
 替换 `src/modules/system/views/permission/List.vue` 全部内容：
 
@@ -2065,7 +2065,7 @@ onMounted(fetchList)
 </script>
 ```
 
-- [ ] **Step 3: 验证全套 + smoke + 行数**
+- [x] **Step 3: 验证全套 + smoke + 行数**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm type-check
@@ -2081,7 +2081,7 @@ wc -l src/modules/system/views/permission/List.vue
 
 Expected: 4 件套全绿 + 5 smoke 全绿 + List.vue < 250 行
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git add src/modules/system/views/permission/List.vue src/modules/system/views/permission/PermissionFormDrawer.vue
@@ -2099,7 +2099,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git commit -m "refac
 - Consumes: PageContainer
 - Produces: dict/List.vue 视觉与其他模块统一
 
-- [ ] **Step 1: 读现有 dict/List.vue 完整内容**
+- [x] **Step 1: 读现有 dict/List.vue 完整内容**
 
 ```bash
 cat src/modules/system/views/dict/List.vue
@@ -2107,7 +2107,7 @@ cat src/modules/system/views/dict/List.vue
 
 记录现有结构：搜索 el-card + 主 el-card（DictTree + DictDetail）+ context-menu + DictFormDrawer。
 
-- [ ] **Step 2: 包裹 PageContainer**
+- [x] **Step 2: 包裹 PageContainer**
 
 修改 `src/modules/system/views/dict/List.vue`，在最外层（`<template>` 第一个子节点）包裹 `<PageContainer>`：
 
@@ -2171,7 +2171,7 @@ c) 模板末尾闭合 PageContainer。找到 `</template>` 前最后一个节点
 
 注意：包裹后内部所有子节点需相应增加 2 空格缩进。如 lint 报 indent 警告，运行 `pnpm lint:fix` 自动修复。
 
-- [ ] **Step 3: 验证全套 + smoke**
+- [x] **Step 3: 验证全套 + smoke**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm type-check
@@ -2187,7 +2187,7 @@ lsof -ti:5173 | xargs kill 2>/dev/null || true
 
 Expected: 4 件套全绿 + 5 smoke 全绿
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git add src/modules/system/views/dict/List.vue
@@ -2206,7 +2206,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git commit -m "refac
 **Interfaces:**
 - Produces: `MenuInfo` 接口、`fetchMenuTree` / `createMenu` / `updateMenu` / `deleteMenu` / `updateMenuSort` 函数；mock 端点 `/api/system/menu/tree|create|update|delete|sort`
 
-- [ ] **Step 1: 修改 mock/apis/menu.ts 导出 ALL_MENUS**
+- [x] **Step 1: 修改 mock/apis/menu.ts 导出 ALL_MENUS**
 
 修改 `src/mock/apis/menu.ts`，将 `const ALL_MENUS` 改为 `export const ALL_MENUS`：
 
@@ -2223,7 +2223,7 @@ const ALL_MENUS = [
 export const ALL_MENUS = [
 ```
 
-- [ ] **Step 2: 创建 menu api.ts**
+- [x] **Step 2: 创建 menu api.ts**
 
 `src/modules/system/menu/api.ts`:
 
@@ -2282,7 +2282,7 @@ export const updateMenuSort = (data: MenuSortRequest) =>
   api.post<boolean>('/api/system/menu/sort', data)
 ```
 
-- [ ] **Step 3: 创建 mock menu-manage.ts**
+- [x] **Step 3: 创建 mock menu-manage.ts**
 
 `src/mock/apis/menu-manage.ts`:
 
@@ -2452,7 +2452,7 @@ export default [
 ] as MockMethod[]
 ```
 
-- [ ] **Step 4: 验证 type-check + dev server 启动**
+- [x] **Step 4: 验证 type-check + dev server 启动**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm type-check
@@ -2466,7 +2466,7 @@ lsof -ti:5173 | xargs kill 2>/dev/null || true
 
 Expected: type-check 0 error / lint 0 error / curl 返回 `{code:0, data:[...], msg:"ok"}`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git add src/modules/system/menu/api.ts src/mock/apis/menu-manage.ts src/mock/apis/menu.ts
@@ -2485,7 +2485,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git commit -m "feat(
 - Consumes: Task 2 的 FormDrawer（含 treeSelect 字段）、PageContainer；Task 8 的 `fetchMenuTree` / `createMenu` / `updateMenu` / `deleteMenu` / `updateMenuSort` / `MenuInfo`
 - Produces: menu/List.vue 树形 CRUD，含拖拽排序、节点操作（新增子菜单/编辑/删除）、顶级新增
 
-- [ ] **Step 1: 创建 MenuFormDrawer.vue**
+- [x] **Step 1: 创建 MenuFormDrawer.vue**
 
 `src/modules/system/menu/views/MenuFormDrawer.vue`:
 
@@ -2658,7 +2658,7 @@ const handleSubmit = async (data: Record<string, unknown>) => {
 </script>
 ```
 
-- [ ] **Step 2: 重写 menu List.vue**
+- [x] **Step 2: 重写 menu List.vue**
 
 替换 `src/modules/system/menu/views/List.vue` 全部内容：
 
@@ -2859,7 +2859,7 @@ onMounted(loadTree)
 </style>
 ```
 
-- [ ] **Step 3: 验证全套 + smoke**
+- [x] **Step 3: 验证全套 + smoke**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm type-check
@@ -2875,7 +2875,7 @@ lsof -ti:5173 | xargs kill 2>/dev/null || true
 
 Expected: 4 件套全绿 + 5 smoke 全绿
 
-- [ ] **Step 4: 手动冒烟（Playwright MCP，登录后访问 /system/menu）**
+- [x] **Step 4: 手动冒烟（Playwright MCP，登录后访问 /system/menu）**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" nohup pnpm dev --host 127.0.0.1 --strictPort > /tmp/vite-dev.log 2>&1 &
@@ -2896,7 +2896,7 @@ for i in $(seq 1 30); do curl -sf http://127.0.0.1:5173/ > /dev/null && break; s
 lsof -ti:5173 | xargs kill 2>/dev/null || true
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git add src/modules/system/menu/views/List.vue src/modules/system/menu/views/MenuFormDrawer.vue
@@ -2914,7 +2914,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git commit -m "feat(
 - Consumes: Task 4-9 的页面
 - Produces: 9 smoke 总数（原 5 + 新 4）
 
-- [ ] **Step 1: 创建 business.spec.ts**
+- [x] **Step 1: 创建 business.spec.ts**
 
 `test/smoke/business.spec.ts`:
 
@@ -2973,7 +2973,7 @@ test.describe.serial('业务页面闭环', () => {
 })
 ```
 
-- [ ] **Step 2: 运行全部 smoke**
+- [x] **Step 2: 运行全部 smoke**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" nohup pnpm dev --host 127.0.0.1 --strictPort > /tmp/vite-dev.log 2>&1 &
@@ -2984,7 +2984,7 @@ lsof -ti:5173 | xargs kill 2>/dev/null || true
 
 Expected: 9 passed（原 5 + 新 4）
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git add test/smoke/business.spec.ts
@@ -3000,7 +3000,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git commit -m "test(
 - Modify: `docs/standards/01-ARCHITECTURE.md`
 - Modify: `README.md`
 
-- [ ] **Step 1: CLAUDE.md 增加第 10 条「业务页面标准」**
+- [x] **Step 1: CLAUDE.md 增加第 10 条「业务页面标准」**
 
 在 `CLAUDE.md` 现有第 9 条「Layout 配置中心」后追加：
 
@@ -3014,7 +3014,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git commit -m "test(
 10. **业务页面标准（M7-C）**：所有 List 页面必须用 `SearchTable` + `useCrud` + `PageContainer` + `FormDrawer` 四件套。FormDrawer 支持 `mode`（add/edit/view）+ `dependencies`（声明式显隐联动）+ `rules`（field-level 校验）+ `password`/`treeSelect` 字段类型。复杂联动（如权限分配 el-tree）用独立 drawer，不塞进 FormDrawer。
 ```
 
-- [ ] **Step 2: docs/standards/01-ARCHITECTURE.md 补 menu api.ts**
+- [x] **Step 2: docs/standards/01-ARCHITECTURE.md 补 menu api.ts**
 
 在「三、src/modules/ 业务领域」的 system/menu 行补充 api.ts：
 
@@ -3034,7 +3034,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git commit -m "test(
 │   │       └── MenuFormDrawer.vue
 ```
 
-- [ ] **Step 3: README.md 更新 smoke 数量与特性**
+- [x] **Step 3: README.md 更新 smoke 数量与特性**
 
 找到：
 ```markdown
@@ -3051,7 +3051,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git commit -m "test(
 - 🌳 **菜单树形 CRUD**：el-tree draggable 拖拽排序 + 增删改查 + 零新依赖
 ```
 
-- [ ] **Step 4: 验证全套**
+- [x] **Step 4: 验证全套**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm lint
@@ -3062,7 +3062,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm build
 
 Expected: 4 件套全绿
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git add CLAUDE.md docs/standards/01-ARCHITECTURE.md README.md
@@ -3075,7 +3075,7 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git commit -m "docs(
 
 **Files:** 无（仅验证）
 
-- [ ] **Step 1: 本地全量验证**
+- [x] **Step 1: 本地全量验证**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" pnpm lint
@@ -3090,7 +3090,7 @@ lsof -ti:5173 | xargs kill 2>/dev/null || true
 
 Expected: 4 件套全绿 + 9 smoke 全绿
 
-- [ ] **Step 2: 行数检查**
+- [x] **Step 2: 行数检查**
 
 ```bash
 wc -l src/modules/system/views/admin/List.vue \
@@ -3102,21 +3102,21 @@ wc -l src/modules/system/views/admin/List.vue \
 
 Expected: 4 个业务 List.vue 均 < 250 行（dict/List.vue 除外，因含层级逻辑）
 
-- [ ] **Step 3: 手动冒烟全清单（Playwright MCP，admin 登录后）**
+- [x] **Step 3: 手动冒烟全清单（Playwright MCP，admin 登录后）**
 
-- [ ] 登录 → 跳转 → 退出
-- [ ] user 列表：SearchTable 渲染 + 查看/编辑/删除 + view 模式 drawer 只读
-- [ ] admin 列表：同 user，含 super/admin 角色
-- [ ] role 列表：CRUD + 权限分配独立 drawer（el-tree 勾选 + 保存）
-- [ ] permission 列表：CRUD + module 过滤
-- [ ] dict 列表：PageContainer 包裹 + 三层级联正常
-- [ ] menu 列表：el-tree 渲染 + 新增顶级/子菜单 + 编辑 + 删除 + 拖拽排序
-- [ ] SettingsDrawer 6 项配置响应 + 持久化
-- [ ] 暗黑模式切换
-- [ ] TagsView 右键 5 项菜单
-- [ ] 刷新页面配置持久化
+- [x] 登录 → 跳转 → 退出
+- [x] user 列表：SearchTable 渲染 + 查看/编辑/删除 + view 模式 drawer 只读
+- [x] admin 列表：同 user，含 super/admin 角色
+- [x] role 列表：CRUD + 权限分配独立 drawer（el-tree 勾选 + 保存）
+- [x] permission 列表：CRUD + module 过滤
+- [x] dict 列表：PageContainer 包裹 + 三层级联正常
+- [x] menu 列表：el-tree 渲染 + 新增顶级/子菜单 + 编辑 + 删除 + 拖拽排序
+- [x] SettingsDrawer 6 项配置响应 + 持久化
+- [x] 暗黑模式切换
+- [x] TagsView 右键 5 项菜单
+- [x] 刷新页面配置持久化
 
-- [ ] **Step 4: git log 确认 commit 序列**
+- [x] **Step 4: git log 确认 commit 序列**
 
 ```bash
 git log --oneline 1efe112..HEAD
@@ -3124,13 +3124,13 @@ git log --oneline 1efe112..HEAD
 
 Expected: 12 个 commit（Task 1-11 各一个 + 可能的修正）
 
-- [ ] **Step 5: push**
+- [x] **Step 5: push**
 
 ```bash
 PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git push origin main
 ```
 
-- [ ] **Step 6: CI 验证**
+- [x] **Step 6: CI 验证**
 
 到 GitHub Actions 看 5 个 job（lint / type-check / test / build / smoke）全绿。
 
@@ -3140,13 +3140,13 @@ PATH="/Users/wangtao/.nvm/versions/node/v22.22.0/bin:$PATH" git push origin main
 
 完成所有任务后对照 spec §十 DoD：
 
-- [ ] 4 件套全绿（lint / type-check / test / build）
-- [ ] 9 smoke 全绿
-- [ ] admin/role/permission List.vue 重构后 < 250 行
-- [ ] dict/List.vue 仅包裹 PageContainer，子组件不动
-- [ ] FormDrawer 增强：mode + dependencies + field-level validator + 新增 password/treeSelect 字段类型
-- [ ] user/List.vue 补齐 view 模式 + lastLoginTime 列 + 密码跨字段校验
-- [ ] system/menu 树形 CRUD 可用（el-tree draggable + MenuFormDrawer）
-- [ ] 零新依赖
-- [ ] 文档同步（CLAUDE.md / 01-ARCHITECTURE.md / README.md）
-- [ ] push 到 origin/main，CI 5 作业全绿
+- [x] 4 件套全绿（lint / type-check / test / build）
+- [x] 9 smoke 全绿
+- [x] admin/role/permission List.vue 重构后 < 250 行
+- [x] dict/List.vue 仅包裹 PageContainer，子组件不动
+- [x] FormDrawer 增强：mode + dependencies + field-level validator + 新增 password/treeSelect 字段类型
+- [x] user/List.vue 补齐 view 模式 + lastLoginTime 列 + 密码跨字段校验
+- [x] system/menu 树形 CRUD 可用（el-tree draggable + MenuFormDrawer）
+- [x] 零新依赖
+- [x] 文档同步（CLAUDE.md / 01-ARCHITECTURE.md / README.md）
+- [x] push 到 origin/main，CI 5 作业全绿
