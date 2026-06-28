@@ -16,6 +16,7 @@ describe('layout store', () => {
     expect(s.showFooter).toBe(false)
     expect(s.primaryColor).toBe('#409EFF')
     expect(s.componentSize).toBe('default')
+    expect(s.locale).toBe('zh-CN')
   })
 
   it('setter 修改字段', () => {
@@ -24,5 +25,7 @@ describe('layout store', () => {
     expect(s.showTagsView).toBe(false)
     s.setPrimaryColor('#13C2C2')
     expect(s.primaryColor).toBe('#13C2C2')
+    s.setLocale('en-US')
+    expect(s.locale).toBe('en-US')
   })
 })
