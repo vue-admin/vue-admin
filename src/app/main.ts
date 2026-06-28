@@ -6,6 +6,7 @@ import router from '@/router'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import locale from 'element-plus/es/locale/lang/zh-cn'
 import { defaultMonitor } from '@/lib/error/monitor'
+import { installGlobalErrorHandlers } from '@/lib/error/installGlobalErrorHandlers'
 import { vPermission } from '@/app/directives/permission'
 import { installGuards } from '@/lib/router/guards'
 import { useLayoutStore } from '@/app/stores/layout'
@@ -32,6 +33,9 @@ app.use(router)
 
 // 全局 provide monitor（依赖注入，便于替换 Sentry 等）
 app.provide('monitor', defaultMonitor)
+
+// 全局错误处理器：Vue 运行时 / window.onerror / 未捕获 Promise 拒绝
+installGlobalErrorHandlers(app, defaultMonitor)
 
 // 主题色 CSS 变量：监听 layout store.primaryColor，设置 --el-color-primary
 // 派生色（light-3/5/7/9, dark-2）由 Element Plus 内部使用，简化版仅设主色
