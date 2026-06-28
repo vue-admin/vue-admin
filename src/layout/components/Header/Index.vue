@@ -36,6 +36,15 @@
         <Sunny v-else />
       </el-icon>
     </div>
+    <div
+      class="settings-icon"
+      @click="settingsVisible = true"
+    >
+      <el-icon>
+        <Setting />
+      </el-icon>
+    </div>
+    <SettingsDrawer v-model="settingsVisible" />
     <el-sub-menu index="/">
       <template #title>
         <el-icon>
@@ -55,11 +64,14 @@
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
+import { Setting } from '@element-plus/icons-vue'
 import { useSidebarStore } from '@/app/stores/sidebar'
 import { useThemeStore } from '@/app/stores/theme'
 import { useUserStore } from '@/app/stores/user'
 import Breadcrumb from '../Breadcrumb/Index.vue'
+import SettingsDrawer from '../SettingsDrawer.vue'
 const activeIndex = ref('1')
+const settingsVisible = ref(false)
 const handleSelect = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }
@@ -108,6 +120,12 @@ const displayName = computed(
 .dark-icon {
   font-size: 20px;
   margin: 15px 15px 0 15px;
+  cursor: pointer;
+}
+
+.settings-icon {
+  font-size: 20px;
+  margin: 15px 15px 0 0;
   cursor: pointer;
 }
 
