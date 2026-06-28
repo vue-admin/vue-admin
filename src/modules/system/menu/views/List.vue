@@ -91,7 +91,8 @@ import { ref, onMounted } from 'vue'
 import { Plus, Refresh } from '@element-plus/icons-vue'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import type { Component } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import { confirmService } from '@/lib/confirm'
 import type { ElTree } from 'element-plus'
 import { PageContainer } from '@/app/components'
 import MenuFormDrawer from './MenuFormDrawer.vue'
@@ -150,15 +151,12 @@ const onFormSuccess = () => {
 }
 
 const handleDelete = async (data: MenuInfo) => {
-  try {
-    await ElMessageBox.confirm(
-      `确认删除菜单「${data.name}」？子菜单将一并删除。`,
-      '提示',
-      { confirmButtonText: '确认', cancelButtonText: '取消', type: 'warning' }
-    )
-  } catch {
-    return
-  }
+  const confirmed = await confirmService.showConfirm(
+    `确认删除菜单「${data.name}」？子菜单将一并删除。`,
+    '提示',
+    { confirmButtonText: '确认', cancelButtonText: '取消' }
+  )
+  if (!confirmed) return
   try {
     await deleteMenu(data.id)
     ElMessage.success('删除成功')

@@ -1,5 +1,6 @@
 import { ref, reactive, type Ref } from 'vue'
-import { ElMessageBox, ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import { confirmService } from '@/lib/confirm'
 
 export interface UseCrudOptions<T> {
   fetch: (params: Record<string, unknown>) => Promise<{ records: T[]; total: number; current: number; size: number }>
@@ -68,15 +69,11 @@ export function useCrud<T extends { id: string }>(options: UseCrudOptions<T>) {
 
   const handleDelete = async (id: string) => {
     if (!remove) throw new Error('useCrud: remove not provided')
-    try {
-      await ElMessageBox.confirm('确认删除该记录？', '提示', {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-    } catch {
-      return // 用户取消
-    }
+    const confirmed = await confirmService.showConfirm('确认删除该记录？', '提示', {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+    })
+    if (!confirmed) return
     await remove(id)
     ElMessage.success('删除成功')
     await fetchList()
@@ -88,15 +85,12 @@ export function useCrud<T extends { id: string }>(options: UseCrudOptions<T>) {
       ElMessage.warning('请先选择记录')
       return
     }
-    try {
-      await ElMessageBox.confirm(
-        `确认删除选中的 ${selectedRows.value.length} 条记录？`,
-        '提示',
-        { confirmButtonText: '确认', cancelButtonText: '取消', type: 'warning' }
-      )
-    } catch {
-      return
-    }
+    const confirmed = await confirmService.showConfirm(
+      `确认删除选中的 ${selectedRows.value.length} 条记录？`,
+      '提示',
+      { confirmButtonText: '确认', cancelButtonText: '取消' }
+    )
+    if (!confirmed) return
     const ids = selectedRows.value.map((r) => r.id)
     await batchRemove(ids)
     ElMessage.success('批量删除成功')

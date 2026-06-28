@@ -215,7 +215,8 @@ import {
   Download,
   RefreshRight,
 } from '@element-plus/icons-vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import { confirmService } from '@/lib/confirm'
 import Detail from './Detail.vue'
 
 // 搜索表单
@@ -319,13 +320,11 @@ const handleEdit = (id: string) => {
 
 // 删除操作
 const handleDelete = async (id: string) => {
-  try {
-    await ElMessageBox.confirm('确定要删除这条记录吗？', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
-    })
-  } catch {
+  const confirmed = await confirmService.showConfirm('确定要删除这条记录吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+  })
+  if (!confirmed) {
     ElMessage.info('已取消删除')
     return
   }
@@ -337,17 +336,15 @@ const handleDelete = async (id: string) => {
 // 批量删除
 const handleBatchDelete = async () => {
   if (selectedRows.value.length === 0) return
-  try {
-    await ElMessageBox.confirm(
-      `确定要删除选中的 ${selectedRows.value.length} 条记录吗？`,
-      '提示',
-      {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      },
-    )
-  } catch {
+  const confirmed = await confirmService.showConfirm(
+    `确定要删除选中的 ${selectedRows.value.length} 条记录吗？`,
+    '提示',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+    }
+  )
+  if (!confirmed) {
     ElMessage.info('已取消删除')
     return
   }

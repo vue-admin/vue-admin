@@ -174,7 +174,8 @@ import {
   Edit,
   ArrowDown,
 } from '@element-plus/icons-vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import { confirmService } from '@/lib/confirm'
 import { PageContainer } from '@/app/components'
 import DictTree from './DictTree.vue'
 import DictDetail from './DictDetail.vue'
@@ -299,19 +300,22 @@ const handleEdit = (node?: DictTreeNode) => {
 
 const deleteNode = async (node: DictTreeNode) => {
   const typeMap: Record<number, string> = { 1: '分类', 2: '字典', 3: '字典项' }
+  const confirmed = await confirmService.showConfirm(
+    `确定要删除该${typeMap[node.level]}吗？`,
+    '提示',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+    }
+  )
+  if (!confirmed) {
+    ElMessage.info('已取消删除')
+    return
+  }
   try {
-    await ElMessageBox.confirm(
-      `确定要删除该${typeMap[node.level]}吗？`,
-      '提示',
-      {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      }
-    )
     await remove(node)
   } catch {
-    ElMessage.info('已取消删除')
+    ElMessage.error('删除失败')
   }
 }
 
