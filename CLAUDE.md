@@ -23,6 +23,9 @@ pnpm test:watch     # Vitest watch 模式
 pnpm smoke          # Playwright smoke 测试（需先启动 dev server）
 pnpm smoke:ui       # Playwright smoke UI 模式
 pnpm preview        # 预览生产构建
+pnpm docs:dev       # VitePress 文档站开发（docs-site/）
+pnpm docs:build     # VitePress 文档站构建
+pnpm docs:preview   # VitePress 文档站预览
 ```
 
 ## 技术栈
@@ -72,6 +75,8 @@ pnpm preview        # 预览生产构建
 10. **业务页面标准（M7-C）**：所有 List 页面必须用 `SearchTable` + `useCrud` + `PageContainer` + `FormDrawer` 四件套。FormDrawer 支持 `mode`（add/edit/view）+ `dependencies`（声明式显隐联动）+ `rules`（field-level 校验）+ `password`/`treeSelect` 字段类型。复杂联动（如权限分配 el-tree）用独立 drawer，不塞进 FormDrawer。
 
 11. **全局错误与交互（M8）**：`lib/error/ErrorBoundary.vue` 捕获组件渲染错误并显示 fallback，支持 `title`/`message`/`maxRetries` props 与重试防循环；`main.ts` 通过 `installGlobalErrorHandlers` 统一捕获 Vue runtime、`window.onerror`、`unhandledrejection` 并上报 monitor。`lib/loading/loadingService` 提供全局/嵌套 loading（`show`/`close`/`withLoading`）；`lib/confirm/confirmService` 统一确认对话框，返回 `Promise<boolean>`，业务代码不再直接调用 `ElMessageBox.confirm`。
+
+12. **文档站点（L3）**：`docs-site/` 是 VitePress 站点，通过 `@include` 复用 `docs/standards/` 5 个规范文档；`pnpm docs:dev/build/preview` 本地开发构建预览；`.github/workflows/docs.yml` 在 push main 时构建并部署到 GitHub Pages（base `/vue-admin/`）。新增规范文档时需在 `docs-site/.vitepress/config.ts` 注册侧边栏条目。
 
 ## 认证 / 权限（M3 + M4 已实现）
 

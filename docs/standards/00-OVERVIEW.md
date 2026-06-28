@@ -52,7 +52,7 @@
 
 - [ ] Monorepo 拆分：`@vue-admin/core` / `@vue-admin/components` / `@vue-admin/utils` / `admin-app`
 - [ ] 与 **vadm** 脚手架对接：`pnpm create vadm` 选模板 → 派生本项目
-- [ ] 文档站点（VitePress）
+- [x] 文档站点（VitePress）—— `docs-site/` 复用 `docs/standards/` 内容，`pnpm docs:dev/build/preview`，CI 部署 GitHub Pages
 - [ ] 组件预览（Storybook 或 Histoire）
 - [ ] 在线 Demo + 一键部署模板（Vercel/Netlify）
 
