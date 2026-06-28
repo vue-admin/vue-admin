@@ -42,7 +42,7 @@
 - [x] 菜单系统：动态路由 + 服务端下发 + meta 驱动
 - [x] 用户/角色/字典 CRUD 全闭环
 - [x] 通用组件库：`SearchTable`、`FormDrawer`、`PageContainer`
-- [ ] 主题系统：CSS Variables 规范化（已有暗黑，需整理）
+- [x] 主题系统：CSS Variables 规范化（主色派生色算法 + 命名修复，暗黑模式已有）
 - [ ] 国际化（vue-i18n）骨架
 - [x] 错误边界 + 全局 loading + 确认对话框组件
 

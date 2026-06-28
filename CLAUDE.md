@@ -65,7 +65,7 @@ pnpm preview        # 预览生产构建
 
 8. **通用组件库（M7-B）**：新增列表/表单页必须优先用 `@/app/components` 导出的 `SearchTable` / `FormDrawer` / `PageContainer`，配合 `@/app/composables/useCrud` 接管列表状态（listData/loading/pagination/searchForm/selectedRows + 7 个 handler）。禁止重复手写 el-table + el-pagination + 内联 drawer 模板。
 
-9. **Layout 配置中心（M7-B）**：`@/app/stores/layout` 提供 6 个持久化字段（showTagsView / showBreadcrumb / showLogo / showFooter / primaryColor / componentSize），由 `layout/components/SettingsDrawer.vue` 暴露给用户。Layout 组件（TagsView/Footer/Breadcrumb/IconLogo）通过 `v-if` 消费 store；main.ts watch `primaryColor` 设 `--el-color-primary`；App.vue 用 `el-config-provider` 注入 `componentSize`。
+9. **Layout 配置中心（M7-B）**：`@/app/stores/layout` 提供 6 个持久化字段（showTagsView / showBreadcrumb / showLogo / showFooter / primaryColor / componentSize），由 `layout/components/SettingsDrawer.vue` 暴露给用户。Layout 组件（TagsView/Footer/Breadcrumb/IconLogo）通过 `v-if` 消费 store；main.ts watch `primaryColor` 调 `lib/theme/colors` 的 `applyPrimaryColor`，按 Element Plus 官方 SCSS mix 语义生成主色 + light-3/5/7/8/9 + dark-2 6 阶派生色写入 `:root`；App.vue 用 `el-config-provider` 注入 `componentSize`。
 
 10. **业务页面标准（M7-C）**：所有 List 页面必须用 `SearchTable` + `useCrud` + `PageContainer` + `FormDrawer` 四件套。FormDrawer 支持 `mode`（add/edit/view）+ `dependencies`（声明式显隐联动）+ `rules`（field-level 校验）+ `password`/`treeSelect` 字段类型。复杂联动（如权限分配 el-tree）用独立 drawer，不塞进 FormDrawer。
 
