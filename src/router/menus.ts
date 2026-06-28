@@ -4,7 +4,7 @@ const menus: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'home',
-    component: () => import('@/modules/home/views/Home.vue'),
+    component: () => import('@/modules/dashboard/views/Home.vue'),
     meta: {
       title: '首页',
       icon: 'menu',

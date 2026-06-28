@@ -5,7 +5,7 @@ const ALL_MENUS = [
   {
     path: '/',
     name: 'home',
-    component: 'home/views/Home',
+    component: 'dashboard/views/Home',
     meta: { title: '首页', icon: 'menu', showMenu: true },
   },
   {
