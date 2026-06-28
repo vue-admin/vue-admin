@@ -63,6 +63,10 @@ pnpm preview        # 预览生产构建
 
 7. **目录扁平**：业务页面按域分子目录，单 `.vue` 文件不超过 500 行。当前 8 个模块：`auth` / `dashboard` / `system`（含 `admin`/`user`/`role`/`permission`/`menu`/`dict` 6 子项）/ `profile` / `crud` / `docs` / `about`。
 
+8. **通用组件库（M7-B）**：新增列表/表单页必须优先用 `@/app/components` 导出的 `SearchTable` / `FormDrawer` / `PageContainer`，配合 `@/app/composables/useCrud` 接管列表状态（listData/loading/pagination/searchForm/selectedRows + 7 个 handler）。禁止重复手写 el-table + el-pagination + 内联 drawer 模板。
+
+9. **Layout 配置中心（M7-B）**：`@/app/stores/layout` 提供 6 个持久化字段（showTagsView / showBreadcrumb / showLogo / showFooter / primaryColor / componentSize），由 `layout/components/SettingsDrawer.vue` 暴露给用户。Layout 组件（TagsView/Footer/Breadcrumb/IconLogo）通过 `v-if` 消费 store；main.ts watch `primaryColor` 设 `--el-color-primary`；App.vue 用 `el-config-provider` 注入 `componentSize`。
+
 ## 认证 / 权限（M3 + M4 已实现）
 
 - `lib/auth/authService` 工厂创建单例，含并发刷新保护（复用 `refreshPromise`）

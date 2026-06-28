@@ -17,8 +17,10 @@
 - 🏗️ **四层架构**（`lib` / `app` / `modules` / `shared`），由 ESLint `no-restricted-imports` 强制单向依赖
 - 🎯 **目录扁平**，业务页面按领域聚合，单文件不超过 500 行
 - 🧱 **8 模块标准化布局**：`auth` / `dashboard` / `system`（含 `admin`/`user`/`role`/`permission`/`menu`/`dict`）/ `profile` / `crud` / `docs` / `about`
+- 🧩 **通用组件库**：`SearchTable` / `FormDrawer` / `PageContainer` + `useCrud` composable，新增列表/表单页零样板
+- 🎨 **Layout 配置中心**：TagsView / Breadcrumb / Logo / Footer 显隐 + 主题色 + 组件大小，6 字段 localStorage 持久化
 - 🧪 **Vitest 3 + jsdom + @vue/test-utils** 单元测试栈
-- 🌫️ **Playwright smoke 测试自动化**：CI 中跑登录重定向 + 登录 + 列表渲染 3 个端到端用例
+- 🌫️ **Playwright smoke 测试自动化**：CI 中跑登录重定向 + 登录 + 列表渲染 + 布局配置 5 个端到端用例
 - 🔍 **ESLint 9 flat config**，集成 Vue / TypeScript / Import 插件
 - 🪝 **Husky + lint-staged + commitlint**，提交前自动校验
 

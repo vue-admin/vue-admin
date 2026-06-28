@@ -107,9 +107,11 @@ src/modules/
 
 | 子目录 | 职责 |
 |--------|------|
-| `app/main.ts` | 应用入口：注册插件、指令、守卫、provide monitor |
-| `app/App.vue` | 根组件：包裹 ErrorBoundary |
-| `app/stores/` | 全局 Pinia store：`user.ts` / `permission.ts` / `sidebar.ts` / `tagsView.ts` / `theme.ts` |
+| `app/main.ts` | 应用入口：注册插件、指令、守卫、provide monitor、watch layout.primaryColor 设 `--el-color-primary` |
+| `app/App.vue` | 根组件：包裹 ErrorBoundary + `el-config-provider`（注入 locale 与 `layout.componentSize`） |
+| `app/stores/` | 全局 Pinia store：`user.ts` / `permission.ts` / `sidebar.ts` / `tagsView.ts` / `theme.ts` / `layout.ts`（6 个持久化字段：showTagsView / showBreadcrumb / showLogo / showFooter / primaryColor / componentSize） |
+| `app/components/` | 通用组件库（M7-B）：`SearchTable/`（搜索+表格+分页）/ `FormDrawer/`（配置驱动表单抽屉）/ `PageContainer/`（页面容器+标题） |
+| `app/composables/` | 通用 composable（M7-B）：`useCrud.ts`（接管列表状态：listData/loading/pagination/searchForm/selectedRows + 7 个 handler） |
 | `app/directives/` | 全局指令：`v-permission` |
 
 ## 六、`src/shared/` 共享层
