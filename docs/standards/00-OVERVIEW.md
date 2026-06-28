@@ -32,7 +32,7 @@
 - [x] 规范文档集（本目录）
 - [x] CONTRIBUTING.md + Code of Conduct
 - [x] LICENSE
-- [ ] 依赖升级到最新主版本（Vue 3.5 / Vite 6 / TS 5.6 / Element Plus 2.8+）
+- [x] 依赖升级到最新主版本（Vue 3.5 / Vite 7 / TS 5.9 / Element Plus 2.11 / VueUse 11 / Vitest 3）
 
 ### L2 工程化（投产，1-2 月）
 
