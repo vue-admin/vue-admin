@@ -10,6 +10,7 @@ import { installGlobalErrorHandlers } from '@/lib/error/installGlobalErrorHandle
 import { vPermission } from '@/app/directives/permission'
 import { installGuards } from '@/lib/router/guards'
 import { useLayoutStore } from '@/app/stores/layout'
+import { applyPrimaryColor } from '@/lib/theme/colors'
 
 import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
@@ -37,14 +38,13 @@ app.provide('monitor', defaultMonitor)
 // 全局错误处理器：Vue 运行时 / window.onerror / 未捕获 Promise 拒绝
 installGlobalErrorHandlers(app, defaultMonitor)
 
-// 主题色 CSS 变量：监听 layout store.primaryColor，设置 --el-color-primary
-// 派生色（light-3/5/7/9, dark-2）由 Element Plus 内部使用，简化版仅设主色
-// 如需完整派生色，可引入 element-plus/es/utils/color 的 mixColor 工具
+// 主题色：监听 layout store.primaryColor，写入主色 + 6 阶派生色（light-3/5/7/8/9, dark-2）
+// 派生色由 lib/theme/colors 按 Element Plus 官方 SCSS mix 语义在运行时生成
 const layoutStore = useLayoutStore()
 watch(
   () => layoutStore.primaryColor,
   (color) => {
-    document.documentElement.style.setProperty('--el-color-primary', color)
+    applyPrimaryColor(color)
   },
   { immediate: true }
 )
