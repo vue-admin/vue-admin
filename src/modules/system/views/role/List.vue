@@ -366,11 +366,11 @@ import {
   type RoleInfo,
   type RoleSearchRequest,
   type RoleCreateRequest,
-} from '@/apis/role'
+} from '../../role/api'
 import {
   fetchAllPermissions,
   type PermissionInfo,
-} from '@/apis/permission'
+} from '../../permission/api'
 
 // 搜索表单
 const searchForm = reactive<RoleSearchRequest>({
@@ -444,13 +444,13 @@ const formRules = reactive<FormRules>({
 const getTableData = async () => {
   tableLoading.value = true
   try {
-    const res = await fetchRoleList({
+    const data = await fetchRoleList({
       ...searchForm,
       page: currentPage4.value,
       size: pageSize4.value,
     })
-    tableData.value = res.data.records
-    totalCount.value = res.data.total
+    tableData.value = data.records
+    totalCount.value = data.total
   } catch (error) {
     console.error(error)
     ElMessage.error('获取数据失败')
@@ -510,10 +510,10 @@ const handlePermission = async (role: RoleInfo) => {
 // 加载权限树数据
 const loadPermissionTreeData = async () => {
   try {
-    const res = await fetchAllPermissions()
+    const data = await fetchAllPermissions()
     // 将权限按模块分组
     const moduleMap = new Map<string, PermissionTreeNode[]>()
-    res.data.forEach((permission: PermissionInfo) => {
+    data.forEach((permission: PermissionInfo) => {
       if (!moduleMap.has(permission.module)) {
         moduleMap.set(permission.module, [])
       }
@@ -549,8 +549,8 @@ const loadPermissionTreeData = async () => {
 const loadRolePermissions = async () => {
   if (!currentRole.value) return
   try {
-    const res = await fetchRolePermissions(currentRole.value.id)
-    checkedPermissions.value = res.data
+    const data = await fetchRolePermissions(currentRole.value.id)
+    checkedPermissions.value = data
   } catch (error) {
     console.error(error)
     ElMessage.error('获取角色权限失败')

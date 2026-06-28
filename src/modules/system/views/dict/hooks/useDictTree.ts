@@ -16,7 +16,7 @@ import {
   type DictCategoryInfo,
   type DictInfo,
   type DictItemInfo,
-} from '@/apis/dict'
+} from '../../../dict/api'
 
 export type DictTreeNodeLevel = 1 | 2 | 3
 
@@ -121,9 +121,9 @@ export function useDictTree() {
         }),
       ])
       treeData.value = buildTree(
-        categoryRes.data.records,
-        dictRes.data.records,
-        itemRes.data.records
+        categoryRes.records,
+        dictRes.records,
+        itemRes.records
       )
     } catch (e) {
       console.error(e)

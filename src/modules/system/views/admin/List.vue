@@ -429,7 +429,7 @@ import {
   type AdminInfo,
   type AdminSearchRequest,
   type AdminCreateRequest,
-} from '@/apis/admin'
+} from '../../admin/api'
 
 // 搜索表单
 const searchForm = reactive<AdminSearchRequest>({
@@ -519,13 +519,13 @@ const formRules = reactive<FormRules>({
 const getTableData = async () => {
   tableLoading.value = true
   try {
-    const res = await fetchAdminList({
+    const data = await fetchAdminList({
       ...searchForm,
       page: currentPage4.value,
       size: pageSize4.value,
     })
-    tableData.value = res.data.records
-    totalCount.value = res.data.total
+    tableData.value = data.records
+    totalCount.value = data.total
   } catch (error) {
     console.error(error)
     ElMessage.error('获取数据失败')

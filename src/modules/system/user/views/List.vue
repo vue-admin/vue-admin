@@ -437,7 +437,7 @@ import {
   type UserInfo,
   type UserSearchRequest,
   type UserCreateRequest,
-} from '@/apis/user'
+} from '../api'
 
 // 搜索表单
 const searchForm = reactive<UserSearchRequest>({
@@ -527,13 +527,13 @@ const formRules = reactive<FormRules>({
 const getTableData = async () => {
   tableLoading.value = true
   try {
-    const res = await fetchUserList({
+    const data = await fetchUserList({
       ...searchForm,
       page: currentPage4.value,
       size: pageSize4.value,
     })
-    tableData.value = res.data.records
-    totalCount.value = res.data.total
+    tableData.value = data.records
+    totalCount.value = data.total
   } catch (error) {
     console.error(error)
     ElMessage.error('获取数据失败')
