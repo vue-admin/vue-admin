@@ -15,6 +15,7 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text: '规范', link: '/guide/overview' },
+      { text: '组件', link: '/components/search-table' },
       { text: 'GitHub', link: 'https://github.com/vue-admin/vue-admin' },
     ],
     sidebar: {
@@ -32,6 +33,16 @@ export default defineConfig({
             { text: 'API 客户端', link: '/guide/api' },
             { text: '状态管理', link: '/guide/state' },
             { text: '命名约定', link: '/guide/naming' },
+          ],
+        },
+      ],
+      '/components/': [
+        {
+          text: '通用组件',
+          items: [
+            { text: 'SearchTable', link: '/components/search-table' },
+            { text: 'FormDrawer', link: '/components/form-drawer' },
+            { text: 'PageContainer', link: '/components/page-container' },
           ],
         },
       ],

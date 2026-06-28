@@ -1,0 +1,15 @@
+/* 演示区块：模拟 admin 主体背景 */
+.demo-block {
+  padding: 16px;
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  margin: 12px 0;
+}
+
+.demo-controls {
+  margin-bottom: 12px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
