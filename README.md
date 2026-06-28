@@ -20,7 +20,7 @@
 - 🧩 **通用组件库**：`SearchTable` / `FormDrawer` / `PageContainer` + `useCrud` composable，新增列表/表单页零样板
 - 🎨 **Layout 配置中心**：TagsView / Breadcrumb / Logo / Footer 显隐 + 主题色 + 组件大小，6 字段 localStorage 持久化
 - 🧪 **Vitest 3 + jsdom + @vue/test-utils** 单元测试栈
-- 🌫️ **Playwright smoke 测试自动化**：CI 中跑登录重定向 + 登录 + 列表渲染 + 布局配置 5 个端到端用例
+- 🌫️ **Playwright smoke 测试自动化**：CI 中跑登录重定向 + 列表渲染 + 布局配置 + 业务页面闭环 9 个端到端用例
 - 🔍 **ESLint 9 flat config**，集成 Vue / TypeScript / Import 插件
 - 🪝 **Husky + lint-staged + commitlint**，提交前自动校验
 
@@ -31,6 +31,7 @@
 - ⚡ **超级管理员短路**：`isSuperAdmin` 命中时直接放行，避免权限遍历开销
 - 🧭 **动态路由**：`import.meta.glob('@/modules/**/*.vue')` 自动装载业务模块
 - 📜 **基于角色的菜单**：Mock 接口按权限返回菜单树
+- 🌳 **菜单树形 CRUD**：el-tree draggable 拖拽排序 + 增删改查 + 零新依赖
 
 ### HTTP 与错误处理
 

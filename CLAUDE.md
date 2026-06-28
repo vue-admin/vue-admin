@@ -67,6 +67,8 @@ pnpm preview        # 预览生产构建
 
 9. **Layout 配置中心（M7-B）**：`@/app/stores/layout` 提供 6 个持久化字段（showTagsView / showBreadcrumb / showLogo / showFooter / primaryColor / componentSize），由 `layout/components/SettingsDrawer.vue` 暴露给用户。Layout 组件（TagsView/Footer/Breadcrumb/IconLogo）通过 `v-if` 消费 store；main.ts watch `primaryColor` 设 `--el-color-primary`；App.vue 用 `el-config-provider` 注入 `componentSize`。
 
+10. **业务页面标准（M7-C）**：所有 List 页面必须用 `SearchTable` + `useCrud` + `PageContainer` + `FormDrawer` 四件套。FormDrawer 支持 `mode`（add/edit/view）+ `dependencies`（声明式显隐联动）+ `rules`（field-level 校验）+ `password`/`treeSelect` 字段类型。复杂联动（如权限分配 el-tree）用独立 drawer，不塞进 FormDrawer。
+
 ## 认证 / 权限（M3 + M4 已实现）
 
 - `lib/auth/authService` 工厂创建单例，含并发刷新保护（复用 `refreshPromise`）
