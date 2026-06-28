@@ -1,163 +1,165 @@
 <template>
-  <!-- 搜索和工具栏区域 -->
-  <el-card
-    shadow="never"
-    class="search-card"
-  >
-    <div class="search-toolbar">
-      <div class="search-area">
-        <el-input
-          v-model="keyword"
-          placeholder="请输入字典分类、字典或字典项的名称、代码"
-          clearable
-          style="width: 320px"
-          @keyup.enter="handleSearch"
-        >
-          <template #prefix>
-            <el-icon><Search /></el-icon>
-          </template>
-        </el-input>
-        <el-button
-          type="primary"
-          :icon="Search"
-          @click="handleSearch"
-        >
-          搜索
-        </el-button>
-        <el-button
-          :icon="Refresh"
-          @click="handleReset"
-        >
-          重置
-        </el-button>
-      </div>
-
-      <div class="action-buttons">
-        <el-dropdown @command="handleDropdownCommand">
+  <PageContainer title="字典管理">
+    <!-- 搜索和工具栏区域 -->
+    <el-card
+      shadow="never"
+      class="search-card"
+    >
+      <div class="search-toolbar">
+        <div class="search-area">
+          <el-input
+            v-model="keyword"
+            placeholder="请输入字典分类、字典或字典项的名称、代码"
+            clearable
+            style="width: 320px"
+            @keyup.enter="handleSearch"
+          >
+            <template #prefix>
+              <el-icon><Search /></el-icon>
+            </template>
+          </el-input>
           <el-button
             type="primary"
-            :icon="Plus"
+            :icon="Search"
+            @click="handleSearch"
           >
-            新增<el-icon class="el-icon--right">
-              <ArrowDown />
-            </el-icon>
+            搜索
           </el-button>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item command="addCategory">
-                新增分类
-              </el-dropdown-item>
-              <el-dropdown-item
-                command="addDict"
-                :disabled="!selectedNode || selectedNode.level !== 1"
-              >
-                新增字典
-              </el-dropdown-item>
-              <el-dropdown-item
-                command="addItem"
-                :disabled="!selectedNode || selectedNode.level !== 2"
-              >
-                新增字典项
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-        <el-button
-          type="primary"
-          :icon="Edit"
-          :disabled="!selectedNode"
-          @click="handleEdit"
-        >
-          编辑
-        </el-button>
-        <el-button
-          type="danger"
-          :icon="Delete"
-          :disabled="!selectedNode"
-          @click="handleDelete"
-        >
-          删除
-        </el-button>
-        <el-button
-          :icon="Download"
-          @click="handleExport"
-        >
-          导出
-        </el-button>
-        <el-button
-          :icon="RefreshRight"
-          @click="handleRefresh"
-        >
-          刷新
-        </el-button>
+          <el-button
+            :icon="Refresh"
+            @click="handleReset"
+          >
+            重置
+          </el-button>
+        </div>
+
+        <div class="action-buttons">
+          <el-dropdown @command="handleDropdownCommand">
+            <el-button
+              type="primary"
+              :icon="Plus"
+            >
+              新增<el-icon class="el-icon--right">
+                <ArrowDown />
+              </el-icon>
+            </el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="addCategory">
+                  新增分类
+                </el-dropdown-item>
+                <el-dropdown-item
+                  command="addDict"
+                  :disabled="!selectedNode || selectedNode.level !== 1"
+                >
+                  新增字典
+                </el-dropdown-item>
+                <el-dropdown-item
+                  command="addItem"
+                  :disabled="!selectedNode || selectedNode.level !== 2"
+                >
+                  新增字典项
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+          <el-button
+            type="primary"
+            :icon="Edit"
+            :disabled="!selectedNode"
+            @click="handleEdit"
+          >
+            编辑
+          </el-button>
+          <el-button
+            type="danger"
+            :icon="Delete"
+            :disabled="!selectedNode"
+            @click="handleDelete"
+          >
+            删除
+          </el-button>
+          <el-button
+            :icon="Download"
+            @click="handleExport"
+          >
+            导出
+          </el-button>
+          <el-button
+            :icon="RefreshRight"
+            @click="handleRefresh"
+          >
+            刷新
+          </el-button>
+        </div>
+      </div>
+    </el-card>
+
+    <!-- 字典树和详情区域 -->
+    <el-card
+      shadow="never"
+      class="main-card"
+    >
+      <el-row :gutter="20">
+        <el-col :span="6">
+          <DictTree
+            :tree-data="treeData"
+            :loading="loading"
+            @select="handleNodeSelect"
+            @contextmenu="handleNodeContextMenu"
+          />
+        </el-col>
+        <el-col :span="18">
+          <DictDetail
+            :node="selectedNode"
+            :category-name="categoryName"
+            :dict-name="dictName"
+            @edit="handleEdit"
+          />
+        </el-col>
+      </el-row>
+    </el-card>
+
+    <!-- 右键菜单 -->
+    <div
+      v-show="contextMenuVisible"
+      class="context-menu"
+      :style="{ top: contextMenuPos.top + 'px', left: contextMenuPos.left + 'px' }"
+      @click.stop
+    >
+      <div
+        v-if="contextMenuNode && contextMenuNode.level < 3"
+        class="context-menu-item"
+        @click="handleContextMenuAdd"
+      >
+        <el-icon><Plus /></el-icon>
+        <span>新增子节点</span>
+      </div>
+      <div
+        class="context-menu-item"
+        @click="handleContextMenuEdit"
+      >
+        <el-icon><Edit /></el-icon>
+        <span>编辑</span>
+      </div>
+      <div
+        class="context-menu-item danger"
+        @click="handleContextMenuDelete"
+      >
+        <el-icon><Delete /></el-icon>
+        <span>删除</span>
       </div>
     </div>
-  </el-card>
 
-  <!-- 字典树和详情区域 -->
-  <el-card
-    shadow="never"
-    class="main-card"
-  >
-    <el-row :gutter="20">
-      <el-col :span="6">
-        <DictTree
-          :tree-data="treeData"
-          :loading="loading"
-          @select="handleNodeSelect"
-          @contextmenu="handleNodeContextMenu"
-        />
-      </el-col>
-      <el-col :span="18">
-        <DictDetail
-          :node="selectedNode"
-          :category-name="categoryName"
-          :dict-name="dictName"
-          @edit="handleEdit"
-        />
-      </el-col>
-    </el-row>
-  </el-card>
-
-  <!-- 右键菜单 -->
-  <div
-    v-show="contextMenuVisible"
-    class="context-menu"
-    :style="{ top: contextMenuPos.top + 'px', left: contextMenuPos.left + 'px' }"
-    @click.stop
-  >
-    <div
-      v-if="contextMenuNode && contextMenuNode.level < 3"
-      class="context-menu-item"
-      @click="handleContextMenuAdd"
-    >
-      <el-icon><Plus /></el-icon>
-      <span>新增子节点</span>
-    </div>
-    <div
-      class="context-menu-item"
-      @click="handleContextMenuEdit"
-    >
-      <el-icon><Edit /></el-icon>
-      <span>编辑</span>
-    </div>
-    <div
-      class="context-menu-item danger"
-      @click="handleContextMenuDelete"
-    >
-      <el-icon><Delete /></el-icon>
-      <span>删除</span>
-    </div>
-  </div>
-
-  <DictFormDrawer
-    v-model="drawerVisible"
-    v-model:form="form"
-    :mode="drawerMode"
-    :parent-node="selectedParentNode"
-    :selected-node="selectedNode"
-    @submit="handleSubmit"
-  />
+    <DictFormDrawer
+      v-model="drawerVisible"
+      v-model:form="form"
+      :mode="drawerMode"
+      :parent-node="selectedParentNode"
+      :selected-node="selectedNode"
+      @submit="handleSubmit"
+    />
+  </PageContainer>
 </template>
 
 <script lang="ts" setup>
@@ -173,6 +175,7 @@ import {
   ArrowDown,
 } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { PageContainer } from '@/app/components'
 import DictTree from './DictTree.vue'
 import DictDetail from './DictDetail.vue'
 import DictFormDrawer from './DictFormDrawer.vue'
