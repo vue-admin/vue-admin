@@ -26,22 +26,22 @@
 - [x] HTTP 客户端单一化为 `service`
 - [x] 字典页 / 标签页 store 模块化、Pinia setup 化
 - [x] CLAUDE.md 工程上下文
-- [ ] ESLint flat config（严格规则）
-- [ ] husky + lint-staged（pre-commit 拦截）
-- [ ] GitHub Actions CI（type-check + lint + build）
-- [ ] 规范文档集（本目录）
-- [ ] CONTRIBUTING.md + Code of Conduct
-- [ ] LICENSE
+- [x] ESLint flat config（严格规则）
+- [x] husky + lint-staged（pre-commit 拦截）
+- [x] GitHub Actions CI（type-check + lint + build）
+- [x] 规范文档集（本目录）
+- [x] CONTRIBUTING.md + Code of Conduct
+- [x] LICENSE
 - [ ] 依赖升级到最新主版本（Vue 3.5 / Vite 6 / TS 5.6 / Element Plus 2.8+）
 
 ### L2 工程化（投产，1-2 月）
 
 补齐"开箱即用"的业务能力。
 
-- [ ] 权限系统：路由级（守卫） + 按钮级（`v-permission` 指令）
-- [ ] 菜单系统：动态路由 + 服务端下发 + meta 驱动
-- [ ] 用户/角色/字典 CRUD 全闭环
-- [ ] 通用组件库：`SearchTable`、`FormDrawer`、`PageContainer`
+- [x] 权限系统：路由级（守卫） + 按钮级（`v-permission` 指令）
+- [x] 菜单系统：动态路由 + 服务端下发 + meta 驱动
+- [x] 用户/角色/字典 CRUD 全闭环
+- [x] 通用组件库：`SearchTable`、`FormDrawer`、`PageContainer`
 - [ ] 主题系统：CSS Variables 规范化（已有暗黑，需整理）
 - [ ] 国际化（vue-i18n）骨架
 - [ ] 错误边界 + 全局 loading + 确认对话框组件
