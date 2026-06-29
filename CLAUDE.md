@@ -30,14 +30,14 @@ pnpm docs:preview   # VitePress 文档站预览
 
 ## 技术栈
 
-- Vue 3.4 + `<script setup>`
-- Vite 4.5 + TypeScript 4.8（待升级到最新主版本）
-- Element Plus 2.5 + 完整图标自动注册
-- Pinia 2.1（setup 风格 store）
-- Vue Router 4.3
-- Axios（统一通过 `lib/http/client` 导出的 `http` / `api` 使用）
-- VueUse 10.8 + SCSS
-- Vitest 1.6 + jsdom + @vue/test-utils
+- Vue 3.5 + `<script setup>`
+- Vite 7 + TypeScript 5.9
+- Element Plus 2.11 + 完整图标自动注册
+- Pinia 2.3（setup 风格 store）
+- Vue Router 4.6
+- Axios 1.6（统一通过 `lib/http/client` 导出的 `http` / `api` 使用）
+- VueUse 11 + SCSS
+- Vitest 3 + jsdom + @vue/test-utils
 - ESLint 9 flat config（强制目录边界）
 
 ## 工程上下文指引
@@ -68,15 +68,15 @@ pnpm docs:preview   # VitePress 文档站预览
 
 8. **通用组件库（M7-B）**：新增列表/表单页必须优先用 `@/app/components` 导出的 `SearchTable` / `FormDrawer` / `PageContainer`，配合 `@/app/composables/useCrud` 接管列表状态（listData/loading/pagination/searchForm/selectedRows + 7 个 handler）。禁止重复手写 el-table + el-pagination + 内联 drawer 模板。
 
-9. **Layout 配置中心（M7-B）**：`@/app/stores/layout` 提供 7 个持久化字段（showTagsView / showBreadcrumb / showLogo / showFooter / primaryColor / componentSize / locale），由 `layout/components/SettingsDrawer.vue` 暴露给用户。Layout 组件（TagsView/Footer/Breadcrumb/IconLogo）通过 `v-if` 消费 store；main.ts watch `primaryColor` 调 `lib/theme/colors` 的 `applyPrimaryColor`，按 Element Plus 官方 SCSS mix 语义生成主色 + light-3/5/7/8/9 + dark-2 6 阶派生色写入 `:root`；watch `locale` 调 `lib/i18n` 的 `setLocale`；App.vue 用 `el-config-provider` 注入 `componentSize`。新页面/组件应优先用 `useI18n()` 的 `t()` 而非硬编码中文。
-
-11. **国际化（M9 骨架）**：`lib/i18n` 提供 `createI18n` 单例（zh-CN/en-US）+ `setLocale/getLocale`；`main.ts` 注册插件并 watch `layout.locale` 同步；`SettingsDrawer` 已全面 i18n 化并提供语言切换器。业务页面渐进迁移（暂未完成，新增功能必须用 `$t`/`useI18n().t`）。
+9. **Layout 配置中心（M7-B）**：`@/app/stores/layout` 提供 7 个持久化字段（showTagsView / showBreadcrumb / showLogo / showFooter / primaryColor / componentSize / locale），由 `layout/components/SettingsDrawer.vue` 暴露给用户。Layout 组件（TagsView/Footer/Breadcrumb/IconLogo）通过 `v-if` 消费 store；main.ts watch `primaryColor` 调 `lib/theme/colors` 的 `applyPrimaryColor`，按 Element Plus 官方 SCSS mix 语义生成主色 + light-3/5/7/8/9 + dark-2 6 阶派生色写入 `:root`；App.vue 用 `el-config-provider` 注入 `componentSize`。
 
 10. **业务页面标准（M7-C）**：所有 List 页面必须用 `SearchTable` + `useCrud` + `PageContainer` + `FormDrawer` 四件套。FormDrawer 支持 `mode`（add/edit/view）+ `dependencies`（声明式显隐联动）+ `rules`（field-level 校验）+ `password`/`treeSelect` 字段类型。复杂联动（如权限分配 el-tree）用独立 drawer，不塞进 FormDrawer。
 
 11. **全局错误与交互（M8）**：`lib/error/ErrorBoundary.vue` 捕获组件渲染错误并显示 fallback，支持 `title`/`message`/`maxRetries` props 与重试防循环；`main.ts` 通过 `installGlobalErrorHandlers` 统一捕获 Vue runtime、`window.onerror`、`unhandledrejection` 并上报 monitor。`lib/loading/loadingService` 提供全局/嵌套 loading（`show`/`close`/`withLoading`）；`lib/confirm/confirmService` 统一确认对话框，返回 `Promise<boolean>`，业务代码不再直接调用 `ElMessageBox.confirm`。
 
-12. **文档站点（L3）**：`docs-site/` 是 VitePress 站点，通过 `@include` 复用 `docs/standards/` 5 个规范文档；`docs-site/components/` 提供通用组件演示页（SearchTable/FormDrawer/PageContainer，直接 import `src/app/components/*` 真实渲染）；`.vitepress/theme/index.ts` 全局注册 Element Plus；`pnpm docs:dev/build/preview` 本地开发构建预览；`.github/workflows/docs.yml` 在 push main 时构建并部署到 GitHub Pages（base `/vue-admin/`，**首次部署需仓库管理员在 Settings → Pages → Source 选 "GitHub Actions"**）。新增规范文档时需在 `docs-site/.vitepress/config.ts` 注册侧边栏条目，新增组件演示时在 `docs-site/components/demos/` 写 `<X>Demo<Variant>.vue` 并在 `docs-site/components/<x>.md` 引用。
+12. **国际化（M9 骨架）**：`lib/i18n` 提供 `createI18n` 单例（zh-CN/en-US）+ `setLocale/getLocale`；`main.ts` 注册插件并 watch `layout.locale` 同步；`SettingsDrawer` 已全面 i18n 化并提供语言切换器。业务页面渐进迁移（暂未完成，新增功能必须用 `$t`/`useI18n().t`）。
+
+13. **文档站点（L3）**：`docs-site/` 是 VitePress 站点，通过 `@include` 复用 `docs/standards/` 5 个规范文档；`docs-site/components/` 提供通用组件演示页（SearchTable/FormDrawer/PageContainer，直接 import `src/app/components/*` 真实渲染）；`.vitepress/theme/index.ts` 全局注册 Element Plus；`pnpm docs:dev/build/preview` 本地开发构建预览；`.github/workflows/docs.yml` 在 push main 时构建并部署到 GitHub Pages（base `/vue-admin/`，**首次部署需仓库管理员在 Settings → Pages → Source 选 "GitHub Actions"**）。新增规范文档时需在 `docs-site/.vitepress/config.ts` 注册侧边栏条目，新增组件演示时在 `docs-site/components/demos/` 写 `<X>Demo<Variant>.vue` 并在 `docs-site/components/<x>.md` 引用。
 
 ## 认证 / 权限（M3 + M4 已实现）
 

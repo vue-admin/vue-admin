@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        感谢你抽出时间报告 bug！请先搜索 [已有 Issue](https://github.com/rushui/vue-admin/issues?q=is%3Aissue) 避免重复。
+        感谢你抽出时间报告 bug！请先搜索 [已有 Issue](https://github.com/vue-admin/vue-admin/issues?q=is%3Aissue) 避免重复。
   - type: textarea
     id: what-happened
     attributes:
