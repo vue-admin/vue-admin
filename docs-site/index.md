@@ -5,6 +5,9 @@ hero:
   name: Vue Admin
   text: 企业级后台管理前端基座
   tagline: Vue 3 + Vite + TypeScript + Element Plus，约束明确，可直接投产
+  image:
+    src: /logo.svg
+    alt: Vue Admin logo
   actions:
     - theme: brand
       text: 快速开始
