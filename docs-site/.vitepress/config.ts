@@ -47,7 +47,7 @@ export default defineConfig({
           text: '快速上手',
           items: [
             { text: '快速上手', link: '/guide/getting-started' },
-            { text: '云主机部署', link: '/guide/deploy' }
+            { text: '部署指南', link: '/guide/deploy' }
           ]
         },
         {
