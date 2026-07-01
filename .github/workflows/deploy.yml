@@ -51,15 +51,26 @@ jobs:
       - name: Build docs
         run: pnpm docs:build
         env:
-          # 文档部署到 /docs/ 子路径；GitHub Pages 仍用默认 /vue-admin/
-          DOCS_BASE: ${{ vars.DOCS_BASE || '/docs/' }}
+          # 文档部署到独立域名根路径（vue-admin.cncf.vip/）；GitHub Pages 用 /vue-admin/
+          DOCS_BASE: ${{ vars.DOCS_BASE || '/' }}
 
       - name: Setup SSH
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          SSH_PORT: ${{ secrets.SSH_PORT || '22' }}
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
+          # 写入私钥（注意末尾换行，否则某些 OpenSSH 版本拒绝读取）
+          printf '%s\n' "$SERVER_SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+          # 诊断：确认 host 可达 + 端口开放（keyscan 失败常因端口被挡或 host 解析失败）
+          echo "Probing $SERVER_HOST:$SSH_PORT ..."
+          if ! ssh-keyscan -T 15 -p "$SSH_PORT" -H "$SERVER_HOST" >> ~/.ssh/known_hosts 2>/dev/null; then
+            echo "::error::ssh-keyscan failed for $SERVER_HOST:$SSH_PORT — 检查 SERVER_HOST 是否正确、SSH_PORT 是否开放、安全组是否放行"
+            exit 1
+          fi
+          echo "✓ host key recorded"
 
       - name: Deploy app
         uses: burnett01/rsync-deployments@7.0.1
