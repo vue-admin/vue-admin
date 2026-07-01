@@ -28,12 +28,12 @@
     "vue-router"
   ],
   "engines": {
-    "node": ">=22.12.0 <23.0.0",
+    "node": ">=22.13.0 <23.0.0",
     "pnpm": ">=9.0.0"
   },
   "packageManager": "pnpm@9.15.0",
   "scripts": {
-    "preinstall": "node -e \"const v=process.versions.node.split('.');if(+v[0]<22||(+v[0]===22&&+v[1]<12)){console.error('\\x1b[31m错误: 需要 Node.js >= 22.12.0，当前版本:',process.version,'\\x1b[0m');process.exit(1)}\"",
+    "preinstall": "node -e \"const v=process.versions.node.split('.');if(+v[0]<22||(+v[0]===22&&+v[1]<13)){console.error('\\x1b[31m错误: 需要 Node.js >= 22.13.0，当前版本:',process.version,'\\x1b[0m');process.exit(1)}\"",
     "dev": "vite",
     "build": "run-p type-check build-only",
     "preview": "vite preview",
