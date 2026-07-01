@@ -12,7 +12,7 @@
 
 ```vue
 <script setup lang="ts">
-import { ErrorBoundary } from '@/lib/error/ErrorBoundary'
+import ErrorBoundary from '@/lib/error/ErrorBoundary.vue'
 import RiskyChart from './RiskyChart.vue'
 </script>
 

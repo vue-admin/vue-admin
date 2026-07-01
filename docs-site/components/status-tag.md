@@ -32,7 +32,7 @@ import { StatusTag } from '@/app/components'
 | 启用/禁用 | `active` / `inactive` | success / info | 启用 / 禁用 |
 | 布尔 | `true` / `false` | success / info | 是 / 否 |
 | 数字 | `1` / `0` | success / info | 启用 / 禁用 |
-| 通用状态 | `success` / `failed` / `error` / `pending` / `processing` / `completed` / `cancelled` / `deleted` | — | 成功 / 失败 / 错误 / 待处理 / 处理中 / 已完成 / 已取消 / 已删除 |
+| 通用状态 | `success` / `failed` / `error` / `pending` / `processing` / `completed` / `cancelled` / `deleted` | success / danger / danger / warning / primary / success / info / danger | 成功 / 失败 / 错误 / 待处理 / 处理中 / 已完成 / 已取消 / 已删除 |
 | 用户角色 | `admin` / `user` / `vip` | danger / primary / warning | 管理员 / 普通用户 / VIP |
 
 未命中的状态值回退为 `info` 色，文本显示原值。
