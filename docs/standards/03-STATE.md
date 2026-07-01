@@ -1,6 +1,6 @@
 # 状态管理规范
 
-> 本文档规定 Pinia store 的目录、写法、依赖、持久化。架构分层见 [01-ARCHITECTURE.md](./01-ARCHITECTURE.md)。
+> 本文档规定 Pinia store 的目录、写法、依赖、持久化。架构分层见 [01-ARCHITECTURE.md](./architecture)。
 
 ## 一、目录
 

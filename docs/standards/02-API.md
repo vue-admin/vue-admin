@@ -1,6 +1,6 @@
 # HTTP 客户端规范
 
-> 本文档规定 HTTP 调用、错误处理、Mock 数据契约。架构分层见 [01-ARCHITECTURE.md](./01-ARCHITECTURE.md)。
+> 本文档规定 HTTP 调用、错误处理、Mock 数据契约。架构分层见 [01-ARCHITECTURE.md](./architecture)。
 
 ## 一、单一入口
 

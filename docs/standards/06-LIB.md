@@ -314,7 +314,7 @@ await api.del('/api/user/1')
 await api.post('/api/user', data, { _silent: true })
 ```
 
-**完整示例见 [02-API.md](./02-API.md)。
+**完整示例见 [02-API.md](./api)。
 
 ## 扩展新服务
 
