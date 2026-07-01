@@ -47,6 +47,7 @@ jobs:
         env:
           # 部署到域名根路径；子路径改为 /admin/ 等
           VITE_BASE: ${{ vars.APP_BASE || '/' }}
+          VITE_ENABLE_MOCK: 'true'
 
       - name: Build docs
         run: pnpm docs:build

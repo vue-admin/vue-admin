@@ -5,8 +5,6 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
-import { viteMockServe } from 'vite-plugin-mock'
-
 // https://vitejs.dev/config/
 // base 可通过 VITE_BASE 环境变量覆盖（云主机部署到根路径用 '/'，子路径用 '/xxx/'）；
 // 默认开发为 ''，生产为 '/vue-admin/'（GitHub Pages 子路径）
@@ -31,13 +29,7 @@ export default defineConfig({
       //dts: 'src/commponents.d.ts',
       resolvers: [ElementPlusResolver()]
     }),
-    viteMockServe({
-      // supportTs:false,
-      // logger:false,
-      mockPath: './src/mock/apis', //解析路径
-      enable: true,
-      watchFiles: true
-    })
+
   ],
   css: {
     // css预处理器

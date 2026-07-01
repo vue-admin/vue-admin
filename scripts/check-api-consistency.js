@@ -54,29 +54,18 @@ function extractFrontendApis(filePath) {
   return apis
 }
 
-// 提取 Mock API 端点
+// 提取 MSW handler 端点
 function extractMockApis(filePath) {
   const content = fs.readFileSync(filePath, 'utf-8')
   const apis = []
 
-  // 匹配 mock 配置中的 url 和 method
-  const urlPattern = /url\s*:\s*['"]([^'"]+)['"]/g
+  // 匹配 MSW 的 http.get/post/put/patch/delete('/api/...', ...) 调用
+  const handlerPattern = /http\.(get|post|put|patch|delete)\s*\(\s*['"]([^'"]+)['"]/g
 
-  let urlMatch
-  while ((urlMatch = urlPattern.exec(content)) !== null) {
-    const url = urlMatch[1]
-
-    // 在 url 前后 80 字符范围内查找 method（兼容 method 在 url 前或后两种写法）
-    const start = Math.max(0, urlMatch.index - 80)
-    const end = Math.min(content.length, urlMatch.index + 80)
-    const segment = content.substring(start, end)
-    const methodMatch = segment.match(/method\s*:\s*['"]([^'"]+)['"]/i)
-    let method = 'get'
-    if (methodMatch) {
-      method = methodMatch[1].toLowerCase()
-      if (method === 'del') method = 'delete'
-    }
-
+  let match
+  while ((match = handlerPattern.exec(content)) !== null) {
+    const method = match[1].toLowerCase()
+    const url = match[2]
     apis.push({ method, path: url, file: filePath })
   }
 
@@ -106,8 +95,8 @@ apiFiles.forEach(file => {
 console.log(`📊 前端 API 文件: ${apiFiles.length} 个`)
 console.log(`📊 前端 API 调用: ${frontendApis.length} 个\n`)
 
-// 2. 收集所有 Mock API 端点
-const mockPath = path.join(__dirname, '..', 'src', 'mock', 'apis')
+// 2. 收集所有 MSW handler 端点
+const mockPath = path.join(__dirname, '..', 'src', 'mock', 'handlers')
 const mockFiles = scanDir(mockPath, /\.ts$/)
 
 let mockApis = []

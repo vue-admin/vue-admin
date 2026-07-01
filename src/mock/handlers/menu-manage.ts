@@ -1,6 +1,6 @@
 import { http } from 'msw'
 import { ok, fail } from './_utils'
-import { ALL_MENUS } from '../apis/menu'
+import { ALL_MENUS } from './menu'
 
 // 菜单管理 CRUD 内存数据源
 // 从 ALL_MENUS（路由格式）转换为 MenuRecord 格式（带 id/parentId/sort/status）

@@ -2,8 +2,8 @@ import { http } from 'msw'
 import { ok } from './_utils'
 
 // 全部菜单（带权限元信息）
-// 从 src/mock/apis/menu.ts 原样移植，避免两份维护
-const ALL_MENUS = [
+// 原从 src/mock/apis/menu.ts 移植，现由本文件统一定义并导出
+export const ALL_MENUS = [
   {
     path: '/',
     name: 'home',

@@ -28,11 +28,6 @@ app.use(pinia)
 // 注册权限指令（v-permission）
 app.directive('permission', vPermission)
 
-// 安装 4 步全局守卫（必须在 app.use(router) 之前）
-installGuards(router)
-
-app.use(router)
-
 // 全局 provide monitor（依赖注入，便于替换 Sentry 等）
 app.provide('monitor', defaultMonitor)
 
@@ -69,6 +64,11 @@ async function bootstrap() {
       serviceWorker: { url: `${import.meta.env.BASE_URL}mockServiceWorker.js` }
     })
   }
+
+  // 安装 4 步全局守卫（必须在 app.use(router) 之前，且在 MSW worker 启动之后，
+  // 否则首次导航时的 bootstrap 请求可能绕过 mock，导致动态路由注册失败）
+  installGuards(router)
+  app.use(router)
   app.mount('#app')
 }
 bootstrap()
