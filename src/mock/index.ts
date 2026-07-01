@@ -6,6 +6,8 @@ import { permissionHandlers } from './handlers/permission'
 import { deptHandlers } from './handlers/dept'
 import { dictHandlers } from './handlers/dict'
 import { noticeHandlers } from './handlers/notice'
+import { dashboardHandlers } from './handlers/dashboard'
+import { crudHandlers } from './handlers/crud'
 
 export const handlers = [
   ...authHandlers,
@@ -15,5 +17,7 @@ export const handlers = [
   ...permissionHandlers,
   ...deptHandlers,
   ...dictHandlers,
-  ...noticeHandlers
+  ...noticeHandlers,
+  ...dashboardHandlers,
+  ...crudHandlers
 ]
