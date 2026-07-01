@@ -1,5 +1,19 @@
 import type { MockMethod } from 'vite-plugin-mock'
 
+// 将对象数组转为 CSV 文本（含表头）。字段含逗号/引号时用双引号包裹并转义。
+function toCsv(rows: object[], headers: string[]): string {
+  const escape = (v: unknown) => {
+    const s = v == null ? '' : String(v)
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+  }
+  const lines = [headers.join(',')]
+  for (const row of rows) {
+    const r = row as Record<string, unknown>
+    lines.push(headers.map((h) => escape(r[h])).join(','))
+  }
+  return lines.join('\n')
+}
+
 // 定义字典分类类型
 interface DictCategoryInfo {
   id: string
@@ -39,8 +53,22 @@ interface DictItemInfo {
 // 生成随机字典分类数据
 const generateDictCategories = (count: number): DictCategoryInfo[] => {
   const categories: DictCategoryInfo[] = []
-  const names = ['用户类型', '状态类型', '性别类型', '民族类型', '学历类型', '婚姻状况']
-  const codes = ['user_type', 'status_type', 'gender_type', 'nation_type', 'education_type', 'marital_status']
+  const names = [
+    '用户类型',
+    '状态类型',
+    '性别类型',
+    '民族类型',
+    '学历类型',
+    '婚姻状况'
+  ]
+  const codes = [
+    'user_type',
+    'status_type',
+    'gender_type',
+    'nation_type',
+    'education_type',
+    'marital_status'
+  ]
   const statuses = ['active', 'inactive'] as const
   const descriptions = [
     '用户类型字典分类',
@@ -48,7 +76,7 @@ const generateDictCategories = (count: number): DictCategoryInfo[] => {
     '性别类型字典分类',
     '民族类型字典分类',
     '学历类型字典分类',
-    '婚姻状况字典分类',
+    '婚姻状况字典分类'
   ]
 
   for (let i = 0; i < count; i++) {
@@ -58,8 +86,12 @@ const generateDictCategories = (count: number): DictCategoryInfo[] => {
       code: codes[i % codes.length],
       description: descriptions[i % descriptions.length],
       status: statuses[Math.floor(Math.random() * statuses.length)],
-      createTime: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
-      updateTime: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+      createTime: new Date(
+        Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000
+      ).toISOString(),
+      updateTime: new Date(
+        Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
+      ).toISOString()
     })
   }
 
@@ -67,10 +99,27 @@ const generateDictCategories = (count: number): DictCategoryInfo[] => {
 }
 
 // 生成随机字典数据
-const generateDicts = (count: number, categories: DictCategoryInfo[]): DictInfo[] => {
+const generateDicts = (
+  count: number,
+  categories: DictCategoryInfo[]
+): DictInfo[] => {
   const dicts: DictInfo[] = []
-  const names = ['用户状态', '订单状态', '支付状态', '物流状态', '审核状态', '会员等级']
-  const codes = ['user_status', 'order_status', 'pay_status', 'logistics_status', 'audit_status', 'member_level']
+  const names = [
+    '用户状态',
+    '订单状态',
+    '支付状态',
+    '物流状态',
+    '审核状态',
+    '会员等级'
+  ]
+  const codes = [
+    'user_status',
+    'order_status',
+    'pay_status',
+    'logistics_status',
+    'audit_status',
+    'member_level'
+  ]
   const statuses = ['active', 'inactive'] as const
   const descriptions = [
     '用户状态字典',
@@ -78,7 +127,7 @@ const generateDicts = (count: number, categories: DictCategoryInfo[]): DictInfo[
     '支付状态字典',
     '物流状态字典',
     '审核状态字典',
-    '会员等级字典',
+    '会员等级字典'
   ]
 
   for (let i = 0; i < count; i++) {
@@ -90,8 +139,12 @@ const generateDicts = (count: number, categories: DictCategoryInfo[]): DictInfo[
       code: codes[i % codes.length],
       description: descriptions[i % descriptions.length],
       status: statuses[Math.floor(Math.random() * statuses.length)],
-      createTime: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
-      updateTime: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+      createTime: new Date(
+        Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000
+      ).toISOString(),
+      updateTime: new Date(
+        Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
+      ).toISOString()
     })
   }
 
@@ -99,49 +152,52 @@ const generateDicts = (count: number, categories: DictCategoryInfo[]): DictInfo[
 }
 
 // 生成随机字典项数据
-const generateDictItems = (count: number, dicts: DictInfo[]): DictItemInfo[] => {
+const generateDictItems = (
+  count: number,
+  dicts: DictInfo[]
+): DictItemInfo[] => {
   const items: DictItemInfo[] = []
   const userStatusItems = [
     { code: 'active', name: '启用', value: '1' },
     { code: 'inactive', name: '禁用', value: '0' },
-    { code: 'pending', name: '待审核', value: '2' },
+    { code: 'pending', name: '待审核', value: '2' }
   ]
   const orderStatusItems = [
     { code: 'pending', name: '待支付', value: '1' },
     { code: 'paid', name: '已支付', value: '2' },
     { code: 'shipped', name: '已发货', value: '3' },
     { code: 'received', name: '已收货', value: '4' },
-    { code: 'cancelled', name: '已取消', value: '5' },
+    { code: 'cancelled', name: '已取消', value: '5' }
   ]
   const payStatusItems = [
     { code: 'unpaid', name: '未支付', value: '1' },
     { code: 'paid', name: '已支付', value: '2' },
-    { code: 'refunded', name: '已退款', value: '3' },
+    { code: 'refunded', name: '已退款', value: '3' }
   ]
   const logisticsStatusItems = [
     { code: 'pending', name: '待发货', value: '1' },
     { code: 'shipped', name: '运输中', value: '2' },
-    { code: 'delivered', name: '已送达', value: '3' },
+    { code: 'delivered', name: '已送达', value: '3' }
   ]
   const auditStatusItems = [
     { code: 'pending', name: '待审核', value: '1' },
     { code: 'approved', name: '已通过', value: '2' },
-    { code: 'rejected', name: '已拒绝', value: '3' },
+    { code: 'rejected', name: '已拒绝', value: '3' }
   ]
   const memberLevelItems = [
     { code: 'level1', name: '青铜会员', value: '1' },
     { code: 'level2', name: '白银会员', value: '2' },
     { code: 'level3', name: '黄金会员', value: '3' },
-    { code: 'level4', name: '钻石会员', value: '4' },
+    { code: 'level4', name: '钻石会员', value: '4' }
   ]
 
   const dictItemMap: Record<string, typeof userStatusItems> = {
-    'user_status': userStatusItems,
-    'order_status': orderStatusItems,
-    'pay_status': payStatusItems,
-    'logistics_status': logisticsStatusItems,
-    'audit_status': auditStatusItems,
-    'member_level': memberLevelItems,
+    user_status: userStatusItems,
+    order_status: orderStatusItems,
+    pay_status: payStatusItems,
+    logistics_status: logisticsStatusItems,
+    audit_status: auditStatusItems,
+    member_level: memberLevelItems
   }
 
   let id = 1
@@ -156,8 +212,12 @@ const generateDictItems = (count: number, dicts: DictInfo[]): DictItemInfo[] => 
         value: item.value,
         sort: id,
         status: Math.random() > 0.1 ? 'active' : 'inactive',
-        createTime: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
-        updateTime: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+        createTime: new Date(
+          Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000
+        ).toISOString(),
+        updateTime: new Date(
+          Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
+        ).toISOString()
       })
       id++
     }
@@ -174,14 +234,15 @@ const dictItems: DictItemInfo[] = generateDictItems(30, dicts)
 export default [
   // 获取字典分类列表
   {
-    url: '/api/dict/category/list',
+    url: '/api/dict/categories',
     method: 'get',
     response: (req: any) => {
       const { keyword = '', status = '', page = 1, size = 10 } = req.query
 
       // 筛选
-      let filteredCategories = dictCategories.filter(category => {
-        const matchKeyword = keyword === '' ||
+      let filteredCategories = dictCategories.filter((category) => {
+        const matchKeyword =
+          keyword === '' ||
           category.name.includes(keyword) ||
           category.code.includes(keyword) ||
           category.description.includes(keyword)
@@ -201,46 +262,46 @@ export default [
           records: paginatedCategories,
           total: filteredCategories.length,
           current: parseInt(page),
-          size: parseInt(size),
+          size: parseInt(size)
         },
-        msg: 'success',
+        msg: 'success'
       }
-    },
+    }
   },
 
   // 获取字典分类详情
   {
-    url: '/api/dict/category/detail/:id',
+    url: '/api/dict/categories/:id',
     method: 'get',
     response: (req: any) => {
       const id = req.query?.id || req.params?.id
-      const category = dictCategories.find(c => c.id === id)
+      const category = dictCategories.find((c) => c.id === id)
 
       if (category) {
         return {
           code: 0,
           data: category,
-          msg: 'success',
+          msg: 'success'
         }
       }
 
       return {
         code: 404,
-        msg: '字典分类不存在',
+        msg: '字典分类不存在'
       }
-    },
+    }
   },
 
   // 创建字典分类
   {
-    url: '/api/dict/category/create',
+    url: '/api/dict/categories',
     method: 'post',
     response: (req: any) => {
       const newCategory = {
         id: (dictCategories.length + 1).toString(),
         ...req.body,
         createTime: new Date().toISOString(),
-        updateTime: new Date().toISOString(),
+        updateTime: new Date().toISOString()
       }
 
       dictCategories.push(newCategory)
@@ -248,47 +309,47 @@ export default [
       return {
         code: 0,
         data: newCategory,
-        msg: '创建成功',
+        msg: '创建成功'
       }
-    },
+    }
   },
 
   // 更新字典分类
   {
-    url: '/api/dict/category/update/:id',
+    url: '/api/dict/categories/:id',
     method: 'put',
     response: (req: any) => {
       const id = req.query?.id || req.params?.id
-      const categoryIndex = dictCategories.findIndex(c => c.id === id)
+      const categoryIndex = dictCategories.findIndex((c) => c.id === id)
 
       if (categoryIndex !== -1) {
         dictCategories[categoryIndex] = {
           ...dictCategories[categoryIndex],
           ...req.body,
-          updateTime: new Date().toISOString(),
+          updateTime: new Date().toISOString()
         }
 
         return {
           code: 0,
           data: dictCategories[categoryIndex],
-          msg: '更新成功',
+          msg: '更新成功'
         }
       }
 
       return {
         code: 404,
-        msg: '字典分类不存在',
+        msg: '字典分类不存在'
       }
-    },
+    }
   },
 
   // 删除字典分类
   {
-    url: '/api/dict/category/delete/:id',
+    url: '/api/dict/categories/:id',
     method: 'delete',
     response: (req: any) => {
       const id = req.query?.id || req.params?.id
-      const categoryIndex = dictCategories.findIndex(c => c.id === id)
+      const categoryIndex = dictCategories.findIndex((c) => c.id === id)
 
       if (categoryIndex !== -1) {
         dictCategories.splice(categoryIndex, 1)
@@ -296,26 +357,26 @@ export default [
         return {
           code: 0,
           data: true,
-          msg: '删除成功',
+          msg: '删除成功'
         }
       }
 
       return {
         code: 404,
-        msg: '字典分类不存在',
+        msg: '字典分类不存在'
       }
-    },
+    }
   },
 
-  // 批量删除字典分类
+  // 批量删除字典分类（DELETE 集合 + body.ids）
   {
-    url: '/api/dict/category/batch-delete',
-    method: 'post',
+    url: '/api/dict/categories',
+    method: 'delete',
     response: (req: any) => {
       const { ids } = req.body
 
       ids.forEach((id: string) => {
-        const categoryIndex = dictCategories.findIndex(c => c.id === id)
+        const categoryIndex = dictCategories.findIndex((c) => c.id === id)
         if (categoryIndex !== -1) {
           dictCategories.splice(categoryIndex, 1)
         }
@@ -324,38 +385,45 @@ export default [
       return {
         code: 0,
         data: true,
-        msg: '删除成功',
+        msg: '删除成功'
       }
-    },
+    }
   },
 
   // 导出字典分类列表
   {
-    url: '/api/dict/category/export',
+    url: '/api/dict/categories/export',
     method: 'get',
     response: () => {
-      return {
-        code: 0,
-        data: 'export success',
-        msg: '导出成功',
-      }
-    },
+      const csv = toCsv(dictCategories, [
+        'id', 'name', 'code', 'description', 'status', 'createTime', 'updateTime'
+      ])
+      return { code: 0, data: csv, msg: '导出成功' }
+    }
   },
 
   // 获取字典列表
   {
-    url: '/api/dict/list',
+    url: '/api/dict/dicts',
     method: 'get',
     response: (req: any) => {
-      const { keyword = '', categoryId = '', status = '', page = 1, size = 10 } = req.query
+      const {
+        keyword = '',
+        categoryId = '',
+        status = '',
+        page = 1,
+        size = 10
+      } = req.query
 
       // 筛选
-      let filteredDicts = dicts.filter(dict => {
-        const matchKeyword = keyword === '' ||
+      let filteredDicts = dicts.filter((dict) => {
+        const matchKeyword =
+          keyword === '' ||
           dict.name.includes(keyword) ||
           dict.code.includes(keyword) ||
           dict.description.includes(keyword)
-        const matchCategory = categoryId === '' || dict.categoryId === categoryId
+        const matchCategory =
+          categoryId === '' || dict.categoryId === categoryId
         const matchStatus = status === '' || dict.status === status
 
         return matchKeyword && matchCategory && matchStatus
@@ -372,46 +440,46 @@ export default [
           records: paginatedDicts,
           total: filteredDicts.length,
           current: parseInt(page),
-          size: parseInt(size),
+          size: parseInt(size)
         },
-        msg: 'success',
+        msg: 'success'
       }
-    },
+    }
   },
 
   // 获取字典详情
   {
-    url: '/api/dict/detail/:id',
+    url: '/api/dict/dicts/:id',
     method: 'get',
     response: (req: any) => {
       const id = req.query?.id || req.params?.id
-      const dict = dicts.find(d => d.id === id)
+      const dict = dicts.find((d) => d.id === id)
 
       if (dict) {
         return {
           code: 0,
           data: dict,
-          msg: 'success',
+          msg: 'success'
         }
       }
 
       return {
         code: 404,
-        msg: '字典不存在',
+        msg: '字典不存在'
       }
-    },
+    }
   },
 
   // 创建字典
   {
-    url: '/api/dict/create',
+    url: '/api/dict/dicts',
     method: 'post',
     response: (req: any) => {
       const newDict = {
         id: (dicts.length + 1).toString(),
         ...req.body,
         createTime: new Date().toISOString(),
-        updateTime: new Date().toISOString(),
+        updateTime: new Date().toISOString()
       }
 
       dicts.push(newDict)
@@ -419,47 +487,47 @@ export default [
       return {
         code: 0,
         data: newDict,
-        msg: '创建成功',
+        msg: '创建成功'
       }
-    },
+    }
   },
 
   // 更新字典
   {
-    url: '/api/dict/update/:id',
+    url: '/api/dict/dicts/:id',
     method: 'put',
     response: (req: any) => {
       const id = req.query?.id || req.params?.id
-      const dictIndex = dicts.findIndex(d => d.id === id)
+      const dictIndex = dicts.findIndex((d) => d.id === id)
 
       if (dictIndex !== -1) {
         dicts[dictIndex] = {
           ...dicts[dictIndex],
           ...req.body,
-          updateTime: new Date().toISOString(),
+          updateTime: new Date().toISOString()
         }
 
         return {
           code: 0,
           data: dicts[dictIndex],
-          msg: '更新成功',
+          msg: '更新成功'
         }
       }
 
       return {
         code: 404,
-        msg: '字典不存在',
+        msg: '字典不存在'
       }
-    },
+    }
   },
 
   // 删除字典
   {
-    url: '/api/dict/delete/:id',
+    url: '/api/dict/dicts/:id',
     method: 'delete',
     response: (req: any) => {
       const id = req.query?.id || req.params?.id
-      const dictIndex = dicts.findIndex(d => d.id === id)
+      const dictIndex = dicts.findIndex((d) => d.id === id)
 
       if (dictIndex !== -1) {
         dicts.splice(dictIndex, 1)
@@ -467,26 +535,26 @@ export default [
         return {
           code: 0,
           data: true,
-          msg: '删除成功',
+          msg: '删除成功'
         }
       }
 
       return {
         code: 404,
-        msg: '字典不存在',
+        msg: '字典不存在'
       }
-    },
+    }
   },
 
-  // 批量删除字典
+  // 批量删除字典（DELETE 集合 + body.ids）
   {
-    url: '/api/dict/batch-delete',
-    method: 'post',
+    url: '/api/dict/dicts',
+    method: 'delete',
     response: (req: any) => {
       const { ids } = req.body
 
       ids.forEach((id: string) => {
-        const dictIndex = dicts.findIndex(d => d.id === id)
+        const dictIndex = dicts.findIndex((d) => d.id === id)
         if (dictIndex !== -1) {
           dicts.splice(dictIndex, 1)
         }
@@ -495,34 +563,40 @@ export default [
       return {
         code: 0,
         data: true,
-        msg: '删除成功',
+        msg: '删除成功'
       }
-    },
+    }
   },
 
   // 导出字典列表
   {
-    url: '/api/dict/export',
+    url: '/api/dict/dicts/export',
     method: 'get',
     response: () => {
-      return {
-        code: 0,
-        data: 'export success',
-        msg: '导出成功',
-      }
-    },
+      const csv = toCsv(dicts, [
+        'id', 'categoryId', 'name', 'code', 'description', 'status', 'createTime', 'updateTime'
+      ])
+      return { code: 0, data: csv, msg: '导出成功' }
+    }
   },
 
   // 获取字典项列表
   {
-    url: '/api/dict/item/list',
+    url: '/api/dict/items',
     method: 'get',
     response: (req: any) => {
-      const { keyword = '', dictId = '', status = '', page = 1, size = 10 } = req.query
+      const {
+        keyword = '',
+        dictId = '',
+        status = '',
+        page = 1,
+        size = 10
+      } = req.query
 
       // 筛选
-      let filteredItems = dictItems.filter(item => {
-        const matchKeyword = keyword === '' ||
+      let filteredItems = dictItems.filter((item) => {
+        const matchKeyword =
+          keyword === '' ||
           item.name.includes(keyword) ||
           item.code.includes(keyword) ||
           item.value.includes(keyword)
@@ -543,46 +617,46 @@ export default [
           records: paginatedItems,
           total: filteredItems.length,
           current: parseInt(page),
-          size: parseInt(size),
+          size: parseInt(size)
         },
-        msg: 'success',
+        msg: 'success'
       }
-    },
+    }
   },
 
   // 获取字典项详情
   {
-    url: '/api/dict/item/detail/:id',
+    url: '/api/dict/items/:id',
     method: 'get',
     response: (req: any) => {
       const id = req.query?.id || req.params?.id
-      const item = dictItems.find(i => i.id === id)
+      const item = dictItems.find((i) => i.id === id)
 
       if (item) {
         return {
           code: 0,
           data: item,
-          msg: 'success',
+          msg: 'success'
         }
       }
 
       return {
         code: 404,
-        msg: '字典项不存在',
+        msg: '字典项不存在'
       }
-    },
+    }
   },
 
   // 创建字典项
   {
-    url: '/api/dict/item/create',
+    url: '/api/dict/items',
     method: 'post',
     response: (req: any) => {
       const newItem = {
         id: (dictItems.length + 1).toString(),
         ...req.body,
         createTime: new Date().toISOString(),
-        updateTime: new Date().toISOString(),
+        updateTime: new Date().toISOString()
       }
 
       dictItems.push(newItem)
@@ -590,47 +664,47 @@ export default [
       return {
         code: 0,
         data: newItem,
-        msg: '创建成功',
+        msg: '创建成功'
       }
-    },
+    }
   },
 
   // 更新字典项
   {
-    url: '/api/dict/item/update/:id',
+    url: '/api/dict/items/:id',
     method: 'put',
     response: (req: any) => {
       const id = req.query?.id || req.params?.id
-      const itemIndex = dictItems.findIndex(i => i.id === id)
+      const itemIndex = dictItems.findIndex((i) => i.id === id)
 
       if (itemIndex !== -1) {
         dictItems[itemIndex] = {
           ...dictItems[itemIndex],
           ...req.body,
-          updateTime: new Date().toISOString(),
+          updateTime: new Date().toISOString()
         }
 
         return {
           code: 0,
           data: dictItems[itemIndex],
-          msg: '更新成功',
+          msg: '更新成功'
         }
       }
 
       return {
         code: 404,
-        msg: '字典项不存在',
+        msg: '字典项不存在'
       }
-    },
+    }
   },
 
   // 删除字典项
   {
-    url: '/api/dict/item/delete/:id',
+    url: '/api/dict/items/:id',
     method: 'delete',
     response: (req: any) => {
       const id = req.query?.id || req.params?.id
-      const itemIndex = dictItems.findIndex(i => i.id === id)
+      const itemIndex = dictItems.findIndex((i) => i.id === id)
 
       if (itemIndex !== -1) {
         dictItems.splice(itemIndex, 1)
@@ -638,26 +712,26 @@ export default [
         return {
           code: 0,
           data: true,
-          msg: '删除成功',
+          msg: '删除成功'
         }
       }
 
       return {
         code: 404,
-        msg: '字典项不存在',
+        msg: '字典项不存在'
       }
-    },
+    }
   },
 
-  // 批量删除字典项
+  // 批量删除字典项（DELETE 集合 + body.ids）
   {
-    url: '/api/dict/item/batch-delete',
-    method: 'post',
+    url: '/api/dict/items',
+    method: 'delete',
     response: (req: any) => {
       const { ids } = req.body
 
       ids.forEach((id: string) => {
-        const itemIndex = dictItems.findIndex(i => i.id === id)
+        const itemIndex = dictItems.findIndex((i) => i.id === id)
         if (itemIndex !== -1) {
           dictItems.splice(itemIndex, 1)
         }
@@ -666,21 +740,20 @@ export default [
       return {
         code: 0,
         data: true,
-        msg: '删除成功',
+        msg: '删除成功'
       }
-    },
+    }
   },
 
   // 导出字典项列表
   {
-    url: '/api/dict/item/export',
+    url: '/api/dict/items/export',
     method: 'get',
     response: () => {
-      return {
-        code: 0,
-        data: 'export success',
-        msg: '导出成功',
-      }
-    },
-  },
+      const csv = toCsv(dictItems, [
+        'id', 'dictId', 'name', 'code', 'value', 'sort', 'status', 'createTime', 'updateTime'
+      ])
+      return { code: 0, data: csv, msg: '导出成功' }
+    }
+  }
 ] as MockMethod[]

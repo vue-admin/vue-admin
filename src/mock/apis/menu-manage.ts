@@ -44,7 +44,7 @@ function seedMenus(): MenuRecord[] {
         component: node.component,
         icon: node.meta?.icon,
         sort: idx,
-        status: 'active',
+        status: 'active'
       }
       records.push(rec)
       if (node.children && node.children.length > 0) {
@@ -117,16 +117,20 @@ interface SortMenuBody {
 
 export default [
   {
-    url: '/api/system/menu/tree',
+    url: '/api/system/menu',
     method: 'get',
-    response: () => ({
-      code: 0,
-      data: buildTree(menuRecords),
-      msg: 'ok',
-    }),
+    response: ({ query }: { query: { view?: string } }) => {
+      // view=tree 返回树形；其他保留兼容（这里只支持 tree）
+      void query
+      return {
+        code: 0,
+        data: buildTree(menuRecords),
+        msg: 'ok'
+      }
+    }
   },
   {
-    url: '/api/system/menu/create',
+    url: '/api/system/menu',
     method: 'post',
     response: ({ body }: { body: CreateMenuBody }) => {
       const newMenu: MenuRecord = {
@@ -137,14 +141,14 @@ export default [
         component: body.component,
         icon: body.icon,
         sort: body.sort ?? 0,
-        status: body.status || 'active',
+        status: body.status || 'active'
       }
       menuRecords.push(newMenu)
       return { code: 0, data: newMenu, msg: 'ok' }
-    },
+    }
   },
   {
-    url: '/api/system/menu/update/:id',
+    url: '/api/system/menu/:id',
     method: 'put',
     response: ({ url, body }: { url: string; body: UpdateMenuBody }) => {
       const id = url.split('/').pop()!
@@ -157,39 +161,43 @@ export default [
         icon: body.icon ?? rec.icon,
         sort: body.sort ?? rec.sort,
         status: body.status ?? rec.status,
-        parentId: body.parentId ?? rec.parentId,
+        parentId: body.parentId ?? rec.parentId
       })
       return { code: 0, data: rec, msg: 'ok' }
-    },
+    }
   },
   {
-    url: '/api/system/menu/delete/:id',
+    url: '/api/system/menu/:id',
     method: 'delete',
     response: ({ url }: { url: string }) => {
       const id = url.split('/').pop()!
       removeRecordAndChildren(id)
       return { code: 0, data: true, msg: 'ok' }
-    },
+    }
   },
   {
     url: '/api/system/menu/sort',
-    method: 'post',
+    method: 'patch',
     response: ({ body }: { body: SortMenuBody }) => {
       const { draggingId, targetId, position } = body
       const dragging = findRecord(draggingId)
       const target = findRecord(targetId)
-      if (!dragging || !target) return { code: 400, data: null, msg: '节点不存在' }
+      if (!dragging || !target)
+        return { code: 400, data: null, msg: '节点不存在' }
       if (position === 'inner') {
         dragging.parentId = target.id
       } else {
         dragging.parentId = target.parentId
-        dragging.sort = position === 'before' ? target.sort - 0.5 : target.sort + 0.5
+        dragging.sort =
+          position === 'before' ? target.sort - 0.5 : target.sort + 0.5
       }
       const siblings = menuRecords
         .filter((r) => r.parentId === dragging.parentId)
         .sort((a, b) => a.sort - b.sort)
-      siblings.forEach((r, idx) => { r.sort = idx })
+      siblings.forEach((r, idx) => {
+        r.sort = idx
+      })
       return { code: 0, data: true, msg: 'ok' }
-    },
-  },
+    }
+  }
 ] as MockMethod[]

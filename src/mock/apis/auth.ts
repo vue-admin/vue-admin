@@ -26,7 +26,7 @@ const USERS: MockUser[] = [
     password: '123456',
     nickname: 'Admin',
     roles: ['super_admin'],
-    permissions: ['*'],
+    permissions: ['*']
   },
   {
     id: '2',
@@ -34,8 +34,8 @@ const USERS: MockUser[] = [
     password: '123456',
     nickname: 'User',
     roles: ['user'],
-    permissions: ['user:read'],
-  },
+    permissions: ['user:read']
+  }
 ]
 
 // accessToken / refreshToken -> username 内存索引
@@ -63,11 +63,15 @@ function success<T>(data: T, msg = 'ok') {
 
 export default [
   {
-    url: '/api/auth/login',
+    url: '/api/auth/sessions',
     method: 'post',
-    response: ({ body }: { body: { username?: string; password?: string } }) => {
+    response: ({
+      body
+    }: {
+      body: { username?: string; password?: string }
+    }) => {
       const user = USERS.find(
-        (u) => u.username === body.username && u.password === body.password,
+        (u) => u.username === body.username && u.password === body.password
       )
       if (!user) {
         return fail(401, '用户名或密码错误')
@@ -75,14 +79,20 @@ export default [
       const accessToken = genToken('a', user.username)
       const refreshToken = genToken('r', user.username)
       REFRESH_TOKENS.set(refreshToken, user.username)
-      return success<AuthResultData>({ accessToken, refreshToken, expiresIn: 3600 })
-    },
+      return success<AuthResultData>({
+        accessToken,
+        refreshToken,
+        expiresIn: 3600
+      })
+    }
   },
   {
-    url: '/api/auth/refresh',
+    url: '/api/auth/tokens/refresh',
     method: 'post',
     response: ({ body }: { body: { refreshToken?: string } }) => {
-      const username = body.refreshToken ? REFRESH_TOKENS.get(body.refreshToken) : undefined
+      const username = body.refreshToken
+        ? REFRESH_TOKENS.get(body.refreshToken)
+        : undefined
       if (!username) {
         return fail(401, 'Invalid refresh token')
       }
@@ -97,16 +107,20 @@ export default [
       const accessToken = genToken('a', user.username)
       const refreshToken = genToken('r', user.username)
       REFRESH_TOKENS.set(refreshToken, user.username)
-      return success<AuthResultData>({ accessToken, refreshToken, expiresIn: 3600 })
-    },
+      return success<AuthResultData>({
+        accessToken,
+        refreshToken,
+        expiresIn: 3600
+      })
+    }
   },
   {
-    url: '/api/auth/logout',
-    method: 'post',
-    response: () => success<null>(null),
+    url: '/api/auth/sessions',
+    method: 'delete',
+    response: () => success<null>(null)
   },
   {
-    url: '/api/auth/me',
+    url: '/api/auth/users/me',
     method: 'get',
     response: ({ headers }: { headers: { authorization?: string } }) => {
       const auth = headers.authorization || ''
@@ -123,6 +137,6 @@ export default [
       const { password: _password, ...safe } = user
       void _password
       return success<SafeUser>(safe)
-    },
-  },
+    }
+  }
 ] as MockMethod[]

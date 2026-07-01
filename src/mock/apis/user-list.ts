@@ -1,5 +1,19 @@
 import type { MockMethod } from 'vite-plugin-mock'
 
+// 将对象数组转为 CSV 文本（含表头）。
+function toCsv(rows: object[], headers: string[]): string {
+  const escape = (v: unknown) => {
+    const s = v == null ? '' : String(v)
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+  }
+  const lines = [headers.join(',')]
+  for (const row of rows) {
+    const r = row as Record<string, unknown>
+    lines.push(headers.map((h) => escape(r[h])).join(','))
+  }
+  return lines.join('\n')
+}
+
 // 定义用户类型
 interface UserInfo {
   id: string
@@ -20,7 +34,16 @@ const generateUsers = (count: number): UserInfo[] => {
   const users: UserInfo[] = []
   const roles = ['admin', 'user', 'vip'] as const
   const statuses = ['active', 'inactive'] as const
-  const realNames = ['张三', '李四', '王五', '赵六', '钱七', '孙八', '周九', '吴十']
+  const realNames = [
+    '张三',
+    '李四',
+    '王五',
+    '赵六',
+    '钱七',
+    '孙八',
+    '周九',
+    '吴十'
+  ]
 
   for (let i = 1; i <= count; i++) {
     users.push({
@@ -28,13 +51,19 @@ const generateUsers = (count: number): UserInfo[] => {
       username: `user${i}`,
       realName: realNames[Math.floor(Math.random() * realNames.length)],
       email: `user${i}@example.com`,
-      phone: `138${Math.floor(Math.random() * 100000000).toString().padStart(8, '0')}`,
+      phone: `138${Math.floor(Math.random() * 100000000)
+        .toString()
+        .padStart(8, '0')}`,
       role: roles[Math.floor(Math.random() * roles.length)],
       status: statuses[Math.floor(Math.random() * statuses.length)],
       avatar: `https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png`,
-      createTime: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
-      lastLoginTime: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-      loginCount: Math.floor(Math.random() * 1000),
+      createTime: new Date(
+        Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000
+      ).toISOString(),
+      lastLoginTime: new Date(
+        Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
+      ).toISOString(),
+      loginCount: Math.floor(Math.random() * 1000)
     })
   }
 
@@ -46,14 +75,21 @@ const users: UserInfo[] = generateUsers(50)
 export default [
   // 获取用户列表
   {
-    url: '/api/user/list',
+    url: '/api/user',
     method: 'get',
     response: (req: any) => {
-      const { keyword = '', role = '', status = '', page = 1, size = 10 } = req.query
+      const {
+        keyword = '',
+        role = '',
+        status = '',
+        page = 1,
+        size = 10
+      } = req.query
 
       // 筛选
-      let filteredUsers = users.filter(user => {
-        const matchKeyword = keyword === '' ||
+      let filteredUsers = users.filter((user) => {
+        const matchKeyword =
+          keyword === '' ||
           user.username.includes(keyword) ||
           user.realName.includes(keyword) ||
           user.email.includes(keyword) ||
@@ -75,39 +111,39 @@ export default [
           records: paginatedUsers,
           total: filteredUsers.length,
           current: parseInt(page),
-          size: parseInt(size),
+          size: parseInt(size)
         },
-        msg: 'success',
+        msg: 'success'
       }
-    },
+    }
   },
 
   // 获取用户详情
   {
-    url: '/api/user/detail/:id',
+    url: '/api/user/:id',
     method: 'get',
     response: (req: any) => {
       const id = req.query?.id || req.params?.id
-      const user = users.find(u => u.id === id)
+      const user = users.find((u) => u.id === id)
 
       if (user) {
         return {
           code: 0,
           data: user,
-          msg: 'success',
+          msg: 'success'
         }
       }
 
       return {
         code: 404,
-        msg: '用户不存在',
+        msg: '用户不存在'
       }
-    },
+    }
   },
 
   // 创建用户
   {
-    url: '/api/user/create',
+    url: '/api/user',
     method: 'post',
     response: (req: any) => {
       const newUser = {
@@ -116,7 +152,7 @@ export default [
         avatar: `https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png`,
         createTime: new Date().toISOString(),
         lastLoginTime: new Date().toISOString(),
-        loginCount: 0,
+        loginCount: 0
       }
 
       users.push(newUser)
@@ -124,46 +160,46 @@ export default [
       return {
         code: 0,
         data: newUser,
-        msg: '创建成功',
+        msg: '创建成功'
       }
-    },
+    }
   },
 
   // 更新用户
   {
-    url: '/api/user/update/:id',
+    url: '/api/user/:id',
     method: 'put',
     response: (req: any) => {
       const id = req.query?.id || req.params?.id
-      const userIndex = users.findIndex(u => u.id === id)
+      const userIndex = users.findIndex((u) => u.id === id)
 
       if (userIndex !== -1) {
         users[userIndex] = {
           ...users[userIndex],
-          ...req.body,
+          ...req.body
         }
 
         return {
           code: 0,
           data: users[userIndex],
-          msg: '更新成功',
+          msg: '更新成功'
         }
       }
 
       return {
         code: 404,
-        msg: '用户不存在',
+        msg: '用户不存在'
       }
-    },
+    }
   },
 
   // 删除用户
   {
-    url: '/api/user/delete/:id',
+    url: '/api/user/:id',
     method: 'delete',
     response: (req: any) => {
       const id = req.query?.id || req.params?.id
-      const userIndex = users.findIndex(u => u.id === id)
+      const userIndex = users.findIndex((u) => u.id === id)
 
       if (userIndex !== -1) {
         users.splice(userIndex, 1)
@@ -171,26 +207,26 @@ export default [
         return {
           code: 0,
           data: true,
-          msg: '删除成功',
+          msg: '删除成功'
         }
       }
 
       return {
         code: 404,
-        msg: '用户不存在',
+        msg: '用户不存在'
       }
-    },
+    }
   },
 
   // 批量删除用户
   {
-    url: '/api/user/batch-delete',
-    method: 'post',
+    url: '/api/user',
+    method: 'delete',
     response: (req: any) => {
       const { ids } = req.body
 
       ids.forEach((id: string) => {
-        const userIndex = users.findIndex(u => u.id === id)
+        const userIndex = users.findIndex((u) => u.id === id)
         if (userIndex !== -1) {
           users.splice(userIndex, 1)
         }
@@ -199,9 +235,9 @@ export default [
       return {
         code: 0,
         data: true,
-        msg: '删除成功',
+        msg: '删除成功'
       }
-    },
+    }
   },
 
   // 导出用户列表
@@ -209,11 +245,10 @@ export default [
     url: '/api/user/export',
     method: 'get',
     response: () => {
-      return {
-        code: 0,
-        data: 'export success',
-        msg: '导出成功',
-      }
-    },
-  },
+      const csv = toCsv(users, [
+        'username', 'realName', 'email', 'phone', 'role', 'status', 'createTime', 'lastLoginTime', 'loginCount'
+      ])
+      return { code: 0, data: csv, msg: '导出成功' }
+    }
+  }
 ] as MockMethod[]

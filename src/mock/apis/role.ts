@@ -1,5 +1,19 @@
 import type { MockMethod } from 'vite-plugin-mock'
 
+// 将对象数组转为 CSV 文本（含表头）。
+function toCsv(rows: object[], headers: string[]): string {
+  const escape = (v: unknown) => {
+    const s = v == null ? '' : String(v)
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+  }
+  const lines = [headers.join(',')]
+  for (const row of rows) {
+    const r = row as Record<string, unknown>
+    lines.push(headers.map((h) => escape(r[h])).join(','))
+  }
+  return lines.join('\n')
+}
+
 // 定义角色类型
 interface RoleInfo {
   id: string
@@ -15,8 +29,22 @@ interface RoleInfo {
 const generateRoles = (count: number): RoleInfo[] => {
   const roles: RoleInfo[] = []
   const statuses = ['active', 'inactive'] as const
-  const roleNames = ['超级管理员', '系统管理员', '用户管理员', '内容管理员', '财务管理员', '数据分析师']
-  const roleCodes = ['super_admin', 'system_admin', 'user_admin', 'content_admin', 'finance_admin', 'data_analyst']
+  const roleNames = [
+    '超级管理员',
+    '系统管理员',
+    '用户管理员',
+    '内容管理员',
+    '财务管理员',
+    '数据分析师'
+  ]
+  const roleCodes = [
+    'super_admin',
+    'system_admin',
+    'user_admin',
+    'content_admin',
+    'finance_admin',
+    'data_analyst'
+  ]
   const descriptions = [
     '拥有系统所有权限',
     '负责系统配置和维护',
@@ -34,8 +62,12 @@ const generateRoles = (count: number): RoleInfo[] => {
       code: roleCodes[index],
       description: descriptions[index],
       status: statuses[Math.floor(Math.random() * statuses.length)],
-      createTime: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
-      updateTime: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+      createTime: new Date(
+        Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000
+      ).toISOString(),
+      updateTime: new Date(
+        Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
+      ).toISOString()
     })
   }
 
@@ -46,25 +78,68 @@ const roles: RoleInfo[] = generateRoles(10)
 
 // 角色权限映射
 const rolePermissions: Record<string, string[]> = {
-  '1': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'], // 超级管理员
+  '1': [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '11',
+    '12',
+    '13',
+    '14',
+    '15',
+    '16',
+    '17',
+    '18',
+    '19',
+    '20'
+  ], // 超级管理员
   '2': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], // 系统管理员
   '3': ['11', '12', '13', '14'], // 用户管理员
   '4': ['15', '16', '17'], // 内容管理员
   '5': ['18', '19', '20'], // 财务管理员
-  '6': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'], // 数据分析师
+  '6': [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '11',
+    '12',
+    '13',
+    '14',
+    '15',
+    '16',
+    '17',
+    '18',
+    '19',
+    '20'
+  ] // 数据分析师
 }
 
 export default [
   // 获取角色列表
   {
-    url: '/api/role/list',
+    url: '/api/role',
     method: 'get',
     response: (req: any) => {
       const { keyword = '', status = '', page = 1, size = 10 } = req.query
 
       // 筛选
-      let filteredRoles = roles.filter(role => {
-        const matchKeyword = keyword === '' ||
+      let filteredRoles = roles.filter((role) => {
+        const matchKeyword =
+          keyword === '' ||
           role.name.includes(keyword) ||
           role.code.includes(keyword) ||
           role.description.includes(keyword)
@@ -84,46 +159,46 @@ export default [
           records: paginatedRoles,
           total: filteredRoles.length,
           current: parseInt(page),
-          size: parseInt(size),
+          size: parseInt(size)
         },
-        msg: 'success',
+        msg: 'success'
       }
-    },
+    }
   },
 
   // 获取角色详情
   {
-    url: '/api/role/detail/:id',
+    url: '/api/role/:id',
     method: 'get',
     response: (req: any) => {
       const id = req.query?.id || req.params?.id
-      const role = roles.find(r => r.id === id)
+      const role = roles.find((r) => r.id === id)
 
       if (role) {
         return {
           code: 0,
           data: role,
-          msg: 'success',
+          msg: 'success'
         }
       }
 
       return {
         code: 404,
-        msg: '角色不存在',
+        msg: '角色不存在'
       }
-    },
+    }
   },
 
   // 创建角色
   {
-    url: '/api/role/create',
+    url: '/api/role',
     method: 'post',
     response: (req: any) => {
       const newRole = {
         id: (roles.length + 1).toString(),
         ...req.body,
         createTime: new Date().toISOString(),
-        updateTime: new Date().toISOString(),
+        updateTime: new Date().toISOString()
       }
 
       roles.push(newRole)
@@ -132,47 +207,47 @@ export default [
       return {
         code: 0,
         data: newRole,
-        msg: '创建成功',
+        msg: '创建成功'
       }
-    },
+    }
   },
 
   // 更新角色
   {
-    url: '/api/role/update/:id',
+    url: '/api/role/:id',
     method: 'put',
     response: (req: any) => {
       const id = req.query?.id || req.params?.id
-      const roleIndex = roles.findIndex(r => r.id === id)
+      const roleIndex = roles.findIndex((r) => r.id === id)
 
       if (roleIndex !== -1) {
         roles[roleIndex] = {
           ...roles[roleIndex],
           ...req.body,
-          updateTime: new Date().toISOString(),
+          updateTime: new Date().toISOString()
         }
 
         return {
           code: 0,
           data: roles[roleIndex],
-          msg: '更新成功',
+          msg: '更新成功'
         }
       }
 
       return {
         code: 404,
-        msg: '角色不存在',
+        msg: '角色不存在'
       }
-    },
+    }
   },
 
   // 删除角色
   {
-    url: '/api/role/delete/:id',
+    url: '/api/role/:id',
     method: 'delete',
     response: (req: any) => {
       const id = req.query?.id || req.params?.id
-      const roleIndex = roles.findIndex(r => r.id === id)
+      const roleIndex = roles.findIndex((r) => r.id === id)
 
       if (roleIndex !== -1) {
         roles.splice(roleIndex, 1)
@@ -181,26 +256,26 @@ export default [
         return {
           code: 0,
           data: true,
-          msg: '删除成功',
+          msg: '删除成功'
         }
       }
 
       return {
         code: 404,
-        msg: '角色不存在',
+        msg: '角色不存在'
       }
-    },
+    }
   },
 
   // 批量删除角色
   {
-    url: '/api/role/batch-delete',
-    method: 'post',
+    url: '/api/role',
+    method: 'delete',
     response: (req: any) => {
       const { ids } = req.body
 
       ids.forEach((id: string) => {
-        const roleIndex = roles.findIndex(r => r.id === id)
+        const roleIndex = roles.findIndex((r) => r.id === id)
         if (roleIndex !== -1) {
           roles.splice(roleIndex, 1)
           delete rolePermissions[id]
@@ -210,9 +285,9 @@ export default [
       return {
         code: 0,
         data: true,
-        msg: '删除成功',
+        msg: '删除成功'
       }
-    },
+    }
   },
 
   // 导出角色列表
@@ -220,17 +295,16 @@ export default [
     url: '/api/role/export',
     method: 'get',
     response: () => {
-      return {
-        code: 0,
-        data: 'export success',
-        msg: '导出成功',
-      }
-    },
+      const csv = toCsv(roles, [
+        'id', 'name', 'code', 'description', 'status', 'createTime', 'updateTime'
+      ])
+      return { code: 0, data: csv, msg: '导出成功' }
+    }
   },
 
-  // 获取角色权限
+  // 获取角色权限（子资源）
   {
-    url: '/api/role/permissions/:roleId',
+    url: '/api/role/:roleId/permissions',
     method: 'get',
     response: (req: any) => {
       const roleId = req.query?.roleId || req.params?.roleId
@@ -239,15 +313,15 @@ export default [
       return {
         code: 0,
         data: permissions,
-        msg: 'success',
+        msg: 'success'
       }
-    },
+    }
   },
 
-  // 设置角色权限
+  // 设置角色权限（子资源）
   {
-    url: '/api/role/permissions/:roleId',
-    method: 'post',
+    url: '/api/role/:roleId/permissions',
+    method: 'put',
     response: (req: any) => {
       const roleId = req.query?.roleId || req.params?.roleId
       const { permissions } = req.body
@@ -257,8 +331,8 @@ export default [
       return {
         code: 0,
         data: true,
-        msg: '设置成功',
+        msg: '设置成功'
       }
-    },
-  },
+    }
+  }
 ] as MockMethod[]
