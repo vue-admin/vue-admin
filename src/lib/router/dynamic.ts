@@ -12,7 +12,7 @@ export function registerDynamicRoutes(
   router: Router,
   menus: MenuDTO[],
   monitor: Monitor,
-  glob: ModuleGlob = modules as ModuleGlob,
+  glob: ModuleGlob = modules as ModuleGlob
 ): void {
   const walk = (list: MenuDTO[]): void => {
     for (const m of list) {
@@ -21,6 +21,8 @@ export function registerDynamicRoutes(
         continue
       }
       if (!m.component) continue
+      // 跳过已注册的同名路由（静态 menus.ts 已含 home/crud 等），避免重复注册竞态
+      if (m.name && router.hasRoute(m.name)) continue
       const key = `/src/modules/${m.component}.vue`
       const loader = glob[key]
       if (!loader) {
@@ -33,7 +35,7 @@ export function registerDynamicRoutes(
         path: m.path,
         name: m.name,
         component: loader,
-        meta: { ...(m.meta ?? {}) },
+        meta: { ...(m.meta ?? {}) }
       } as unknown as RouteRecordRaw
       router.addRoute('layout', route)
     }
