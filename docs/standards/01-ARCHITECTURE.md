@@ -14,11 +14,11 @@ src/
 
 其余目录：
 
-| 目录 | 状态 | 备注 |
-|------|------|------|
-| `src/assets/` | 保留 | 会被构建处理的资源 |
-| `src/layout/` | 保留 | 布局组件 |
-| `src/mock/` | 保留 | Mock API（开发环境用） |
+| 目录          | 状态 | 备注                     |
+| ------------- | ---- | ------------------------ |
+| `src/assets/` | 保留 | 会被构建处理的资源       |
+| `src/layout/` | 保留 | 布局组件                 |
+| `src/mock/`   | 保留 | Mock API（开发环境用）   |
 | `src/router/` | 保留 | 静态路由表 + router 实例 |
 
 > M7-A 已完成历史目录清退：`src/views/` / `src/apis/` / `src/stores/` / `src/utils/` / `src/components/` 全部迁移至 `src/modules/<domain>/` 或 `src/app/stores/`，目录已物理删除，并由 ESLint `no-restricted-imports` 阻止回退。
@@ -94,29 +94,29 @@ src/modules/
 
 ## 四、`src/lib/` 基础设施
 
-| 子目录 | 职责 |
-|--------|------|
-| `lib/http/` | HTTP 客户端（`http` 单例 + `api` 辅助函数 + 拦截器 + ProblemDetail 解析 + ElMessage 通知） |
-| `lib/auth/` | 认证服务（`authService` 单例 + `AuthProvider` 接口 + `TokenStorage` 接口 + JwtAuthProvider） |
-| `lib/router/` | 路由工具（动态路由装载 + 守卫 + MenuDTO 类型） |
-| `lib/error/` | 错误处理（`HttpError` + `Monitor` 接口 + `ErrorBoundary.vue` + 控制台 Monitor 默认实现） |
-| `lib/nprogress/` | 路由进度条封装（`nprogress` 单例 + 类型声明） |
-| `lib/storage/` | 本地存储抽象（`localStorage` / `sessionStorage` 统一接口，供 `TokenStorage` 等使用） |
-| `lib/theme/` | 主题派生色工具（`colors.ts`：按 Element Plus 官方 SCSS mix 语义生成主色 + light-3/5/7/8/9 + dark-2，写入 `:root`） |
-| `lib/i18n/` | 国际化（`createI18n` 单例 + zh-CN/en-US locale + `setLocale`，`main.ts` watch `layout.locale` 同步） |
+| 子目录           | 职责                                                                                                               |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `lib/http/`      | HTTP 客户端（`http` 单例 + `api` 辅助函数 + 拦截器 + ProblemDetail 解析 + ElMessage 通知）                         |
+| `lib/auth/`      | 认证服务（`authService` 单例 + `AuthProvider` 接口 + `TokenStorage` 接口 + JwtAuthProvider）                       |
+| `lib/router/`    | 路由工具（动态路由装载 + 守卫 + MenuDTO 类型）                                                                     |
+| `lib/error/`     | 错误处理（`HttpError` + `Monitor` 接口 + `ErrorBoundary.vue` + 控制台 Monitor 默认实现）                           |
+| `lib/nprogress/` | 路由进度条封装（`nprogress` 单例 + 类型声明）                                                                      |
+| `lib/storage/`   | 本地存储抽象（`localStorage` / `sessionStorage` 统一接口，供 `TokenStorage` 等使用）                               |
+| `lib/theme/`     | 主题派生色工具（`colors.ts`：按 Element Plus 官方 SCSS mix 语义生成主色 + light-3/5/7/8/9 + dark-2，写入 `:root`） |
+| `lib/i18n/`      | 国际化（`createI18n` 单例 + zh-CN/en-US locale + `setLocale`，`main.ts` watch `layout.locale` 同步）               |
 
 `lib/` 内部代码必须**与业务无关**，可被任何业务模块复用。
 
 ## 五、`src/app/` 应用骨架
 
-| 子目录 | 职责 |
-|--------|------|
-| `app/main.ts` | 应用入口：注册插件、指令、守卫、provide monitor、watch layout.primaryColor 调 `applyPrimaryColor` 写入主色 + 6 阶派生色 |
-| `app/App.vue` | 根组件：包裹 ErrorBoundary + `el-config-provider`（注入 locale 与 `layout.componentSize`） |
-| `app/stores/` | 全局 Pinia store：`user.ts` / `permission.ts` / `sidebar.ts` / `tagsView.ts` / `theme.ts` / `layout.ts`（7 个持久化字段：showTagsView / showBreadcrumb / showLogo / showFooter / primaryColor / componentSize / locale） |
-| `app/components/` | 通用组件库（M7-B）：`SearchTable/`（搜索+表格+分页）/ `FormDrawer/`（配置驱动表单抽屉）/ `PageContainer/`（页面容器+标题） |
-| `app/composables/` | 通用 composable（M7-B）：`useCrud.ts`（接管列表状态：listData/loading/pagination/searchForm/selectedRows + 7 个 handler） |
-| `app/directives/` | 全局指令：`v-permission` |
+| 子目录             | 职责                                                                                                                                                                                                                     |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `app/main.ts`      | 应用入口：注册插件、指令、守卫、provide monitor、watch layout.primaryColor 调 `applyPrimaryColor` 写入主色 + 6 阶派生色                                                                                                  |
+| `app/App.vue`      | 根组件：包裹 ErrorBoundary + `el-config-provider`（注入 locale 与 `layout.componentSize`）                                                                                                                               |
+| `app/stores/`      | 全局 Pinia store：`user.ts` / `permission.ts` / `sidebar.ts` / `tagsView.ts` / `theme.ts` / `layout.ts`（7 个持久化字段：showTagsView / showBreadcrumb / showLogo / showFooter / primaryColor / componentSize / locale） |
+| `app/components/`  | 通用组件库（M7-B）：`SearchTable/`（搜索+表格+分页）/ `FormDrawer/`（配置驱动表单抽屉）/ `PageContainer/`（页面容器+标题）                                                                                               |
+| `app/composables/` | 通用 composable（M7-B）：`useCrud.ts`（接管列表状态：listData/loading/pagination/searchForm/selectedRows + 7 个 handler）                                                                                                |
+| `app/directives/`  | 全局指令：`v-permission`                                                                                                                                                                                                 |
 
 ## 六、`src/shared/` 共享层
 
@@ -150,9 +150,13 @@ const emit = defineEmits<{
 ### 7.2 文件内顺序
 
 ```vue
-<template> ... </template>
-<style scoped> ... </style>
-<script lang="ts" setup> ... </script>
+<template>...</template>
+<style scoped>
+...
+</style>
+<script lang="ts" setup>
+...
+</script>
 ```
 
 > 当前项目沿用此顺序，**新文件保持一致**。
@@ -171,12 +175,12 @@ const emit = defineEmits<{
 
 ### 7.5 复杂页面拆分红线
 
-| 信号 | 动作 |
-|------|------|
-| `.vue` 文件 > 300 行 | 考虑拆 |
+| 信号                 | 动作                  |
+| -------------------- | --------------------- |
+| `.vue` 文件 > 300 行 | 考虑拆                |
 | `.vue` 文件 > 500 行 | **必须拆**，PR 不通过 |
-| template > 100 行 | 抽 sub-component |
-| 3+ 独立交互区 | 拆为容器 + 子视图 |
+| template > 100 行    | 抽 sub-component      |
+| 3+ 独立交互区        | 拆为容器 + 子视图     |
 
 拆分模板：
 

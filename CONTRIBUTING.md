@@ -13,10 +13,10 @@ pnpm dev          # 启动开发服务器（含 vite-plugin-mock）
 
 测试账号：
 
-| 用户名 | 密码 | 角色 |
-|---|---|---|
-| admin | 123456 | super_admin（全权限） |
-| user | 123456 | user（仅 user:read） |
+| 用户名 | 密码   | 角色                  |
+| ------ | ------ | --------------------- |
+| admin  | 123456 | super_admin（全权限） |
+| user   | 123456 | user（仅 user:read）  |
 
 ## 2. 开发环境要求
 
@@ -39,21 +39,22 @@ pnpm dev          # 启动开发服务器（含 vite-plugin-mock）
 
 本仓库使用 [Conventional Commits](https://www.conventionalcommits.org/zh-hans/)，由 commitlint 强制。type 取值：
 
-| type | 含义 |
-|---|---|
-| feat | 新功能 |
-| fix | 修复 bug |
-| docs | 文档变更 |
-| style | 代码格式（不影响功能） |
-| refactor | 重构（非 feat 非 fix） |
-| perf | 性能优化 |
-| test | 测试相关 |
-| build | 构建系统/依赖 |
-| ci | CI 配置 |
-| chore | 杂项（不修改 src 或 test） |
-| revert | 回滚 |
+| type     | 含义                       |
+| -------- | -------------------------- |
+| feat     | 新功能                     |
+| fix      | 修复 bug                   |
+| docs     | 文档变更                   |
+| style    | 代码格式（不影响功能）     |
+| refactor | 重构（非 feat 非 fix）     |
+| perf     | 性能优化                   |
+| test     | 测试相关                   |
+| build    | 构建系统/依赖              |
+| ci       | CI 配置                    |
+| chore    | 杂项（不修改 src 或 test） |
+| revert   | 回滚                       |
 
 格式：`<type>(<scope>): <subject>`，subject 可中文。例：
+
 - `feat(auth): 新增 OAuth2 登录`
 - `fix(router): 修复动态路由 404 兜底`
 - `docs(readme): 更新 badge`
@@ -63,6 +64,7 @@ header 长度上限 100 字符。
 ## 6. 代码质量门
 
 PR 必须全部通过：
+
 - `pnpm lint`（0 错误 0 警告）
 - `pnpm type-check`
 - `pnpm test`

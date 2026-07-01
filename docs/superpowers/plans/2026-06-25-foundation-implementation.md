@@ -33,6 +33,7 @@
 ### Task M1.1：创建目录骨架
 
 **Files:**
+
 - Create: `src/lib/.gitkeep`
 - Create: `src/app/.gitkeep`
 - Create: `src/modules/.gitkeep`
@@ -40,6 +41,7 @@
 - Modify: `tsconfig.json`（确认 `@/*` 路径已映射到 `src/*`）
 
 **Interfaces:**
+
 - Produces: 四层空目录，供后续 task 使用
 
 - [ ] **Step 1: 检查 tsconfig.json 路径别名**
@@ -71,12 +73,14 @@ git commit -m "feat: scaffold four-layer directory structure (lib/app/modules/sh
 ### Task M1.2：定义全局类型（ApiResult / ProblemDetail / RouteMeta）
 
 **Files:**
+
 - Create: `src/lib/http/types.ts`
 - Create: `src/lib/auth/types.ts`
 - Create: `src/lib/router/types.ts`
 - Create: `src/lib/error/types.ts`
 
 **Interfaces:**
+
 - Produces: `ApiResult<T>`, `ProblemDetail`, `HttpError`, `LoginRequest`, `AuthResult`, `UserProfile`, `Monitor`, `RouteMeta` 扩展
 
 - [ ] **Step 1: 创建 `src/lib/http/types.ts`**
@@ -86,7 +90,7 @@ git commit -m "feat: scaffold four-layer directory structure (lib/app/modules/sh
 
 // 业务成功响应（HTTP 200 时）
 export interface ApiResult<T> {
-  code: number         // 0 = 成功
+  code: number // 0 = 成功
   data: T
   msg: string
   traceId?: string
@@ -94,13 +98,13 @@ export interface ApiResult<T> {
 
 // RFC 7807 Problem Details（HTTP 4xx/5xx 时）
 export interface ProblemDetail {
-  type: string                         // 问题类型 URI
-  title: string                        // 简短摘要
-  status: number                       // HTTP 状态码
-  detail: string                       // 具体说明
-  instance?: string                    // 资源 URI
-  code?: string                        // 应用层错误码（机器可读）
-  errors?: Record<string, string[]>    // 字段级错误（如表单校验）
+  type: string // 问题类型 URI
+  title: string // 简短摘要
+  status: number // HTTP 状态码
+  detail: string // 具体说明
+  instance?: string // 资源 URI
+  code?: string // 应用层错误码（机器可读）
+  errors?: Record<string, string[]> // 字段级错误（如表单校验）
   traceId?: string
 }
 ```
@@ -114,7 +118,7 @@ import type { ProblemDetail } from '@/lib/http/types'
 export class HttpError extends Error {
   constructor(
     public readonly problem: ProblemDetail,
-    public readonly response?: Response,
+    public readonly response?: Response
   ) {
     super(problem.title)
     this.name = 'HttpError'
@@ -142,7 +146,7 @@ export interface LoginRequest {
 export interface AuthResult {
   accessToken: string
   refreshToken?: string
-  expiresIn?: number      // 秒
+  expiresIn?: number // 秒
 }
 
 export interface UserProfile {
@@ -165,8 +169,8 @@ declare module 'vue-router' {
     icon?: string
     showMenu?: boolean
     showInBreadcrumb?: boolean
-    public?: boolean                    // 免登录（白名单）
-    cache?: boolean                     // 参与 KeepAlive
+    public?: boolean // 免登录（白名单）
+    cache?: boolean // 参与 KeepAlive
     permissions?: {
       any?: string[]
       all?: string[]
@@ -196,10 +200,12 @@ git commit -m "feat: define foundation types (ApiResult, ProblemDetail, Monitor,
 ### Task M1.3：实现 Monitor 控制台实现
 
 **Files:**
+
 - Create: `src/lib/error/monitor.ts`
 - Test: `test/lib/error/monitor.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `Monitor` from `@/lib/error/types`
 - Produces: `consoleMonitor`、`defaultMonitor`
 
@@ -217,11 +223,11 @@ export default defineConfig({
   plugins: [vue()],
   test: {
     environment: 'jsdom',
-    globals: true,
+    globals: true
   },
   resolve: {
-    alias: { '@': path.resolve(__dirname, './src') },
-  },
+    alias: { '@': path.resolve(__dirname, './src') }
+  }
 })
 ```
 
@@ -294,14 +300,17 @@ export const consoleMonitor: Monitor = {
     console.error('[monitor]', err, ctx ?? '')
   },
   captureMessage(msg, level = 'info') {
-    const fn = level === 'error' ? console.error
-      : level === 'warn' ? console.warn
-      : console.info
+    const fn =
+      level === 'error'
+        ? console.error
+        : level === 'warn'
+          ? console.warn
+          : console.info
     fn('[monitor]', msg)
   },
   setUser(user) {
     console.debug('[monitor] user=', user)
-  },
+  }
 }
 
 // 默认导出：未来在 app/main.ts 中可替换为 SentryMonitor 等
@@ -325,10 +334,12 @@ git commit -m "feat(error): add console-based monitor implementation with tests"
 ### Task M1.4：实现 ErrorBoundary 组件
 
 **Files:**
+
 - Create: `src/lib/error/ErrorBoundary.vue`
 - Test: `test/lib/error/ErrorBoundary.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `Monitor` injected via `app.provide('monitor', ...)`
 - Produces: `<ErrorBoundary>` 默认插槽组件，捕获子树错误
 
@@ -344,21 +355,21 @@ import type { Monitor } from '@/lib/error/types'
 const stubMonitor: Monitor = {
   captureException: () => {},
   captureMessage: () => {},
-  setUser: () => {},
+  setUser: () => {}
 }
 
 const BoomChild = defineComponent({
   setup() {
     throw new Error('child boom')
   },
-  render: () => h('div'),
+  render: () => h('div')
 })
 
 describe('ErrorBoundary', () => {
   it('正常子树正常渲染', () => {
     const wrapper = mount(ErrorBoundary, {
       global: { provide: { monitor: stubMonitor } },
-      slots: { default: () => h('div', { class: 'ok' }, 'hi') },
+      slots: { default: () => h('div', { class: 'ok' }, 'hi') }
     })
     expect(wrapper.html()).toContain('hi')
   })
@@ -366,7 +377,7 @@ describe('ErrorBoundary', () => {
   it('子组件抛错时显示错误兜底', () => {
     const wrapper = mount(ErrorBoundary, {
       global: { provide: { monitor: stubMonitor } },
-      slots: { default: () => h(BoomChild) },
+      slots: { default: () => h(BoomChild) }
     })
     expect(wrapper.text()).toContain('页面出错了')
     expect(wrapper.text()).toContain('child boom')
@@ -406,7 +417,7 @@ const error = ref<Error | null>(null)
 onErrorCaptured((err) => {
   error.value = err as Error
   monitor.captureException(err as Error)
-  return false  // 阻止向上冒泡
+  return false // 阻止向上冒泡
 })
 </script>
 ```
@@ -428,6 +439,7 @@ git commit -m "feat(error): add ErrorBoundary component with retry and monitor c
 ### Task M1.5：在 app/main.ts 提供 Monitor + 在 App.vue 包裹 ErrorBoundary
 
 **Files:**
+
 - Move: `src/main.ts` → `src/app/main.ts`
 - Modify: `src/app/main.ts`
 - Move: `src/App.vue` → `src/app/App.vue`
@@ -436,6 +448,7 @@ git commit -m "feat(error): add ErrorBoundary component with retry and monitor c
 - Modify: `vite.config.ts`（如 main 路径配置在此）
 
 **Interfaces:**
+
 - Consumes: `defaultMonitor`, `ErrorBoundary`
 - Produces: 应用启动后 `monitor` 可被任意后代组件 inject
 
@@ -523,9 +536,11 @@ git commit -m "feat(app): provide monitor and wrap RouterView with ErrorBoundary
 ### Task M1.6：删除旧 `src/utils/request.ts`（如还残留）
 
 **Files:**
+
 - Delete: `src/utils/request.ts`（如果存在）
 
 **Interfaces:**
+
 - Produces: 移除冗余 HTTP 客户端入口，强制业务用 `lib/http`
 
 - [ ] **Step 1: 检查残留**
@@ -558,6 +573,7 @@ git commit -m "refactor: remove legacy utils/request.ts"
 ---
 
 **M1 完成验收**：
+
 - [ ] `pnpm type-check` 通过
 - [ ] `pnpm test` 全部通过
 - [ ] `pnpm dev` 页面正常加载，无控制台错误
@@ -574,10 +590,12 @@ git commit -m "refactor: remove legacy utils/request.ts"
 ### Task M2.1：实现 ProblemDetail 解析器
 
 **Files:**
+
 - Create: `src/lib/http/problem.ts`
 - Test: `test/lib/http/problem.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `ProblemDetail` from `@/lib/http/types`
 - Produces: `parseProblem(status: number, body: unknown): ProblemDetail`
 
@@ -594,7 +612,7 @@ describe('parseProblem', () => {
       title: 'You do not have enough credit.',
       status: 400,
       detail: 'Your current balance is 30, but that costs 50.',
-      instance: '/account/12345/msgs/abc',
+      instance: '/account/12345/msgs/abc'
     }
     const p = parseProblem(400, body)
     expect(p.type).toBe(body.type)
@@ -620,7 +638,7 @@ describe('parseProblem', () => {
 
   it('字段级 errors 保留', () => {
     const p = parseProblem(422, {
-      errors: { username: ['already taken'], email: ['invalid'] },
+      errors: { username: ['already taken'], email: ['invalid'] }
     })
     expect(p.errors?.username).toEqual(['already taken'])
     expect(p.errors?.email).toEqual(['invalid'])
@@ -645,7 +663,7 @@ const HTTP_STATUS_TITLE: Record<number, string> = {
   404: 'Not Found',
   409: 'Conflict',
   422: 'Unprocessable Entity',
-  500: 'Internal Server Error',
+  500: 'Internal Server Error'
 }
 
 // 容错解析：body 可能是对象、字符串、或 null
@@ -661,10 +679,11 @@ export function parseProblem(status: number, body: unknown): ProblemDetail {
       detail: typeof b.detail === 'string' ? b.detail : '',
       instance: typeof b.instance === 'string' ? b.instance : undefined,
       code: typeof b.code === 'string' ? b.code : undefined,
-      errors: b.errors && typeof b.errors === 'object'
-        ? b.errors as Record<string, string[]>
-        : undefined,
-      traceId: typeof b.traceId === 'string' ? b.traceId : undefined,
+      errors:
+        b.errors && typeof b.errors === 'object'
+          ? (b.errors as Record<string, string[]>)
+          : undefined,
+      traceId: typeof b.traceId === 'string' ? b.traceId : undefined
     }
   }
 
@@ -673,7 +692,7 @@ export function parseProblem(status: number, body: unknown): ProblemDetail {
       type: 'about:blank',
       title: fallbackTitle,
       status,
-      detail: body,
+      detail: body
     }
   }
 
@@ -681,7 +700,7 @@ export function parseProblem(status: number, body: unknown): ProblemDetail {
     type: 'about:blank',
     title: fallbackTitle,
     status,
-    detail: '',
+    detail: ''
   }
 }
 ```
@@ -703,11 +722,13 @@ git commit -m "feat(http): add RFC 7807 problem parser with edge-case handling"
 ### Task M2.2：实现 HttpError 工具与全局 ElMessage 提示
 
 **Files:**
+
 - Modify: `src/lib/error/types.ts`（仅类型，M1 已建）
 - Create: `src/lib/http/notify.ts`
 - Test: `test/lib/http/notify.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `HttpError`, `ProblemDetail`
 - Produces: `notifyProblem(problem, opts?: { silent?: boolean })`
 
@@ -719,7 +740,7 @@ import { notifyProblem } from '@/lib/http/notify'
 import type { ProblemDetail } from '@/lib/http/types'
 
 vi.mock('element-plus', () => ({
-  ElMessage: { error: vi.fn(), warning: vi.fn(), info: vi.fn() },
+  ElMessage: { error: vi.fn(), warning: vi.fn(), info: vi.fn() }
 }))
 
 import { ElMessage } from 'element-plus'
@@ -734,13 +755,23 @@ describe('notifyProblem', () => {
   })
 
   it('4xx 默认走 ElMessage.error', () => {
-    const p: ProblemDetail = { type: 'x', title: 'Bad', status: 400, detail: 'd' }
+    const p: ProblemDetail = {
+      type: 'x',
+      title: 'Bad',
+      status: 400,
+      detail: 'd'
+    }
     notifyProblem(p)
     expect(ElMessage.error).toHaveBeenCalledWith('Bad')
   })
 
   it('5xx 默认走 ElMessage.error', () => {
-    const p: ProblemDetail = { type: 'x', title: 'Server Down', status: 500, detail: 'd' }
+    const p: ProblemDetail = {
+      type: 'x',
+      title: 'Server Down',
+      status: 500,
+      detail: 'd'
+    }
     notifyProblem(p)
     expect(ElMessage.error).toHaveBeenCalledWith('Server Down')
   })
@@ -763,12 +794,15 @@ interface NotifyOptions {
 }
 
 // 全局错误提示。silent=true 时业务自行处理。
-export function notifyProblem(problem: ProblemDetail, opts: NotifyOptions = {}): void {
+export function notifyProblem(
+  problem: ProblemDetail,
+  opts: NotifyOptions = {}
+): void {
   if (opts.silent) return
   // 统一用 error 类型；title 经 RFC 7807 解析后已为人类可读摘要
   ElMessage.error({
     message: problem.title,
-    grouping: true,
+    grouping: true
   })
 }
 ```
@@ -790,9 +824,11 @@ git commit -m "feat(http): add notifyProblem helper for global error toast"
 ### Task M2.3：实现 TokenReader 接口（为拦截器准备）
 
 **Files:**
+
 - Create: `src/lib/http/token.ts`
 
 **Interfaces:**
+
 - Produces: `TokenReader` interface、`noopTokenReader`
 
 > 说明：HTTP 层**不能**直接 import `lib/auth`，否则循环依赖（auth 反过来用 http）。M3 会注入真正的 TokenReader。M2 暂用 noop。
@@ -808,7 +844,7 @@ export interface TokenReader {
 
 // 占位实现：M3 阶段被替换
 export const noopTokenReader: TokenReader = {
-  getAccessToken: () => null,
+  getAccessToken: () => null
 }
 
 // 运行时持有的 TokenReader（由 auth 模块在启动时设置）
@@ -840,10 +876,12 @@ git commit -m "feat(http): add TokenReader interface to break circular dependenc
 ### Task M2.4：实现拦截器（请求注入 token + 响应解析 ProblemDetail）
 
 **Files:**
+
 - Create: `src/lib/http/interceptors.ts`
 - Test: `test/lib/http/interceptors.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `axios`、`getAccessToken`、`parseProblem`、`notifyProblem`、`HttpError`
 - Produces: `installInterceptors(axiosInstance)`、`HttpError` 抛出契约
 
@@ -856,7 +894,7 @@ import { installInterceptors } from '@/lib/http/interceptors'
 import { HttpError } from '@/lib/error/types'
 
 vi.mock('element-plus', () => ({
-  ElMessage: { error: vi.fn(), warning: vi.fn(), info: vi.fn() },
+  ElMessage: { error: vi.fn(), warning: vi.fn(), info: vi.fn() }
 }))
 
 describe('interceptors', () => {
@@ -870,7 +908,7 @@ describe('interceptors', () => {
   it('HTTP 200 + code=0 返回 data', async () => {
     vi.spyOn(instance, 'request').mockResolvedValue({
       status: 200,
-      data: { code: 0, data: { id: 1 }, msg: 'ok' },
+      data: { code: 0, data: { id: 1 }, msg: 'ok' }
     })
     const res = await instance.get('/x')
     expect(res.data).toEqual({ id: 1 })
@@ -881,13 +919,13 @@ describe('interceptors', () => {
       type: 'about:blank',
       title: 'Bad Request',
       status: 400,
-      detail: 'invalid',
+      detail: 'invalid'
     }
     vi.spyOn(instance, 'request').mockRejectedValue({
-      response: { status: 400, data: problem },
+      response: { status: 400, data: problem }
     })
     await expect(instance.get('/x')).rejects.toMatchObject({
-      name: 'HttpError',
+      name: 'HttpError'
     })
     try {
       await instance.get('/x')
@@ -899,7 +937,10 @@ describe('interceptors', () => {
 
   it('silent 请求错误不抛全局提示（仅抛 HttpError）', async () => {
     vi.spyOn(instance, 'request').mockRejectedValue({
-      response: { status: 400, data: { type: 'x', title: 't', status: 400, detail: 'd' } },
+      response: {
+        status: 400,
+        data: { type: 'x', title: 't', status: 400, detail: 'd' }
+      }
     })
     const { ElMessage } = await import('element-plus')
     await instance.get('/x', { _silent: true } as any).catch(() => {})
@@ -916,7 +957,11 @@ Expected: FAIL
 - [ ] **Step 3: 实现 `src/lib/http/interceptors.ts`**
 
 ```typescript
-import type { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios'
+import type {
+  AxiosInstance,
+  AxiosError,
+  InternalAxiosRequestConfig
+} from 'axios'
 import { parseProblem } from './problem'
 import { notifyProblem } from './notify'
 import { getAccessToken } from './token'
@@ -949,8 +994,12 @@ export function installInterceptors(instance: AxiosInstance): void {
     (response) => {
       // HTTP 200 + ApiResult 包装
       const payload = response.data as ApiResult<unknown> | unknown
-      if (payload && typeof payload === 'object'
-        && 'code' in payload && 'data' in payload) {
+      if (
+        payload &&
+        typeof payload === 'object' &&
+        'code' in payload &&
+        'data' in payload
+      ) {
         const result = payload as ApiResult<unknown>
         if (result.code !== 0) {
           // 视为非法：契约只允许 code === 0
@@ -958,7 +1007,7 @@ export function installInterceptors(instance: AxiosInstance): void {
             type: 'about:blank',
             title: result.msg || 'Unknown error',
             status: 200,
-            detail: result.msg || '',
+            detail: result.msg || ''
           })
           notifyProblem(problem, { silent: response.config._silent })
           throw new HttpError(problem, response as unknown as Response)
@@ -971,9 +1020,13 @@ export function installInterceptors(instance: AxiosInstance): void {
       const status = error.response?.status ?? 0
       const body = error.response?.data
       const problem = parseProblem(status, body)
-      notifyProblem(problem, { silent: (error.config as AppAxiosRequestConfig)?._silent })
-      return Promise.reject(new HttpError(problem, error.response as unknown as Response))
-    },
+      notifyProblem(problem, {
+        silent: (error.config as AppAxiosRequestConfig)?._silent
+      })
+      return Promise.reject(
+        new HttpError(problem, error.response as unknown as Response)
+      )
+    }
   )
 }
 ```
@@ -995,9 +1048,11 @@ git commit -m "feat(http): install interceptors (token injection + ProblemDetail
 ### Task M2.5：实现 client.ts 单例（导出 http）
 
 **Files:**
+
 - Create: `src/lib/http/client.ts`
 
 **Interfaces:**
+
 - Produces: `http` axios 实例（含 interceptors）
 
 - [ ] **Step 1: 实现 `src/lib/http/client.ts`**
@@ -1009,7 +1064,7 @@ import { installInterceptors } from './interceptors'
 // 全局唯一 HTTP 客户端。业务代码仅从此处导入。
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL ?? '/',
-  timeout: 15_000,
+  timeout: 15_000
 })
 
 installInterceptors(instance)
@@ -1019,15 +1074,24 @@ export const http = instance
 // 便捷方法（强类型化）
 export const api = {
   get: <T>(url: string, config?: Parameters<typeof instance.get>[1]) =>
-    instance.get<T>(url, config).then(r => r.data),
-  post: <T>(url: string, data?: unknown, config?: Parameters<typeof instance.post>[2]) =>
-    instance.post<T>(url, data, config).then(r => r.data),
-  put: <T>(url: string, data?: unknown, config?: Parameters<typeof instance.put>[2]) =>
-    instance.put<T>(url, data, config).then(r => r.data),
-  patch: <T>(url: string, data?: unknown, config?: Parameters<typeof instance.patch>[2]) =>
-    instance.patch<T>(url, data, config).then(r => r.data),
+    instance.get<T>(url, config).then((r) => r.data),
+  post: <T>(
+    url: string,
+    data?: unknown,
+    config?: Parameters<typeof instance.post>[2]
+  ) => instance.post<T>(url, data, config).then((r) => r.data),
+  put: <T>(
+    url: string,
+    data?: unknown,
+    config?: Parameters<typeof instance.put>[2]
+  ) => instance.put<T>(url, data, config).then((r) => r.data),
+  patch: <T>(
+    url: string,
+    data?: unknown,
+    config?: Parameters<typeof instance.patch>[2]
+  ) => instance.patch<T>(url, data, config).then((r) => r.data),
   del: <T>(url: string, config?: Parameters<typeof instance.delete>[1]) =>
-    instance.delete<T>(url, config).then(r => r.data),
+    instance.delete<T>(url, config).then((r) => r.data)
 }
 
 export default http
@@ -1063,12 +1127,14 @@ git commit -m "feat(http): export unified 'http' instance with typed api helpers
 ### Task M2.6：迁移业务代码到 `http`
 
 **Files:**
+
 - Modify: `src/apis/crud/index.ts`
 - Modify: `src/apis/user/login.ts`（仅作为过渡，M3 会迁到 modules/auth/）
 - Modify: `src/apis/client/service.ts`（保留为薄壳，仅 re-export `http`，过渡用）
 - Delete: `src/apis/client/request.ts`（如果还有类型残留，迁移到 lib/http/types.ts）
 
 **Interfaces:**
+
 - Consumes: `http`、`api`
 - Produces: 业务代码全部用新客户端
 
@@ -1084,6 +1150,7 @@ export default (await import('@/lib/http/client')).default
 - [ ] **Step 2: 改造 `src/apis/crud/index.ts`，去除旧 service 引用**
 
 读取原文件：
+
 ```bash
 cat src/apis/crud/index.ts
 ```
@@ -1122,6 +1189,7 @@ git commit -m "refactor(http): migrate business code to unified http client"
 ### Task M2.7：将 Mock 改为返回 RESTful + ProblemDetail
 
 **Files:**
+
 - Modify: `src/mock/apis/crud.ts`
 - Modify: `src/mock/apis/menu.ts`
 - Modify: `src/mock/apis/login.ts`（如存在）
@@ -1185,6 +1253,7 @@ git commit -m "refactor(mock): return RESTful + ProblemDetail for error response
 ---
 
 **M2 完成验收**：
+
 - [ ] `pnpm type-check` 通过
 - [ ] `pnpm test` 全部通过
 - [ ] `pnpm dev` 各业务页面正常
@@ -1201,10 +1270,12 @@ git commit -m "refactor(mock): return RESTful + ProblemDetail for error response
 ### Task M3.1：实现 TokenStorage 接口与默认实现
 
 **Files:**
+
 - Create: `src/lib/auth/TokenStorage.ts`
 - Test: `test/lib/auth/TokenStorage.spec.ts`
 
 **Interfaces:**
+
 - Produces: `TokenStorage` interface、`MemorySessionTokenStorage`、`setTokenStorage(storage)`
 
 - [ ] **Step 1: 写失败的测试 `test/lib/auth/TokenStorage.spec.ts`**
@@ -1341,10 +1412,12 @@ git commit -m "feat(auth): add TokenStorage interface with MemorySession default
 ### Task M3.2：实现 AuthProvider 接口与 JwtAuthProvider
 
 **Files:**
+
 - Create: `src/lib/auth/AuthProvider.ts`
 - Create: `src/lib/auth/JwtAuthProvider.ts`
 
 **Interfaces:**
+
 - Consumes: `http`、`LoginRequest`、`AuthResult`、`UserProfile`
 - Produces: `AuthProvider` 接口、`jwtAuthProvider`
 
@@ -1376,7 +1449,11 @@ export const jwtAuthProvider: AuthProvider = {
   },
 
   async refresh(refreshToken: string): Promise<AuthResult> {
-    return api.post<AuthResult>('/api/auth/refresh', { refreshToken }, { _silent: true })
+    return api.post<AuthResult>(
+      '/api/auth/refresh',
+      { refreshToken },
+      { _silent: true }
+    )
   },
 
   async logout(): Promise<void> {
@@ -1385,7 +1462,7 @@ export const jwtAuthProvider: AuthProvider = {
 
   async me(): Promise<UserProfile> {
     return api.get<UserProfile>('/api/auth/me', { _silent: true })
-  },
+  }
 }
 ```
 
@@ -1406,10 +1483,12 @@ git commit -m "feat(auth): add AuthProvider interface with JWT default"
 ### Task M3.3：实现 authService（含并发刷新保护）
 
 **Files:**
+
 - Create: `src/lib/auth/authService.ts`
 - Test: `test/lib/auth/authService.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `AuthProvider`、`TokenStorage`、`setTokenReader`（注入给 http 层）
 - Produces: `authService.login/refresh/logout/me/isAuthenticated`
 
@@ -1426,15 +1505,18 @@ const mockProvider: AuthProvider = {
   refresh: vi.fn(async () => ({ accessToken: 'a2', refreshToken: 'r2' })),
   logout: vi.fn(async () => {}),
   me: vi.fn(async () => ({
-    id: '1', username: 'admin', roles: ['admin'], permissions: ['*'],
-  })),
+    id: '1',
+    username: 'admin',
+    roles: ['admin'],
+    permissions: ['*']
+  }))
 }
 
 const mockStorage: TokenStorage = {
   getAccessToken: vi.fn(() => null),
   getRefreshToken: vi.fn(() => null),
   setTokens: vi.fn(),
-  clear: vi.fn(),
+  clear: vi.fn()
 }
 
 describe('authService', () => {
@@ -1490,12 +1572,15 @@ import type { LoginRequest, AuthResult, UserProfile } from './types'
 import { setTokenReader } from '@/lib/http/token'
 
 // 工厂函数：便于测试注入 mock
-export function createAuthService(provider: AuthProvider, storage: TokenStorage) {
+export function createAuthService(
+  provider: AuthProvider,
+  storage: TokenStorage
+) {
   let refreshPromise: Promise<AuthResult> | null = null
 
   // 把 storage 注册到 http 层（让拦截器能读 token）
   setTokenReader({
-    getAccessToken: () => storage.getAccessToken(),
+    getAccessToken: () => storage.getAccessToken()
   })
 
   return {
@@ -1513,7 +1598,8 @@ export function createAuthService(provider: AuthProvider, storage: TokenStorage)
         storage.clear()
         throw new Error('No refresh token')
       }
-      refreshPromise = provider.refresh(refreshToken)
+      refreshPromise = provider
+        .refresh(refreshToken)
         .then((result) => {
           storage.setTokens(result.accessToken, result.refreshToken)
           return result
@@ -1543,7 +1629,7 @@ export function createAuthService(provider: AuthProvider, storage: TokenStorage)
 
     isAuthenticated(): boolean {
       return !!storage.getAccessToken()
-    },
+    }
   }
 }
 
@@ -1571,9 +1657,11 @@ git commit -m "feat(auth): add authService with concurrent refresh protection"
 ### Task M3.4：实现 user store（含 loadProfile bootstrap）
 
 **Files:**
+
 - Create: `src/app/stores/user.ts`
 
 **Interfaces:**
+
 - Consumes: `authService.me`
 - Produces: `useUserStore`、`isLoaded`、`loadProfile`
 
@@ -1631,11 +1719,13 @@ git commit -m "feat(app): add user store with loadProfile bootstrap"
 ### Task M3.5：迁移 Login.vue 到 modules/auth/ 并接入 authService
 
 **Files:**
+
 - Move: `src/views/Login.vue` → `src/modules/auth/views/Login.vue`
 - Modify: `src/modules/auth/views/Login.vue`
 - Modify: `src/router/menus.ts`（更新 Login 路由）
 
 **Interfaces:**
+
 - Consumes: `authService.login`、`useUserStore`
 - Produces: 登录成功后写入 token + 跳首页
 
@@ -1672,12 +1762,12 @@ const validateEmpty = (_rule: any, value: any, callback: any) => {
 
 const ruleForm = reactive({
   username: '',
-  password: '',
+  password: ''
 })
 
 const rules = reactive<FormRules>({
   username: [{ validator: validateEmpty, trigger: 'blur' }],
-  password: [{ validator: validateEmpty, trigger: 'blur' }],
+  password: [{ validator: validateEmpty, trigger: 'blur' }]
 })
 
 const submitForm = async (formEl: FormInstance | undefined) => {
@@ -1736,6 +1826,7 @@ git commit -m "feat(auth): migrate Login.vue to modules/auth and use authService
 ### Task M3.6：Mock /api/auth/* 四端点（vite-plugin-mock 形式）
 
 **Files:**
+
 - Create: `src/mock/apis/auth.ts`
 - Modify: `src/mock/index.ts`（注册新 mock）
 
@@ -1749,17 +1840,25 @@ import type { MockMethod } from 'vite-plugin-mock'
 // 测试账号：admin / 123456（super_admin，全权限）；user / 123456（普通，user:read）
 const USERS = [
   {
-    id: '1', username: 'admin', password: '123456',
-    nickname: 'Admin', roles: ['super_admin'], permissions: ['*'],
+    id: '1',
+    username: 'admin',
+    password: '123456',
+    nickname: 'Admin',
+    roles: ['super_admin'],
+    permissions: ['*']
   },
   {
-    id: '2', username: 'user', password: '123456',
-    nickname: 'User', roles: ['user'], permissions: ['user:read'],
-  },
+    id: '2',
+    username: 'user',
+    password: '123456',
+    nickname: 'User',
+    roles: ['user'],
+    permissions: ['user:read']
+  }
 ]
 
-const TOKENS = new Map<string, string>()  // accessToken -> username
-const REFRESH_TOKENS = new Map<string, string>()  // refreshToken -> username
+const TOKENS = new Map<string, string>() // accessToken -> username
+const REFRESH_TOKENS = new Map<string, string>() // refreshToken -> username
 
 function genToken(prefix: string, username: string): string {
   const t = `${prefix}_${username}_${Date.now()}_${Math.random().toString(36).slice(2)}`
@@ -1773,7 +1872,9 @@ export default [
     method: 'post',
     response: ({ body }) => {
       const { username, password } = body
-      const user = USERS.find(u => u.username === username && u.password === password)
+      const user = USERS.find(
+        (u) => u.username === username && u.password === password
+      )
       if (!user) {
         return {
           status: 401,
@@ -1781,15 +1882,19 @@ export default [
             type: 'about:blank',
             title: '用户名或密码错误',
             status: 401,
-            detail: 'Invalid credentials',
-          },
+            detail: 'Invalid credentials'
+          }
         }
       }
       const accessToken = genToken('a', user.username)
       const refreshToken = genToken('r', user.username)
       REFRESH_TOKENS.set(refreshToken, user.username)
-      return { code: 0, data: { accessToken, refreshToken, expiresIn: 3600 }, msg: 'ok' }
-    },
+      return {
+        code: 0,
+        data: { accessToken, refreshToken, expiresIn: 3600 },
+        msg: 'ok'
+      }
+    }
   },
   {
     url: '/api/auth/refresh',
@@ -1800,21 +1905,34 @@ export default [
       if (!username) {
         return {
           status: 401,
-          body: { type: 'about:blank', title: 'Invalid refresh token', status: 401, detail: '' },
+          body: {
+            type: 'about:blank',
+            title: 'Invalid refresh token',
+            status: 401,
+            detail: ''
+          }
         }
       }
-      const user = USERS.find(u => u.username === username)!
+      const user = USERS.find((u) => u.username === username)!
       const newAccess = genToken('a', user.username)
       const newRefresh = genToken('r', user.username)
       REFRESH_TOKENS.delete(refreshToken)
       REFRESH_TOKENS.set(newRefresh, user.username)
-      return { code: 0, data: { accessToken: newAccess, refreshToken: newRefresh, expiresIn: 3600 }, msg: 'ok' }
-    },
+      return {
+        code: 0,
+        data: {
+          accessToken: newAccess,
+          refreshToken: newRefresh,
+          expiresIn: 3600
+        },
+        msg: 'ok'
+      }
+    }
   },
   {
     url: '/api/auth/logout',
     method: 'post',
-    response: () => ({ code: 0, data: null, msg: 'ok' }),
+    response: () => ({ code: 0, data: null, msg: 'ok' })
   },
   {
     url: '/api/auth/me',
@@ -1826,14 +1944,19 @@ export default [
       if (!username) {
         return {
           status: 401,
-          body: { type: 'about:blank', title: 'Unauthorized', status: 401, detail: 'Token invalid' },
+          body: {
+            type: 'about:blank',
+            title: 'Unauthorized',
+            status: 401,
+            detail: 'Token invalid'
+          }
         }
       }
-      const user = USERS.find(u => u.username === username)!
+      const user = USERS.find((u) => u.username === username)!
       const { password, ...safe } = user
       return { code: 0, data: safe, msg: 'ok' }
-    },
-  },
+    }
+  }
 ] as MockMethod[]
 ```
 
@@ -1851,6 +1974,7 @@ export default [...auth, ...crud, ...]
 - [ ] **Step 3: 启动 dev，完整测试登录 → me → logout 流程**
 
 Run: `pnpm dev`
+
 - 浏览器打开 `/login`
 - 输入 `admin / 123456` 登录
 - 观察控制台无错误，页面跳转到 `/`
@@ -1871,6 +1995,7 @@ git commit -m "feat(mock): add auth endpoints (login/refresh/logout/me)"
 ---
 
 **M3 完成验收**：
+
 - [ ] `pnpm type-check` 通过
 - [ ] `pnpm test` 全部通过
 - [ ] 登录 → 跳首页 → 退出 三条路径手动测试通过
@@ -1886,10 +2011,12 @@ git commit -m "feat(mock): add auth endpoints (login/refresh/logout/me)"
 ### Task M4.1：实现 permission store
 
 **Files:**
+
 - Create: `src/app/stores/permission.ts`
 - Test: `test/app/stores/permission.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `useUserStore` 的 roles / permissions
 - Produces: `isSuperAdmin`、`hasPermission`、`hasAnyPermission`、`hasAllPermissions`、`hasRole`、`hasAnyRole`、`hasAllRoles`
 
@@ -1909,7 +2036,10 @@ describe('permissionStore', () => {
   function seed(roles: string[], perms: string[]) {
     const u = useUserStore()
     ;(u as any).profile = {
-      id: '1', username: 'x', roles, permissions: perms,
+      id: '1',
+      username: 'x',
+      roles,
+      permissions: perms
     }
     ;(u as any).isLoaded = true
   }
@@ -1978,24 +2108,27 @@ export const usePermissionStore = defineStore('permission', () => {
     isSuperAdmin.value || permissions.value.includes(p)
 
   const hasAnyPermission = (ps: string[]) =>
-    isSuperAdmin.value || ps.some(p => permissions.value.includes(p))
+    isSuperAdmin.value || ps.some((p) => permissions.value.includes(p))
 
   const hasAllPermissions = (ps: string[]) =>
-    isSuperAdmin.value || ps.every(p => permissions.value.includes(p))
+    isSuperAdmin.value || ps.every((p) => permissions.value.includes(p))
 
-  const hasRole = (r: string) =>
-    isSuperAdmin.value || roles.value.includes(r)
+  const hasRole = (r: string) => isSuperAdmin.value || roles.value.includes(r)
 
   const hasAnyRole = (rs: string[]) =>
-    isSuperAdmin.value || rs.some(r => roles.value.includes(r))
+    isSuperAdmin.value || rs.some((r) => roles.value.includes(r))
 
   const hasAllRoles = (rs: string[]) =>
-    isSuperAdmin.value || rs.every(r => roles.value.includes(r))
+    isSuperAdmin.value || rs.every((r) => roles.value.includes(r))
 
   return {
     isSuperAdmin,
-    hasPermission, hasAnyPermission, hasAllPermissions,
-    hasRole, hasAnyRole, hasAllRoles,
+    hasPermission,
+    hasAnyPermission,
+    hasAllPermissions,
+    hasRole,
+    hasAnyRole,
+    hasAllRoles
   }
 })
 ```
@@ -2017,10 +2150,12 @@ git commit -m "feat(app): add permission store with super_admin short-circuit"
 ### Task M4.2：实现 v-permission 指令
 
 **Files:**
+
 - Create: `src/app/directives/permission.ts`
 - Test: `test/app/directives/permission.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `usePermissionStore`
 - Produces: `vPermission` Directive
 
@@ -2038,8 +2173,12 @@ const DivWithPerm = defineComponent({
   directives: { permission: vPermission },
   props: { perm: { type: [String, Array, Object], default: '' } },
   setup(props) {
-    return () => h('div', { 'data-test': 'target', directives: [[vPermission, props.perm]] })
-  },
+    return () =>
+      h('div', {
+        'data-test': 'target',
+        directives: [[vPermission, props.perm]]
+      })
+  }
 })
 ```
 
@@ -2053,21 +2192,22 @@ import { defineComponent } from 'vue'
 import { vPermission } from '@/app/directives/permission'
 import { useUserStore } from '@/app/stores/user'
 
-const make = (binding: any) => defineComponent({
-  directives: { permission: vPermission },
-  setup() {
-    return () => {
-      // 用 withDirectives 简化（如有问题改模板）
-      const vnode: any = {
-        type: 'div',
-        props: { 'data-test': 't' },
-        children: 'hi',
-        dir: [[vPermission, binding.value]],
+const make = (binding: any) =>
+  defineComponent({
+    directives: { permission: vPermission },
+    setup() {
+      return () => {
+        // 用 withDirectives 简化（如有问题改模板）
+        const vnode: any = {
+          type: 'div',
+          props: { 'data-test': 't' },
+          children: 'hi',
+          dir: [[vPermission, binding.value]]
+        }
+        return vnode
       }
-      return vnode
     }
-  },
-})
+  })
 
 describe('v-permission', () => {
   beforeEach(() => setActivePinia(createPinia()))
@@ -2135,7 +2275,10 @@ import { usePermissionStore } from '@/app/stores/permission'
 
 type BindingValue = string | string[] | { any?: string[]; all?: string[] }
 
-function evaluate(store: ReturnType<typeof usePermissionStore>, v: BindingValue): boolean {
+function evaluate(
+  store: ReturnType<typeof usePermissionStore>,
+  v: BindingValue
+): boolean {
   if (typeof v === 'string') return store.hasPermission(v)
   if (Array.isArray(v)) return store.hasAnyPermission(v)
   if (v && typeof v === 'object') {
@@ -2152,7 +2295,7 @@ export const vPermission: Directive<HTMLElement, BindingValue> = {
     if (!evaluate(store, binding.value)) {
       el.parentNode?.removeChild(el)
     }
-  },
+  }
 }
 ```
 
@@ -2167,7 +2310,7 @@ Expected: PASS（6 个用例）
 const Template = defineComponent({
   directives: { permission: vPermission },
   props: { perm: { type: null as any, default: '' } },
-  template: `<div v-permission="perm" data-test="t">hi</div>`,
+  template: `<div v-permission="perm" data-test="t">hi</div>`
 })
 ```
 
@@ -2185,11 +2328,13 @@ git commit -m "feat(app): add v-permission directive with DOM removal"
 ### Task M4.3：实现动态路由装载
 
 **Files:**
+
 - Create: `src/lib/router/dynamic.ts`
 - Create: `src/lib/router/types-menu.ts`（MenuDTO 类型）
 - Test: `test/lib/router/dynamic.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `router` 实例、`monitor`（用于错误上报）
 - Produces: `registerDynamicRoutes(menus)`
 
@@ -2201,7 +2346,7 @@ import type { RouteMeta } from 'vue-router'
 export interface MenuDTO {
   path: string
   name: string
-  component?: string                 // 文件路径（相对 src/modules/）
+  component?: string // 文件路径（相对 src/modules/）
   meta?: RouteMeta
   children?: MenuDTO[]
 }
@@ -2218,29 +2363,39 @@ import type { MenuDTO } from '@/lib/router/types-menu'
 const stubMonitor = {
   captureException: vi.fn(),
   captureMessage: vi.fn(),
-  setUser: vi.fn(),
+  setUser: vi.fn()
 }
 
 describe('registerDynamicRoutes', () => {
   it('存在的 component 注册成功', () => {
-    const router = createRouter({ history: createWebHistory(), routes: [
-      { path: '/', name: 'layout', component: { template: '<RouterView/>' } },
-    ]})
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'layout', component: { template: '<RouterView/>' } }
+      ]
+    })
     const menus: MenuDTO[] = [
-      { path: '/x', name: 'x', component: 'crud/Index' },
+      { path: '/x', name: 'x', component: 'crud/Index' }
     ]
     // 不实际装载 glob，仅 mock
-    vi.stubGlobal('__DYNAMIC_GLOB__', { '/src/modules/crud/Index.vue': () => Promise.resolve({}) })
-    expect(() => registerDynamicRoutes(router, menus, stubMonitor as any)).not.toThrow()
+    vi.stubGlobal('__DYNAMIC_GLOB__', {
+      '/src/modules/crud/Index.vue': () => Promise.resolve({})
+    })
+    expect(() =>
+      registerDynamicRoutes(router, menus, stubMonitor as any)
+    ).not.toThrow()
     expect(router.hasRoute('x')).toBe(true)
   })
 
   it('缺失 component 记 monitor 并跳过', () => {
-    const router = createRouter({ history: createWebHistory(), routes: [
-      { path: '/', name: 'layout', component: { template: '<RouterView/>' } },
-    ]})
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'layout', component: { template: '<RouterView/>' } }
+      ]
+    })
     const menus: MenuDTO[] = [
-      { path: '/y', name: 'y', component: 'nonexistent/Foo' },
+      { path: '/y', name: 'y', component: 'nonexistent/Foo' }
     ]
     registerDynamicRoutes(router, menus, stubMonitor as any)
     expect(stubMonitor.captureMessage).toHaveBeenCalled()
@@ -2248,15 +2403,20 @@ describe('registerDynamicRoutes', () => {
   })
 
   it('children 递归注册', () => {
-    const router = createRouter({ history: createWebHistory(), routes: [
-      { path: '/', name: 'layout', component: { template: '<RouterView/>' } },
-    ]})
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'layout', component: { template: '<RouterView/>' } }
+      ]
+    })
     const menus: MenuDTO[] = [
       {
-        path: '/parent', name: 'parent', children: [
-          { path: '/parent/child', name: 'child', component: 'crud/Index' },
-        ],
-      },
+        path: '/parent',
+        name: 'parent',
+        children: [
+          { path: '/parent/child', name: 'child', component: 'crud/Index' }
+        ]
+      }
     ]
     registerDynamicRoutes(router, menus, stubMonitor as any)
     expect(router.hasRoute('child')).toBe(true)
@@ -2278,7 +2438,7 @@ const modules = import.meta.glob('@/modules/**/*.vue')
 export function registerDynamicRoutes(
   router: Router,
   menus: MenuDTO[],
-  monitor: Monitor,
+  monitor: Monitor
 ): void {
   const walk = (list: MenuDTO[]) => {
     for (const m of list) {
@@ -2297,7 +2457,7 @@ export function registerDynamicRoutes(
         path: m.path,
         name: m.name,
         component: loader as any,
-        meta: { ...(m.meta ?? {}) },
+        meta: { ...(m.meta ?? {}) }
       }
       router.addRoute('layout', route)
     }
@@ -2323,7 +2483,7 @@ export function registerDynamicRoutes(
   router: Router,
   menus: MenuDTO[],
   monitor: Monitor,
-  glob: Record<string, () => Promise<unknown>> = modules,
+  glob: Record<string, () => Promise<unknown>> = modules
 ): void {
   // 用 glob 代替 modules
 }
@@ -2343,10 +2503,12 @@ git commit -m "feat(router): add dynamic route registration with module glob"
 ### Task M4.4：实现 4 步路由守卫
 
 **Files:**
+
 - Create: `src/lib/router/guards.ts`
 - Test: `test/lib/router/guards.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `authService`、`useUserStore`、`usePermissionStore`
 - Produces: `installGuards(router)`
 
@@ -2363,8 +2525,8 @@ import { useUserStore } from '@/app/stores/user'
 vi.mock('@/lib/auth/authService', () => ({
   authService: {
     isAuthenticated: vi.fn(),
-    logout: vi.fn(async () => {}),
-  },
+    logout: vi.fn(async () => {})
+  }
 }))
 
 import { authService } from '@/lib/auth/authService'
@@ -2374,9 +2536,14 @@ function makeRouter(routes: any[] = []) {
     history: createWebHistory(),
     routes: [
       { path: '/', name: 'layout', component: { template: '<RouterView/>' } },
-      { path: '/login', name: 'login', component: { template: '<div/>' }, meta: { public: true } },
-      ...routes,
-    ],
+      {
+        path: '/login',
+        name: 'login',
+        component: { template: '<div/>' },
+        meta: { public: true }
+      },
+      ...routes
+    ]
   })
 }
 
@@ -2396,7 +2563,7 @@ describe('guards', () => {
 
   it('未认证访问受保护路由 → 跳 /login', async () => {
     const router = makeRouter([
-      { path: '/secret', name: 'secret', component: { template: '<div/>' } },
+      { path: '/secret', name: 'secret', component: { template: '<div/>' } }
     ])
     installGuards(router)
     ;(authService.isAuthenticated as any).mockReturnValue(false)
@@ -2407,14 +2574,21 @@ describe('guards', () => {
   it('已认证但无权限 → 守卫返回 false（导航被取消）', async () => {
     const router = makeRouter([
       {
-        path: '/admin', name: 'admin', component: { template: '<div/>' },
-        meta: { permissions: { all: ['admin:read'] } },
-      },
+        path: '/admin',
+        name: 'admin',
+        component: { template: '<div/>' },
+        meta: { permissions: { all: ['admin:read'] } }
+      }
     ])
     installGuards(router)
     ;(authService.isAuthenticated as any).mockReturnValue(true)
     const u = useUserStore()
-    ;(u as any).profile = { id: '1', username: 'x', roles: ['user'], permissions: ['user:read'] }
+    ;(u as any).profile = {
+      id: '1',
+      username: 'x',
+      roles: ['user'],
+      permissions: ['user:read']
+    }
     ;(u as any).isLoaded = true
     await router.push('/admin').catch(() => {})
     expect(router.currentRoute.value.name).not.toBe('admin')
@@ -2423,14 +2597,21 @@ describe('guards', () => {
   it('super_admin 放行所有', async () => {
     const router = makeRouter([
       {
-        path: '/admin', name: 'admin', component: { template: '<div/>' },
-        meta: { permissions: { all: ['admin:read'] } },
-      },
+        path: '/admin',
+        name: 'admin',
+        component: { template: '<div/>' },
+        meta: { permissions: { all: ['admin:read'] } }
+      }
     ])
     installGuards(router)
     ;(authService.isAuthenticated as any).mockReturnValue(true)
     const u = useUserStore()
-    ;(u as any).profile = { id: '1', username: 'x', roles: ['super_admin'], permissions: [] }
+    ;(u as any).profile = {
+      id: '1',
+      username: 'x',
+      roles: ['super_admin'],
+      permissions: []
+    }
     ;(u as any).isLoaded = true
     await router.push('/admin').catch(() => {})
     expect(router.currentRoute.value.name).toBe('admin')
@@ -2475,8 +2656,10 @@ export function installGuards(router: Router): void {
     // 4) 权限校验
     const perm = usePermissionStore()
     const m = to.meta
-    if (m.permissions?.any && !perm.hasAnyPermission(m.permissions.any)) return false
-    if (m.permissions?.all && !perm.hasAllPermissions(m.permissions.all)) return false
+    if (m.permissions?.any && !perm.hasAnyPermission(m.permissions.any))
+      return false
+    if (m.permissions?.all && !perm.hasAllPermissions(m.permissions.all))
+      return false
     if (m.roles?.any && !perm.hasAnyRole(m.roles.any)) return false
     if (m.roles?.all && !perm.hasAllRoles(m.roles.all)) return false
     return true
@@ -2501,9 +2684,11 @@ git commit -m "feat(router): add 4-step global guard (whitelist/auth/bootstrap/p
 ### Task M4.5：在 main.ts 注册指令与守卫，提供 monitor
 
 **Files:**
+
 - Modify: `src/app/main.ts`
 
 **Interfaces:**
+
 - Consumes: `installGuards`、`vPermission`、router 实例
 
 - [ ] **Step 1: 修改 `src/app/main.ts`**
@@ -2527,6 +2712,7 @@ installGuards(router)
 - [ ] **Step 2: 启动 dev 验证**
 
 Run: `pnpm dev`
+
 - 不登录直接访问 `/`：应跳到 `/login`
 - 登录后访问 `/`：进入首页
 - 用 admin 登录：能看到所有菜单
@@ -2549,9 +2735,11 @@ git commit -m "feat(app): register v-permission directive and install guards"
 ### Task M4.6：Mock /api/system/menus 返回带权限的路由
 
 **Files:**
+
 - Modify: `src/mock/apis/menu.ts`
 
 **Interfaces:**
+
 - Consumes: auth token（区分用户）
 - Produces: 不同用户看到不同菜单
 
@@ -2563,29 +2751,40 @@ import type { MockMethod } from 'vite-plugin-mock'
 // 全部菜单（带权限元信息）
 const ALL_MENUS = [
   {
-    path: '/', name: 'home', component: 'Home',
-    meta: { title: '首页', icon: 'menu', showMenu: true },
+    path: '/',
+    name: 'home',
+    component: 'Home',
+    meta: { title: '首页', icon: 'menu', showMenu: true }
   },
   {
-    path: '/system', name: 'system',
+    path: '/system',
+    name: 'system',
     meta: { title: '系统管理', icon: 'setting', showMenu: true },
     children: [
       {
-        path: '/system/admin', name: 'systemAdmin', component: 'system/admin/List',
+        path: '/system/admin',
+        name: 'systemAdmin',
+        component: 'system/admin/List',
         meta: {
-          title: '管理员', icon: 'Avatar', showMenu: true,
-          permissions: { any: ['admin:read', '*'] },
-        },
+          title: '管理员',
+          icon: 'Avatar',
+          showMenu: true,
+          permissions: { any: ['admin:read', '*'] }
+        }
       },
       {
-        path: '/system/dict', name: 'systemDict', component: 'system/dict/List',
+        path: '/system/dict',
+        name: 'systemDict',
+        component: 'system/dict/List',
         meta: {
-          title: '字典管理', icon: 'DataBoard', showMenu: true,
-          permissions: { any: ['dict:read', '*'] },
-        },
-      },
-    ],
-  },
+          title: '字典管理',
+          icon: 'DataBoard',
+          showMenu: true,
+          permissions: { any: ['dict:read', '*'] }
+        }
+      }
+    ]
+  }
 ]
 
 export default [
@@ -2599,14 +2798,15 @@ export default [
       const isAdmin = token.includes('_admin_')
       const data = isAdmin ? ALL_MENUS : [ALL_MENUS[0]]
       return { code: 0, data, msg: 'ok' }
-    },
-  },
+    }
+  }
 ] as MockMethod[]
 ```
 
 - [ ] **Step 2: 启动 dev 双账号验证**
 
 Run: `pnpm dev`
+
 - 用 `admin / 123456` 登录：能看到全部菜单
 - 退出，用 `user / 123456` 登录：只能看到首页
 
@@ -2627,10 +2827,12 @@ git commit -m "feat(mock): menus endpoint returns permission-aware structure"
 ### Task M4.7：启动时拉取菜单并注册动态路由
 
 **Files:**
+
 - Modify: `src/app/router/index.ts`（或新建）
 - Modify: `src/app/main.ts`
 
 **Interfaces:**
+
 - Consumes: `registerDynamicRoutes`、`api.get('/api/system/menus')`、`monitor`
 
 - [ ] **Step 1: 创建或修改 `src/app/router/index.ts`**
@@ -2645,10 +2847,10 @@ const router = createRouter({
     {
       path: '/',
       name: 'layout',
-      component: () => import('@/layout/Index.vue'),  // 根据实际路径调整
-      children: [...staticMenus],
-    },
-  ],
+      component: () => import('@/layout/Index.vue'), // 根据实际路径调整
+      children: [...staticMenus]
+    }
+  ]
 })
 
 export default router
@@ -2673,7 +2875,9 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
   // 拉取菜单并注册动态路由
   const monitor = inject<Monitor>('monitor')!
-  const { data } = await api.get<{ code: number; data: MenuDTO[] }>('/api/system/menus')
+  const { data } = await api.get<{ code: number; data: MenuDTO[] }>(
+    '/api/system/menus'
+  )
   registerDynamicRoutes(router, data, monitor)
 
   router.push('/')
@@ -2685,6 +2889,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 - [ ] **Step 3: 启动 dev 端到端验证**
 
 Run: `pnpm dev`
+
 - admin 登录：看到全部菜单，点击各菜单页正常
 - user 登录：只看到首页
 
@@ -2703,6 +2908,7 @@ git commit -m "feat(router): fetch menus and register dynamic routes on login"
 ---
 
 **M4 完成验收**：
+
 - [ ] `pnpm type-check` 通过
 - [ ] `pnpm test` 全部通过
 - [ ] admin / user 双账号登录看到不同菜单
@@ -2719,10 +2925,12 @@ git commit -m "feat(router): fetch menus and register dynamic routes on login"
 ### Task M5.1：配置 ESLint flat config 含 import 边界规则
 
 **Files:**
+
 - Create: `eslint.config.js`
 - Modify: `package.json`（添加 lint script + 依赖）
 
 **Interfaces:**
+
 - Produces: `pnpm lint` 命令、目录边界强制规则
 
 - [ ] **Step 1: 安装 ESLint flat config 依赖**
@@ -2745,44 +2953,59 @@ export default [
     files: ['**/*.{ts,tsx,vue}'],
     languageOptions: {
       parser: tsparser,
-      parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
+      parserOptions: { ecmaVersion: 'latest', sourceType: 'module' }
     },
     plugins: {
       '@typescript-eslint': tseslint,
-      import: importPlugin,
+      import: importPlugin
     },
     rules: {
       ...tseslint.configs.recommended.rules,
       'vue/multi-word-component-names': 'off',
       '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-    },
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_' }
+      ]
+    }
   },
   // 目录边界强制：lib 不得依赖 modules / app
   {
     files: ['src/lib/**/*.ts', 'src/lib/**/*.vue'],
     rules: {
-      'no-restricted-imports': ['error', {
-        patterns: [
-          { group: ['@/app/*', '@/modules/*', '@/views/*', '@/apis/*'], message: 'lib/ 不得依赖业务层（app/modules/views/apis）' },
-        ],
-      }],
-    },
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/app/*', '@/modules/*', '@/views/*', '@/apis/*'],
+              message: 'lib/ 不得依赖业务层（app/modules/views/apis）'
+            }
+          ]
+        }
+      ]
+    }
   },
   // shared 不得依赖业务层
   {
     files: ['src/shared/**/*'],
     rules: {
-      'no-restricted-imports': ['error', {
-        patterns: [
-          { group: ['@/app/*', '@/modules/*', '@/views/*', '@/apis/*'], message: 'shared/ 不得依赖业务层' },
-        ],
-      }],
-    },
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/app/*', '@/modules/*', '@/views/*', '@/apis/*'],
+              message: 'shared/ 不得依赖业务层'
+            }
+          ]
+        }
+      ]
+    }
   },
   {
-    ignores: ['dist/**', 'node_modules/**', 'docs/**'],
-  },
+    ignores: ['dist/**', 'node_modules/**', 'docs/**']
+  }
 ]
 ```
 
@@ -2818,9 +3041,11 @@ git commit -m "chore(lint): add ESLint flat config with layer boundary rules"
 ### Task M5.2：补全 interceptors 集成测试
 
 **Files:**
+
 - Test: `test/lib/http/interceptors.integration.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `http`、`installInterceptors`
 
 - [ ] **Step 1: 写集成测试**
@@ -2832,7 +3057,7 @@ import { installInterceptors } from '@/lib/http/interceptors'
 import { HttpError } from '@/lib/error/types'
 
 vi.mock('element-plus', () => ({
-  ElMessage: { error: vi.fn(), warning: vi.fn(), info: vi.fn() },
+  ElMessage: { error: vi.fn(), warning: vi.fn(), info: vi.fn() }
 }))
 
 describe('interceptors integration', () => {
@@ -2846,7 +3071,7 @@ describe('interceptors integration', () => {
   it('200 + code=0 解包 data', async () => {
     vi.spyOn(instance, 'request').mockResolvedValue({
       status: 200,
-      data: { code: 0, data: { hello: 'world' }, msg: 'ok' },
+      data: { code: 0, data: { hello: 'world' }, msg: 'ok' }
     } as any)
     const res = await instance.get('/x')
     expect(res.data).toEqual({ hello: 'world' })
@@ -2855,7 +3080,7 @@ describe('interceptors integration', () => {
   it('200 + code=1 抛 HttpError（违反契约）', async () => {
     vi.spyOn(instance, 'request').mockResolvedValue({
       status: 200,
-      data: { code: 1, data: null, msg: 'biz error' },
+      data: { code: 1, data: null, msg: 'biz error' }
     } as any)
     await expect(instance.get('/x')).rejects.toBeInstanceOf(HttpError)
   })
@@ -2864,8 +3089,8 @@ describe('interceptors integration', () => {
     vi.spyOn(instance, 'request').mockRejectedValue({
       response: {
         status: 500,
-        data: { type: 'x', title: 'Server Error', status: 500, detail: 'down' },
-      },
+        data: { type: 'x', title: 'Server Error', status: 500, detail: 'down' }
+      }
     })
     try {
       await instance.get('/x')
@@ -2877,8 +3102,11 @@ describe('interceptors integration', () => {
 
   it('silent 请求不触发 ElMessage', async () => {
     vi.spyOn(instance, 'request').mockRejectedValue({
-      response: { status: 400, data: { type: 'x', title: 't', status: 400, detail: 'd' } },
-      config: { _silent: true },
+      response: {
+        status: 400,
+        data: { type: 'x', title: 't', status: 400, detail: 'd' }
+      },
+      config: { _silent: true }
     })
     const { ElMessage } = await import('element-plus')
     await instance.get('/x').catch(() => {})
@@ -2886,7 +3114,9 @@ describe('interceptors integration', () => {
   })
 
   it('网络错误（无 response）抛 HttpError 含 status=0', async () => {
-    vi.spyOn(instance, 'request').mockRejectedValue({ message: 'Network Error' })
+    vi.spyOn(instance, 'request').mockRejectedValue({
+      message: 'Network Error'
+    })
     try {
       await instance.get('/x')
     } catch (e) {
@@ -2916,6 +3146,7 @@ git commit -m "test(http): add interceptor integration tests covering edge cases
 > **决策点**：MSW 迁移改动较大，建议作为独立 PR。如果时间紧张，本 task 可跳过，保留 vite-plugin-mock + M2.7 改造的 mock。
 
 **Files:**
+
 - Create: `src/mock/handlers/auth.ts`
 - Create: `src/mock/handlers/system.ts`
 - Create: `src/mock/handlers/index.ts`
@@ -2935,28 +3166,52 @@ Run: `pnpm add -D msw`
 import { http, HttpResponse } from 'msw'
 
 const USERS = [
-  { id: '1', username: 'admin', password: '123456', roles: ['super_admin'], permissions: ['*'] },
-  { id: '2', username: 'user', password: '123456', roles: ['user'], permissions: ['user:read'] },
+  {
+    id: '1',
+    username: 'admin',
+    password: '123456',
+    roles: ['super_admin'],
+    permissions: ['*']
+  },
+  {
+    id: '2',
+    username: 'user',
+    password: '123456',
+    roles: ['user'],
+    permissions: ['user:read']
+  }
 ]
 
 const TOKENS = new Map<string, string>()
 
 export const authHandlers = [
   http.post('/api/auth/login', async ({ request }) => {
-    const body = await request.json() as { username: string; password: string }
-    const user = USERS.find(u => u.username === body.username && u.password === body.password)
+    const body = (await request.json()) as {
+      username: string
+      password: string
+    }
+    const user = USERS.find(
+      (u) => u.username === body.username && u.password === body.password
+    )
     if (!user) {
       return HttpResponse.json(
-        { type: 'about:blank', title: '用户名或密码错误', status: 401, detail: 'Invalid credentials' },
-        { status: 401 },
+        {
+          type: 'about:blank',
+          title: '用户名或密码错误',
+          status: 401,
+          detail: 'Invalid credentials'
+        },
+        { status: 401 }
       )
     }
     const access = `a_${user.username}_${Date.now()}`
     const refresh = `r_${user.username}_${Date.now()}`
     TOKENS.set(access, user.username)
-    return HttpResponse.json(
-      { code: 0, data: { accessToken: access, refreshToken: refresh, expiresIn: 3600 }, msg: 'ok' },
-    )
+    return HttpResponse.json({
+      code: 0,
+      data: { accessToken: access, refreshToken: refresh, expiresIn: 3600 },
+      msg: 'ok'
+    })
   }),
 
   http.get('/api/auth/me', ({ request }) => {
@@ -2965,14 +3220,19 @@ export const authHandlers = [
     const username = TOKENS.get(token)
     if (!username) {
       return HttpResponse.json(
-        { type: 'about:blank', title: 'Unauthorized', status: 401, detail: 'Token invalid' },
-        { status: 401 },
+        {
+          type: 'about:blank',
+          title: 'Unauthorized',
+          status: 401,
+          detail: 'Token invalid'
+        },
+        { status: 401 }
       )
     }
-    const user = USERS.find(u => u.username === username)!
+    const user = USERS.find((u) => u.username === username)!
     const { password, ...safe } = user
     return HttpResponse.json({ code: 0, data: safe, msg: 'ok' })
-  }),
+  })
 ]
 ```
 
@@ -3054,6 +3314,7 @@ git rm -r src/mock/apis/
 - [ ] **Step 11: 验证 dev + test 全流程**
 
 Run:
+
 - `pnpm dev` 浏览器登录测试，看到 MSW 启动提示 `[MSW] Mocking enabled`
 - `pnpm test` 全部通过（MSW 拦截 HTTP 请求）
 
@@ -3069,6 +3330,7 @@ git commit -m "refactor(mock): migrate from vite-plugin-mock to MSW (dev/test un
 ### Task M5.4：更新 standards 文档与 spec 对齐
 
 **Files:**
+
 - Modify: `docs/standards/01-ARCHITECTURE.md`（更新目录结构为四层）
 - Modify: `docs/standards/02-API.md`（移除旧 service 描述，指向 lib/http）
 - Modify: `docs/standards/03-STATE.md`（更新 store 目录到 app/stores）
@@ -3086,16 +3348,16 @@ git commit -m "refactor(mock): migrate from vite-plugin-mock to MSW (dev/test un
 
 \`\`\`
 src/
-├── lib/         # 基础设施：与业务无关
-├── app/         # 应用骨架：组装层
-├── modules/     # 业务领域：按 domain 聚合
-└── shared/      # 跨模块共享
+├── lib/ # 基础设施：与业务无关
+├── app/ # 应用骨架：组装层
+├── modules/ # 业务领域：按 domain 聚合
+└── shared/ # 跨模块共享
 \`\`\`
 
 ## 依赖方向
 
 modules → app → lib
-              ▲
+▲
 shared ───────┘
 
 lib 禁止 import modules/app；shared 禁止 import modules/app/lib（除类型）。
@@ -3115,6 +3377,7 @@ import { http, api } from '@/lib/http/client'
 \`\`\`
 
 禁止：
+
 - \`import axios from 'axios'\`（任何业务模块）
 - 创建新的 axios 实例
 
@@ -3127,11 +3390,11 @@ import { http, api } from '@/lib/http/client'
 
 ## 错误处理三层
 
-| 层 | 行为 |
-|---|---|
-| lib/http interceptors | 全局 ElMessage 提示；401 触发 refresh |
-| modules/<domain>/api.ts | 仅返回数据，不提示 |
-| views/*.vue | 检查 error 做领域内 UI 反馈 |
+| 层                      | 行为                                  |
+| ----------------------- | ------------------------------------- |
+| lib/http interceptors   | 全局 ElMessage 提示；401 触发 refresh |
+| modules/<domain>/api.ts | 仅返回数据，不提示                    |
+| views/*.vue             | 检查 error 做领域内 UI 反馈           |
 
 silent 选项反转默认提示行为。
 
@@ -3143,11 +3406,11 @@ const data = await api.get<User>('/api/users/1')
 
 // 业务自处理（如表单校验展示）
 try {
-  await api.post('/api/users', form, { _silent: true })
+await api.post('/api/users', form, { _silent: true })
 } catch (e) {
-  if (e instanceof HttpError && e.problem.errors) {
-    // 字段级错误填充表单
-  }
+if (e instanceof HttpError && e.problem.errors) {
+// 字段级错误填充表单
+}
 }
 \`\`\`
 ```
@@ -3170,9 +3433,9 @@ try {
 
 \`\`\`typescript
 export const useUserStore = defineStore('user', () => {
-  const profile = ref<UserProfile | null>(null)
-  // ...
-  return { profile }
+const profile = ref<UserProfile | null>(null)
+// ...
+return { profile }
 })
 \`\`\`
 
@@ -3232,6 +3495,7 @@ git commit -m "docs: align standards with four-layer architecture and new conven
 ### Task M5.5：升级 README
 
 **Files:**
+
 - Modify: `README.md`
 
 - [ ] **Step 1: 重写 README**
@@ -3253,15 +3517,15 @@ git commit -m "docs: align standards with four-layer architecture and new conven
 
 \`\`\`bash
 pnpm i
-pnpm dev          # 启动开发服务器（含 Mock）
+pnpm dev # 启动开发服务器（含 Mock）
 \`\`\`
 
 ## Mock 账号
 
-| 用户名 | 密码 | 角色 | 权限 |
-|---|---|---|---|
-| admin | 123456 | super_admin | 全部 |
-| user | 123456 | user | user:read |
+| 用户名 | 密码   | 角色        | 权限      |
+| ------ | ------ | ----------- | --------- |
+| admin  | 123456 | super_admin | 全部      |
+| user   | 123456 | user        | user:read |
 
 ## 架构
 
@@ -3298,6 +3562,7 @@ git commit -m "docs: upgrade README with architecture and mock accounts"
 ### Task M5.6：配置 husky + lint-staged（可选）
 
 **Files:**
+
 - Modify: `package.json`
 - Create: `.husky/pre-commit`
 - Create: `.lintstagedrc.json`
@@ -3339,6 +3604,7 @@ git commit -m "chore: add husky + lint-staged pre-commit hook"
 ---
 
 **M5 完成验收**：
+
 - [ ] `pnpm type-check` 通过
 - [ ] `pnpm lint` 无 error
 - [ ] `pnpm test` 全部通过
@@ -3353,34 +3619,36 @@ git commit -m "chore: add husky + lint-staged pre-commit hook"
 
 ### Spec coverage
 
-| Spec 章节 | 对应 Task |
-|---|---|
-| §0 设计原则 | Global Constraints |
-| §1 架构分层 | M1.1, M1.2 |
-| §2.1 HTTP 客户端 | M2.1–M2.5 |
-| §2.2 AuthProvider | M3.2 |
-| §2.3 TokenStorage | M3.1 |
-| §2.4 authService | M3.3 |
-| §2.4 user store | M3.4 |
-| §2.4 Login 改造 | M3.5 |
-| §3.1 permission store | M4.1 |
-| §3.2 v-permission | M4.2 |
-| §3.3 路由 meta | M1.2（types） |
-| §3.4 路由守卫 | M4.4 |
-| §3.5 动态路由 | M4.3, M4.7 |
-| §4.1 ErrorBoundary | M1.4 |
-| §4.2 Monitor | M1.3 |
-| §4.3 Mock (MSW) | M5.3（M2.7 / M3.6 用 vite-plugin-mock 过渡） |
-| §4.4 测试 | M1.3, M1.4, M2.1, M2.4, M3.1, M3.3, M4.1, M4.2, M4.3, M4.4, M5.2 |
-| §5 迁移计划 | M1–M5 五阶段对应 |
-| §8 验收清单 | 各 milestone 验收块 + M5 整体 |
+| Spec 章节             | 对应 Task                                                        |
+| --------------------- | ---------------------------------------------------------------- |
+| §0 设计原则           | Global Constraints                                               |
+| §1 架构分层           | M1.1, M1.2                                                       |
+| §2.1 HTTP 客户端      | M2.1–M2.5                                                        |
+| §2.2 AuthProvider     | M3.2                                                             |
+| §2.3 TokenStorage     | M3.1                                                             |
+| §2.4 authService      | M3.3                                                             |
+| §2.4 user store       | M3.4                                                             |
+| §2.4 Login 改造       | M3.5                                                             |
+| §3.1 permission store | M4.1                                                             |
+| §3.2 v-permission     | M4.2                                                             |
+| §3.3 路由 meta        | M1.2（types）                                                    |
+| §3.4 路由守卫         | M4.4                                                             |
+| §3.5 动态路由         | M4.3, M4.7                                                       |
+| §4.1 ErrorBoundary    | M1.4                                                             |
+| §4.2 Monitor          | M1.3                                                             |
+| §4.3 Mock (MSW)       | M5.3（M2.7 / M3.6 用 vite-plugin-mock 过渡）                     |
+| §4.4 测试             | M1.3, M1.4, M2.1, M2.4, M3.1, M3.3, M4.1, M4.2, M4.3, M4.4, M5.2 |
+| §5 迁移计划           | M1–M5 五阶段对应                                                 |
+| §8 验收清单           | 各 milestone 验收块 + M5 整体                                    |
 
 ### Placeholder scan
+
 - 无 TBD / TODO / 待定
 - 每个 code step 都有完整代码
 - 每个测试 step 都有完整测试代码
 
 ### Type consistency
+
 - `Monitor` 接口在 M1.2 定义 → M1.3 实现 → M1.4 / M4.3 使用 ✅
 - `HttpError` 在 M1.2 定义 → M2.4 抛出 → M2.4 测试 / M5.2 集成测试 ✅
 - `ProblemDetail` 在 M1.2 定义 → M2.1 解析 → M2.2 提示 ✅
@@ -3395,12 +3663,12 @@ git commit -m "chore: add husky + lint-staged pre-commit hook"
 
 **总工期估算**：5–9 天
 
-| Milestone | 工期 | 依赖 |
-|---|---|---|
-| M1 | 1–2 天 | 无 |
-| M2 | 1 天 | M1 |
-| M3 | 2–3 天 | M2 |
-| M4 | 1–2 天 | M3 |
-| M5 | 1 天 | M1–M4 |
+| Milestone | 工期   | 依赖  |
+| --------- | ------ | ----- |
+| M1        | 1–2 天 | 无    |
+| M2        | 1 天   | M1    |
+| M3        | 2–3 天 | M2    |
+| M4        | 1–2 天 | M3    |
+| M5        | 1 天   | M1–M4 |
 
 每个 milestone 是一个独立 PR，建议按顺序合入。MSW 迁移（M5.3）可独立 PR 不阻塞其他工作。

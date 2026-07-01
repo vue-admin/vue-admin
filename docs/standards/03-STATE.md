@@ -12,13 +12,16 @@
 ## 二、何时使用 store
 
 **使用全局 store**（`app/stores/`）：
+
 - 跨页面共享：用户信息、登录态、权限
 - 跨模块共享且层级深：标签页、侧边栏折叠、主题
 
 **使用模块内 store**（`modules/<domain>/store.ts`）：
+
 - 仅模块内多视图共享的状态
 
 **不使用 store**（用组件局部状态）：
+
 - 仅父子组件用 props/emit
 - 仅同页面多个区域共享 → 容器组件 `provide/inject` 或本地 ref
 - 临时表单状态
@@ -50,6 +53,7 @@ export const useUserStore = defineStore('user', () => {
 ```
 
 禁止：
+
 - `defineStore('user', { state, getters, actions })` 选项式写法
 - 在 store 外部用 `ref` 导出全局响应式变量伪装成 store（旧 tagsView 写法）
 
@@ -78,7 +82,9 @@ let profilePromise: Promise<void> | null = null
 async function loadProfile(): Promise<void> {
   if (profilePromise) return profilePromise
   if (isLoaded.value) return
-  profilePromise = doLoad().finally(() => { profilePromise = null })
+  profilePromise = doLoad().finally(() => {
+    profilePromise = null
+  })
   return profilePromise
 }
 ```

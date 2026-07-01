@@ -1,7 +1,7 @@
 name: 🐛 Bug 报告
 description: 报告一个可复现的问题
-title: "[BUG] "
-labels: ["bug", "needs-triage"]
+title: '[BUG] '
+labels: ['bug', 'needs-triage']
 body:
   - type: markdown
     attributes:
@@ -41,21 +41,21 @@ body:
     id: version
     attributes:
       label: Vue Admin 版本
-      placeholder: "0.1.0"
+      placeholder: '0.1.0'
     validations:
       required: true
   - type: input
     id: node
     attributes:
       label: Node 版本
-      placeholder: "22.x"
+      placeholder: '22.x'
     validations:
       required: true
   - type: input
     id: browser
     attributes:
       label: 浏览器
-      placeholder: "Chrome 126"
+      placeholder: 'Chrome 126'
   - type: textarea
     id: logs
     attributes:

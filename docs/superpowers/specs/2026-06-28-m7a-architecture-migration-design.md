@@ -36,37 +36,37 @@ src/lib/http/client  ← 新 HTTP 客户端（仅 router guard 在用）
 
 > 模块标准化决策：原 `user` 模块合并入 `system/user`（详见 §3.4）。下表已按新归属排列。
 
-| 旧路径 | 新路径 | 引用处 |
-|---|---|---|
-| `src/apis/user/index.ts` | `src/modules/system/user/api.ts` | `modules/system/user/views/List.vue` |
-| `src/apis/user/info.ts` | 合并入 `src/modules/system/user/api.ts` | 检查实际引用 |
-| `src/apis/user/login.ts` | 合并入 `src/modules/auth/api.ts`（仅保留必要部分） | 检查实际引用 |
-| `src/apis/admin/index.ts` | `src/modules/system/admin/api.ts` | `modules/system/admin/views/List.vue` |
-| `src/apis/role/index.ts` | `src/modules/system/role/api.ts` | `modules/system/role/views/List.vue` |
-| `src/apis/permission/index.ts` | `src/modules/system/permission/api.ts` | `modules/system/permission/views/List.vue` |
-| `src/apis/dict/index.ts` | `src/modules/system/dict/api.ts` | `modules/system/dict/hooks/useDictTree.ts`、`modules/crud/views/Detail.vue` |
-| `src/apis/crud/index.ts` | `src/modules/crud/api.ts` | `modules/crud/views/Index.vue`、`Detail.vue` |
-| `src/apis/client/service.ts` | **删除**（业务统一用 `@/lib/http/client` 的 `http` / `api`） | 旧 api 内部用 |
+| 旧路径                         | 新路径                                                       | 引用处                                                                      |
+| ------------------------------ | ------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| `src/apis/user/index.ts`       | `src/modules/system/user/api.ts`                             | `modules/system/user/views/List.vue`                                        |
+| `src/apis/user/info.ts`        | 合并入 `src/modules/system/user/api.ts`                      | 检查实际引用                                                                |
+| `src/apis/user/login.ts`       | 合并入 `src/modules/auth/api.ts`（仅保留必要部分）           | 检查实际引用                                                                |
+| `src/apis/admin/index.ts`      | `src/modules/system/admin/api.ts`                            | `modules/system/admin/views/List.vue`                                       |
+| `src/apis/role/index.ts`       | `src/modules/system/role/api.ts`                             | `modules/system/role/views/List.vue`                                        |
+| `src/apis/permission/index.ts` | `src/modules/system/permission/api.ts`                       | `modules/system/permission/views/List.vue`                                  |
+| `src/apis/dict/index.ts`       | `src/modules/system/dict/api.ts`                             | `modules/system/dict/hooks/useDictTree.ts`、`modules/crud/views/Detail.vue` |
+| `src/apis/crud/index.ts`       | `src/modules/crud/api.ts`                                    | `modules/crud/views/Index.vue`、`Detail.vue`                                |
+| `src/apis/client/service.ts`   | **删除**（业务统一用 `@/lib/http/client` 的 `http` / `api`） | 旧 api 内部用                                                               |
 
 ### 3.2 Store 层迁移
 
-| 旧 store | 新归属 | 理由 |
-|---|---|---|
-| `src/stores/user.ts` | 合并入 `src/app/stores/user.ts` | 全局用户状态，已存在新版 |
-| `src/stores/collapse.ts` | `src/app/stores/sidebar.ts` | UI 全局状态 |
-| `src/stores/dark.ts` | `src/app/stores/theme.ts` | UI 全局状态 |
-| `src/stores/tagsView.ts` | `src/app/stores/tagsView.ts`（迁移时在 `ContextMenu.vue` 补「关闭当前」菜单项，闭环 5 项操作：刷新/关闭当前/关闭右侧/关闭其他/关闭全部） | UI 全局状态 |
-| `src/stores/storage.ts` | `src/lib/storage/index.ts`（若纯工具）或 `src/app/stores/storage.ts` | 看实现性质 |
-| `src/stores/counter.ts` | **删除** | Vue 脚手架示例，无引用 |
+| 旧 store                 | 新归属                                                                                                                                   | 理由                     |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `src/stores/user.ts`     | 合并入 `src/app/stores/user.ts`                                                                                                          | 全局用户状态，已存在新版 |
+| `src/stores/collapse.ts` | `src/app/stores/sidebar.ts`                                                                                                              | UI 全局状态              |
+| `src/stores/dark.ts`     | `src/app/stores/theme.ts`                                                                                                                | UI 全局状态              |
+| `src/stores/tagsView.ts` | `src/app/stores/tagsView.ts`（迁移时在 `ContextMenu.vue` 补「关闭当前」菜单项，闭环 5 项操作：刷新/关闭当前/关闭右侧/关闭其他/关闭全部） | UI 全局状态              |
+| `src/stores/storage.ts`  | `src/lib/storage/index.ts`（若纯工具）或 `src/app/stores/storage.ts`                                                                     | 看实现性质               |
+| `src/stores/counter.ts`  | **删除**                                                                                                                                 | Vue 脚手架示例，无引用   |
 
 ### 3.3 杂项
 
-| 旧位置 | 新位置 | 理由 |
-|---|---|---|
-| `src/components/icons/IconLogo.vue` | `src/layout/components/Sidebar/IconLogo.vue` | 仅 Sidebar 引用 |
-| `src/app/views/NotFound.vue` | `src/modules/about/views/NotFound.vue` | 业务页面归 modules |
-| `src/utils/nprogress/index.ts` | `src/lib/nprogress/index.ts` | `utils/` 是旧脚手架路径，CLAUDE.md 标准是 `lib/` |
-| `src/apis/.DS_Store` | **删除** + `.gitignore` 加 `**/.DS_Store` | macOS 残留 |
+| 旧位置                              | 新位置                                       | 理由                                             |
+| ----------------------------------- | -------------------------------------------- | ------------------------------------------------ |
+| `src/components/icons/IconLogo.vue` | `src/layout/components/Sidebar/IconLogo.vue` | 仅 Sidebar 引用                                  |
+| `src/app/views/NotFound.vue`        | `src/modules/about/views/NotFound.vue`       | 业务页面归 modules                               |
+| `src/utils/nprogress/index.ts`      | `src/lib/nprogress/index.ts`                 | `utils/` 是旧脚手架路径，CLAUDE.md 标准是 `lib/` |
+| `src/apis/.DS_Store`                | **删除** + `.gitignore` 加 `**/.DS_Store`    | macOS 残留                                       |
 
 ### 3.4 业务模块标准化（新增）
 
@@ -90,16 +90,17 @@ src/modules/
 
 **操作清单**：
 
-| 操作 | 旧位置 | 新位置 |
-|---|---|---|
-| 重命名 | `modules/home/` | `modules/dashboard/` |
-| 合并 | `modules/user/` | `modules/system/user/` |
-| 提升+改名 | `modules/system/views/portrait/` | `modules/profile/views/` |
-| 新增 | —— | `modules/system/menu/`（含 views/List.vue + api.ts + mock 菜单数据） |
-| 删除 | `modules/multi/` | ——（参考框架不做"为演示而演示"的多级菜单） |
-| 删除 | `modules/system/views/config/` | ——（空壳，主流框架无对应概念） |
+| 操作      | 旧位置                           | 新位置                                                               |
+| --------- | -------------------------------- | -------------------------------------------------------------------- |
+| 重命名    | `modules/home/`                  | `modules/dashboard/`                                                 |
+| 合并      | `modules/user/`                  | `modules/system/user/`                                               |
+| 提升+改名 | `modules/system/views/portrait/` | `modules/profile/views/`                                             |
+| 新增      | ——                               | `modules/system/menu/`（含 views/List.vue + api.ts + mock 菜单数据） |
+| 删除      | `modules/multi/`                 | ——（参考框架不做"为演示而演示"的多级菜单）                           |
+| 删除      | `modules/system/views/config/`   | ——（空壳，主流框架无对应概念）                                       |
 
 **菜单路由同步更新**（`src/router/menus.ts`）：
+
 - `/` 仍指向 `dashboard/views/Home.vue`（保持根路径）
 - 删除 `/multi/*` 整段
 - 删除 `/system/config` 整段
@@ -169,7 +170,7 @@ test('admin 登录 → 进入首页 + 侧边栏可见', async ({ page }) => {
 
 test('登录后访问 user 列表 → 表格渲染', async ({ page }) => {
   // 复用登录态（test.useStorage 或 beforeEach）
-  await page.goto('/system/admin')  // 或 /user，看实际路由
+  await page.goto('/system/admin') // 或 /user，看实际路由
   await expect(page.locator('.el-table')).toBeVisible()
 })
 ```
@@ -182,7 +183,7 @@ test('登录后访问 user 列表 → 表格渲染', async ({ page }) => {
 smoke:
   name: Smoke
   runs-on: ubuntu-latest
-  needs: build  # 等 build 完成后复用 dist
+  needs: build # 等 build 完成后复用 dist
   steps:
     - uses: actions/checkout@v4
     - uses: pnpm/action-setup@v3
@@ -210,10 +211,12 @@ smoke:
 **修订理由（Task 3 实施时发现）**：vite-plugin-mock 通过 Vite 的 `configureServer` 钩子注入 middleware，该钩子**只在 dev 模式触发**，`vite preview` 完全不调用。因此 preview server 下 `/api/*` 请求会被 SPA fallback 拦截返回 HTML 而非 JSON，所有依赖登录态的 smoke 测试（登录、列表渲染）物理上无法跑通。
 
 **修订前的决策原意**：
+
 - 更接近真实部署
 - 避免 dev IPv6 only 问题再次漏过
 
 **修订后这两点评估**：
+
 - "更接近真实部署"的前提是 mock 在 prod 可达，当前过渡期（M5.3 MSW 迁移尚未实施）不成立
 - IPv6 问题已在 M6 通过 `vite.config.ts` `server.host: true` 解决；dev 命令显式锁 `--host 127.0.0.1 --strictPort` 进一步消除端口漂移与协议歧义
 
@@ -221,22 +224,22 @@ smoke:
 
 ## 六、实施顺序（TDD 节奏）
 
-| # | 步骤 | 验证 |
-|---|------|------|
-| 1 | 安装 Playwright，写 `playwright.config.ts`，写第一个失败 smoke test | smoke 跑通 |
-| 2 | 补齐 3 个 smoke test（登录、user 列表） | 3 个测试绿 |
-| 3 | 迁移 `user` 模块 api（src/apis/user/* → modules/user/api.ts） | smoke + 单元测试绿 |
-| 4 | 迁移 `system` 模块 api（admin/role/permission/dict） | 同上 |
-| 5 | 迁移 `crud` 模块 api | 同上 |
-| 6 | 迁移 `auth` 模块（合并 login api） | 同上 |
-| 7 | 迁移 `layout` 5 个组件的 store 引用 | smoke 绿 |
-| 8 | 合并 `src/stores/user.ts` 到 `src/app/stores/user.ts` | smoke + 单元测试绿 |
-| 9 | 迁移 `collapse/dark/tagsView/storage` 到 `app/stores/` 或 `lib/storage/` | smoke 绿 |
-| 10 | 删除 `src/apis/` `src/stores/` `counter.ts` `.DS_Store` | smoke 绿 |
-| 11 | 启用 ESLint `no-restricted-imports` 规则 | lint 绿 |
-| 12 | 移 `IconLogo` / `NotFound` 到合适位置 | smoke 绿 |
-| 13 | CI 加 smoke job | GitHub Actions smoke 绿 |
-| 14 | 同步更新 `CLAUDE.md` / `docs/standards/01-ARCHITECTURE.md` / README | 文档一致 |
+| #   | 步骤                                                                     | 验证                    |
+| --- | ------------------------------------------------------------------------ | ----------------------- |
+| 1   | 安装 Playwright，写 `playwright.config.ts`，写第一个失败 smoke test      | smoke 跑通              |
+| 2   | 补齐 3 个 smoke test（登录、user 列表）                                  | 3 个测试绿              |
+| 3   | 迁移 `user` 模块 api（src/apis/user/* → modules/user/api.ts）            | smoke + 单元测试绿      |
+| 4   | 迁移 `system` 模块 api（admin/role/permission/dict）                     | 同上                    |
+| 5   | 迁移 `crud` 模块 api                                                     | 同上                    |
+| 6   | 迁移 `auth` 模块（合并 login api）                                       | 同上                    |
+| 7   | 迁移 `layout` 5 个组件的 store 引用                                      | smoke 绿                |
+| 8   | 合并 `src/stores/user.ts` 到 `src/app/stores/user.ts`                    | smoke + 单元测试绿      |
+| 9   | 迁移 `collapse/dark/tagsView/storage` 到 `app/stores/` 或 `lib/storage/` | smoke 绿                |
+| 10  | 删除 `src/apis/` `src/stores/` `counter.ts` `.DS_Store`                  | smoke 绿                |
+| 11  | 启用 ESLint `no-restricted-imports` 规则                                 | lint 绿                 |
+| 12  | 移 `IconLogo` / `NotFound` 到合适位置                                    | smoke 绿                |
+| 13  | CI 加 smoke job                                                          | GitHub Actions smoke 绿 |
+| 14  | 同步更新 `CLAUDE.md` / `docs/standards/01-ARCHITECTURE.md` / README      | 文档一致                |
 
 每步独立 commit + smoke 验证。出现回归立即定位回滚。
 
@@ -265,27 +268,27 @@ smoke:
 
 ## 九、风险与对策
 
-| 风险 | 对策 |
-|---|---|
-| 迁移过程中漏改某个 import 导致 build 失败 | 每步独立 commit + smoke，回归立即定位 |
-| `app/stores/user.ts` 与 `stores/user.ts` 字段/方法名不一致 | 合并前 diff 对比，逐字段合并 |
-| layout 旧 store 有特殊副作用（如 dark mode 切换 DOM 操作） | 迁移时保留原实现，仅改路径，行为不变 |
-| smoke test 在 CI 上 flaky | 用 `test.describe.configure({ mode: 'serial' })`，加重试 |
-| Playwright 浏览器在 Ubuntu runner 上装包失败 | 用官方 `pnpm exec playwright install --with-deps chromium` |
+| 风险                                                       | 对策                                                       |
+| ---------------------------------------------------------- | ---------------------------------------------------------- |
+| 迁移过程中漏改某个 import 导致 build 失败                  | 每步独立 commit + smoke，回归立即定位                      |
+| `app/stores/user.ts` 与 `stores/user.ts` 字段/方法名不一致 | 合并前 diff 对比，逐字段合并                               |
+| layout 旧 store 有特殊副作用（如 dark mode 切换 DOM 操作） | 迁移时保留原实现，仅改路径，行为不变                       |
+| smoke test 在 CI 上 flaky                                  | 用 `test.describe.configure({ mode: 'serial' })`，加重试   |
+| Playwright 浏览器在 Ubuntu runner 上装包失败               | 用官方 `pnpm exec playwright install --with-deps chromium` |
 
 ## 十、工作量预估
 
-| 项 | 时间 |
-|---|---|
-| Playwright 接入 + 3 smoke test | 1.5 小时 |
-| 迁移 user 模块 | 30 分钟 |
-| 迁移 system 模块（4 个 api） | 1 小时 |
-| 迁移 crud + auth 模块 | 30 分钟 |
-| 迁移 layout 5 个 store 引用 | 1 小时 |
-| 合并 stores/user + 拆 collapse/dark/tagsView/storage | 1 小时 |
-| ESLint 规则 + 清理 + IconLogo/NotFound 迁移 | 30 分钟 |
-| CI smoke job + 文档同步 | 30 分钟 |
-| **合计** | **~6.5 小时** |
+| 项                                                   | 时间          |
+| ---------------------------------------------------- | ------------- |
+| Playwright 接入 + 3 smoke test                       | 1.5 小时      |
+| 迁移 user 模块                                       | 30 分钟       |
+| 迁移 system 模块（4 个 api）                         | 1 小时        |
+| 迁移 crud + auth 模块                                | 30 分钟       |
+| 迁移 layout 5 个 store 引用                          | 1 小时        |
+| 合并 stores/user + 拆 collapse/dark/tagsView/storage | 1 小时        |
+| ESLint 规则 + 清理 + IconLogo/NotFound 迁移          | 30 分钟       |
+| CI smoke job + 文档同步                              | 30 分钟       |
+| **合计**                                             | **~6.5 小时** |
 
 ## 十一、后续里程碑
 

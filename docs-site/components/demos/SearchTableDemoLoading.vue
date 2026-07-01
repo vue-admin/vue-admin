@@ -12,6 +12,6 @@ import SearchTable from '../../../src/app/components/SearchTable/index.vue'
 
 const columns = [
   { prop: 'id', label: 'ID', width: 80 },
-  { prop: 'name', label: '名称', minWidth: 120 },
+  { prop: 'name', label: '名称', minWidth: 120 }
 ]
 </script>

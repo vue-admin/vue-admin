@@ -1,7 +1,7 @@
 name: ✨ 特性请求
 description: 提出一个新功能建议
-title: "[FEAT] "
-labels: ["enhancement", "needs-triage"]
+title: '[FEAT] '
+labels: ['enhancement', 'needs-triage']
 body:
   - type: markdown
     attributes:

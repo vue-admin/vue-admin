@@ -48,19 +48,19 @@
 
 ## 📦 技术栈
 
-| 类别 | 选型 | 版本 |
-|---|---|---|
-| 框架 | Vue | ^3.5 |
-| 构建工具 | Vite | ^7 |
-| 语言 | TypeScript | ^5 |
-| UI 库 | Element Plus | ^2.8 |
-| 状态管理 | Pinia | ^2.2 |
-| 路由 | Vue Router | ^4.4 |
-| HTTP | Axios | ^1.6 |
-| 工具库 | VueUse | ^11 |
-| 测试 | Vitest | ^3 |
-| 包管理 | pnpm | ^9 |
-| 运行时 | Node.js | ^22 |
+| 类别     | 选型         | 版本 |
+| -------- | ------------ | ---- |
+| 框架     | Vue          | ^3.5 |
+| 构建工具 | Vite         | ^7   |
+| 语言     | TypeScript   | ^5   |
+| UI 库    | Element Plus | ^2.8 |
+| 状态管理 | Pinia        | ^2.2 |
+| 路由     | Vue Router   | ^4.4 |
+| HTTP     | Axios        | ^1.6 |
+| 工具库   | VueUse       | ^11  |
+| 测试     | Vitest       | ^3   |
+| 包管理   | pnpm         | ^9   |
+| 运行时   | Node.js      | ^22  |
 
 ## 🚀 快速开始
 
@@ -89,10 +89,10 @@ pnpm dev            # 启动开发服务器（含 vite-plugin-mock）
 
 ### Mock 账号
 
-| 用户名 | 密码 | 角色 | 权限 |
-|---|---|---|---|
-| admin | 123456 | super_admin | 全部（`*` 通配） |
-| user | 123456 | user | `user:read` |
+| 用户名 | 密码   | 角色        | 权限             |
+| ------ | ------ | ----------- | ---------------- |
+| admin  | 123456 | super_admin | 全部（`*` 通配） |
+| user   | 123456 | user        | `user:read`      |
 
 ## 📸 界面
 
@@ -133,12 +133,12 @@ modules ──→ app ──→ lib
 shared  ──────┘
 ```
 
-| 层级 | 路径 | 职责 |
-|---|---|---|
-| 基础设施 | `src/lib/` | http / auth / router / error / nprogress / storage，与业务无关 |
-| 应用骨架 | `src/app/` | `main.ts` / 全局 stores / 全局 directives |
-| 业务领域 | `src/modules/<domain>/` | 按 domain 聚合（`auth` / `dashboard` / `system` / `profile` / `crud` / `docs` / `about`） |
-| 跨模块共享 | `src/shared/` | 类型定义与常量 |
+| 层级       | 路径                    | 职责                                                                                      |
+| ---------- | ----------------------- | ----------------------------------------------------------------------------------------- |
+| 基础设施   | `src/lib/`              | http / auth / router / error / nprogress / storage，与业务无关                            |
+| 应用骨架   | `src/app/`              | `main.ts` / 全局 stores / 全局 directives                                                 |
+| 业务领域   | `src/modules/<domain>/` | 按 domain 聚合（`auth` / `dashboard` / `system` / `profile` / `crud` / `docs` / `about`） |
+| 跨模块共享 | `src/shared/`           | 类型定义与常量                                                                            |
 
 **例外**：`src/lib/router/guards.ts` 允许反向引用 `app/stores/*`（路由守卫需要做权限检查），由 ESLint 显式豁免。详见 [docs/standards/01-ARCHITECTURE.md](./docs/standards/01-ARCHITECTURE.md)。
 

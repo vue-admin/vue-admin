@@ -24,12 +24,14 @@
 ## Task 1: 安装 Playwright 与配置
 
 **Files:**
+
 - Create: `playwright.config.ts`
 - Create: `test/smoke/.gitkeep`
 - Modify: `package.json`（devDependencies + scripts）
 - Modify: `.gitignore`（加 `test-results/` `playwright-report/` `playwright/.cache/`）
 
 **Interfaces:**
+
 - Produces: `pnpm smoke` 命令、`SMOKE_BASE_URL` 环境变量约定（默认 `http://localhost:5173/`，dev server）
 
 - [ ] **Step 1: 安装依赖**
@@ -56,9 +58,7 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure'
   },
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } }
-  ]
+  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }]
 })
 ```
 
@@ -89,6 +89,7 @@ playwright/.cache/
 ```bash
 pnpm smoke --help
 ```
+
 Expected: 输出 playwright 帮助文本，无错误。
 
 - [ ] **Step 7: Commit**
@@ -103,10 +104,12 @@ git commit -m "test(smoke): install playwright and configure base setup"
 ## Task 2: 第一个失败 smoke test —— 未登录跳转
 
 **Files:**
+
 - Create: `test/smoke/auth.spec.ts`
 - Delete: `test/smoke/.gitkeep`
 
 **Interfaces:**
+
 - Consumes: Task 1 的 `playwright.config.ts`
 - Produces: smoke 测试基线，后续任务都依赖此文件可运行
 
@@ -119,7 +122,9 @@ test('未登录访问根路径 → 跳转 /login', async ({ page }) => {
   await page.goto('/')
   await expect(page).toHaveURL(/\/login/)
   // Login.vue 用 el-form-item label 包裹 el-input，无 placeholder，需用 label 文本定位
-  await expect(page.locator('.el-form-item', { hasText: '用户名' })).toBeVisible()
+  await expect(
+    page.locator('.el-form-item', { hasText: '用户名' })
+  ).toBeVisible()
 })
 ```
 
@@ -132,6 +137,7 @@ nohup pnpm dev --host 127.0.0.1 --strictPort > /tmp/vite-dev.log 2>&1 &
 for i in $(seq 1 30); do curl -sf http://127.0.0.1:5173/ > /dev/null && break; sleep 1; done
 pnpm smoke
 ```
+
 Expected: 1 passed（守卫已支持 `/login` public 跳转，M6 已修复）。若失败需立即排查守卫逻辑。
 
 - [ ] **Step 3: 关闭 dev server**
@@ -153,9 +159,11 @@ git commit -m "test(smoke): add unauthenticated redirect to /login"
 ## Task 3: 补齐登录与列表 smoke test
 
 **Files:**
+
 - Modify: `test/smoke/auth.spec.ts`
 
 **Interfaces:**
+
 - Produces: 3 个 smoke 用例全绿（auth-redirect / login / list-render）
 
 - [ ] **Step 1: 追加两个测试到 `auth.spec.ts`**
@@ -177,7 +185,7 @@ test.describe.serial('登录态流程', () => {
     await page.fill('input[placeholder*="用户名"]', 'admin')
     await page.fill('input[placeholder*="密码"]', '123456')
     await page.click('button:has-text("登录")')
-    await page.goto('/user/list')  // Task 7 完成 user 模块合并后改为 /system/user/list
+    await page.goto('/user/list') // Task 7 完成 user 模块合并后改为 /system/user/list
     await expect(page.locator('.el-table')).toBeVisible()
   })
 })
@@ -193,6 +201,7 @@ for i in $(seq 1 30); do curl -sf http://127.0.0.1:5173/ > /dev/null && break; s
 pnpm smoke
 lsof -ti:5173 | xargs kill 2>/dev/null || true
 ```
+
 Expected: 3 passed。
 
 - [ ] **Step 3: Commit**
@@ -207,11 +216,13 @@ git commit -m "test(smoke): cover login and list rendering"
 ## Task 4: 模块标准化 - 删除 multi 与 system/config
 
 **Files:**
+
 - Delete: `src/modules/multi/`（递归）
 - Delete: `src/modules/system/views/config/`
 - Modify: `src/router/menus.ts`（删除 `/multi/*` 与 `/system/config` 整段）
 
 **Interfaces:**
+
 - Consumes: Task 3 smoke 基线
 - Produces: 路由清单少 2 项
 
@@ -236,6 +247,7 @@ for i in $(seq 1 30); do curl -sf http://127.0.0.1:5173/ > /dev/null && break; s
 pnpm smoke
 lsof -ti:5173 | xargs kill 2>/dev/null || true
 ```
+
 Expected: 全绿，3 smoke 通过。
 
 - [ ] **Step 4: Commit**
@@ -250,10 +262,12 @@ git commit -m "refactor(modules): remove demo multi-menu and empty system/config
 ## Task 5: 模块标准化 - portrait 提升为 profile
 
 **Files:**
+
 - Move: `src/modules/system/views/portrait/Portrait.vue` → `src/modules/profile/views/Profile.vue`
 - Modify: `src/router/menus.ts`（`/system/portrait` → `/profile`）
 
 **Interfaces:**
+
 - Produces: `modules/profile/` 顶层模块、路由 `/profile`
 
 - [ ] **Step 1: 创建目录并移动**
@@ -292,6 +306,7 @@ for i in $(seq 1 30); do curl -sf http://127.0.0.1:5173/ > /dev/null && break; s
 pnpm smoke
 lsof -ti:5173 | xargs kill 2>/dev/null || true
 ```
+
 Expected: 全绿。
 
 - [ ] **Step 4: Commit**
@@ -306,11 +321,13 @@ git commit -m "refactor(modules): promote portrait to top-level profile module"
 ## Task 6: 模块标准化 - home 重命名为 dashboard
 
 **Files:**
+
 - Move: `src/modules/home/` → `src/modules/dashboard/`
 - Modify: `src/router/menus.ts`（import 路径）
 - Modify: 任何引用 `@/modules/home` 的位置（grep 验证）
 
 **Interfaces:**
+
 - Produces: `modules/dashboard/` 模块
 
 - [ ] **Step 1: 检查引用**
@@ -318,6 +335,7 @@ git commit -m "refactor(modules): promote portrait to top-level profile module"
 ```bash
 rg -n "@/modules/home" --type ts --type vue
 ```
+
 Expected: 仅 `src/router/menus.ts` 一处。若有其他引用，一并更新。
 
 - [ ] **Step 2: 移动**
@@ -353,11 +371,13 @@ git commit -m "refactor(modules): rename home to dashboard to match OSS conventi
 ## Task 7: 模块标准化 - user 合并入 system/user
 
 **Files:**
+
 - Move: `src/modules/user/` 内容 → `src/modules/system/user/`
 - Modify: `src/router/menus.ts`（删除独立 `/user` 顶层，改为 `system.children` 子项 `/system/user/list`）
 - Modify: `test/smoke/auth.spec.ts`（列表 URL 改为 `/system/user/list`）
 
 **Interfaces:**
+
 - Consumes: Task 11（API 迁移）尚未完成，本任务仅做物理移动；user api 文件保留旧 import，等 Task 11 处理
 - Produces: `modules/system/user/` 子模块、路由 `/system/user/list`
 
@@ -410,11 +430,13 @@ git commit -m "refactor(modules): merge user module into system/user"
 ## Task 8: 模块标准化 - 新增 system/menu 模块（占位）
 
 **Files:**
+
 - Create: `src/modules/system/menu/views/List.vue`
 - Create: `src/mock/apis/menu-admin.ts`（仅当需要 mock 数据时；可能复用既有 menu mock）
 - Modify: `src/router/menus.ts`
 
 **Interfaces:**
+
 - Produces: `/system/menu` 路由，占位页面（仅展示"菜单管理 - 待实现"）
 - 注：完整 CRUD 留 M7-C，本任务只占位
 
@@ -465,6 +487,7 @@ git commit -m "feat(modules): add system/menu placeholder for OSS standard cover
 ## Task 9: API 层迁移 - user/system（合并到 modules/system/<x>/api.ts）
 
 **Files:**
+
 - Create: `src/modules/system/user/api.ts`（合并 `src/apis/user/index.ts` + `info.ts`）
 - Create: `src/modules/system/admin/api.ts`（迁移自 `src/apis/admin/index.ts`）
 - Create: `src/modules/system/role/api.ts`
@@ -473,6 +496,7 @@ git commit -m "feat(modules): add system/menu placeholder for OSS standard cover
 - Modify: 对应 views 文件中的 import
 
 **Interfaces:**
+
 - Consumes: `@/lib/http/client` 的 `http` / `api`
 - Produces: 每个 system 子模块自带 `api.ts`，views 改 import 来源
 
@@ -481,6 +505,7 @@ git commit -m "feat(modules): add system/menu placeholder for OSS standard cover
 ```bash
 cat src/apis/user/index.ts src/apis/admin/index.ts src/apis/role/index.ts src/apis/permission/index.ts src/apis/dict/index.ts
 ```
+
 记录每个导出函数名、参数、返回类型。
 
 - [ ] **Step 2: 写 5 个新 api.ts**
@@ -499,13 +524,13 @@ export interface UserProfile {
 export const getUserList = (params: Record<string, unknown>) =>
   http.get<UserProfile[]>('/user/list', { params })
 
-export const getUserInfo = () =>
-  http.get<UserProfile>('/user/info')
+export const getUserInfo = () => http.get<UserProfile>('/user/info')
 
 // 其余函数按旧文件原样搬过来，把 axios.create 客户端替换为 http
 ```
 
 **关键约束**：
+
 - 函数签名与返回类型必须与旧实现**完全一致**（避免改 views 调用）
 - 若旧实现返回 `{ data, error?, response? }` 形态，需在 views 调用处一并改为标准 `data`（参考旧 `apis/client/service.ts` 的适配层逻辑）
 - 把所有 `service.get/post/put/delete(url, data, options)` 改为 `http.get/post/put/delete(url, { params/data, ...options })`
@@ -513,6 +538,7 @@ export const getUserInfo = () =>
 - [ ] **Step 3: 改 views import**
 
 每个 `modules/system/<x>/views/List.vue` 中：
+
 - 删除 `import ... from '@/apis/<x>'`
 - 改为 `import { ... } from './api'` 或 `'../api'`
 
@@ -540,10 +566,12 @@ git commit -m "refactor(api): migrate system domain apis to modules/system/<x>/a
 ## Task 10: API 层迁移 - crud 与 auth/login
 
 **Files:**
+
 - Create: `src/modules/crud/api.ts`
 - Create/Modify: `src/modules/auth/api.ts`（合并 `src/apis/user/login.ts` 的必要部分）
 
 **Interfaces:**
+
 - Consumes: Task 9 的迁移模式
 - Produces: crud 模块与 auth 模块自带 api
 
@@ -554,6 +582,7 @@ git commit -m "refactor(api): migrate system domain apis to modules/system/<x>/a
 - [ ] **Step 2: 合并 login api 到 auth**
 
 读 `src/apis/user/login.ts`，区分两类函数：
+
 - 登录/登出/token 刷新 → 放 `src/modules/auth/api.ts`
 - 用户信息查询（应已在 Task 9 迁到 system/user）→ 不重复
 
@@ -577,6 +606,7 @@ git commit -m "refactor(api): migrate crud api and merge login api into auth mod
 ## Task 11: Store 层迁移 - layout 5 个引用改 app/stores
 
 **Files:**
+
 - Modify: `src/layout/components/Header/Index.vue`（dark/collapse）
 - Modify: `src/layout/components/Sidebar/Index.vue`（collapse）
 - Modify: `src/layout/components/TagsView/Index.vue`（tagsView）
@@ -584,6 +614,7 @@ git commit -m "refactor(api): migrate crud api and merge login api into auth mod
 - Modify: 任何 layout 引用 `@/stores/*` 的位置（grep 验证）
 
 **Interfaces:**
+
 - Consumes: `src/stores/*`（旧）的导出签名
 - Produces: layout 改用 `@/app/stores/sidebar` `@/app/stores/theme` `@/app/stores/tagsView`
 - 注：app/stores/* 在 Task 12 才创建。本任务**先把新 store 文件创建出来**（复制旧实现），让本任务自洽
@@ -597,6 +628,7 @@ git commit -m "refactor(api): migrate crud api and merge login api into auth mod
 ## Task 11 (合并后): Store 全量迁移
 
 **Files:**
+
 - Create: `src/app/stores/sidebar.ts`（迁移自 `src/stores/collapse.ts`）
 - Create: `src/app/stores/theme.ts`（迁移自 `src/stores/dark.ts`）
 - Create: `src/app/stores/tagsView.ts`（迁移自 `src/stores/tagsView.ts`，含「关闭当前」菜单项支持）
@@ -607,6 +639,7 @@ git commit -m "refactor(api): migrate crud api and merge login api into auth mod
 - Modify: `src/layout/components/TagsView/ContextMenu.vue` 加「关闭当前」菜单项
 
 **Interfaces:**
+
 - Produces: 所有 store 在 `app/stores/`，layout/views 通过 `@/app/stores/*` 引用
 
 - [ ] **Step 1: 读旧 store 实现**
@@ -626,8 +659,12 @@ import { ref } from 'vue'
 
 export const useSidebarStore = defineStore('sidebar', () => {
   const collapsed = ref(false)
-  const toggleCollapsed = () => { collapsed.value = !collapsed.value }
-  const setCollapsed = (v: boolean) => { collapsed.value = v }
+  const toggleCollapsed = () => {
+    collapsed.value = !collapsed.value
+  }
+  const setCollapsed = (v: boolean) => {
+    collapsed.value = v
+  }
   return { collapsed, toggleCollapsed, setCollapsed }
 })
 ```
@@ -644,10 +681,16 @@ import { ref, watch } from 'vue'
 
 export const useThemeStore = defineStore('theme', () => {
   const isDark = ref(false)
-  const toggleDark = () => { isDark.value = !isDark.value }
-  watch(isDark, (val) => {
-    document.documentElement.classList.toggle('dark', val)
-  }, { immediate: true })
+  const toggleDark = () => {
+    isDark.value = !isDark.value
+  }
+  watch(
+    isDark,
+    (val) => {
+      document.documentElement.classList.toggle('dark', val)
+    },
+    { immediate: true }
+  )
   return { isDark, toggleDark }
 })
 ```
@@ -666,6 +709,7 @@ export const useThemeStore = defineStore('theme', () => {
 - [ ] **Step 5: 合并 user store**
 
 读两个版本（旧 `stores/user.ts` 与新 `app/stores/user.ts`）的字段/方法清单，逐项合并：
+
 - token、profile、permissions、roles、login、logout、fetchProfile 等字段，新版优先，缺的从旧版补
 - 登录调用最终改走 `lib/auth/authService`（M3 已实现），不要保留旧 axios 直调
 
@@ -674,6 +718,7 @@ export const useThemeStore = defineStore('theme', () => {
 ```bash
 cat src/stores/storage.ts
 ```
+
 若纯工具函数（封装 localStorage/sessionStorage）：移到 `src/lib/storage/index.ts`。
 若是 Pinia store：移到 `src/app/stores/storage.ts`。
 
@@ -693,7 +738,8 @@ rg -n "@/stores/" src/layout src/modules/auth/views/Login.vue
 <template>
   <ul class="context-menu-container">
     <li @click="onRefreshClick">刷新</li>
-    <li @click="onCloseCurrentClick">关闭当前</li>  <!-- 新增 -->
+    <li @click="onCloseCurrentClick">关闭当前</li>
+    <!-- 新增 -->
     <li @click="onCloseRightClick">关闭右侧</li>
     <li @click="onCloseOtherClick">关闭其他</li>
     <li @click="onCloseAllClick">关闭全部</li>
@@ -722,6 +768,7 @@ const onCloseCurrentClick = () => {
 pnpm type-check && pnpm lint && pnpm test && pnpm build
 # 然后启 dev server 跑 smoke（启停片段同 Task 2 Step 2-3）
 ```
+
 Expected: 全绿，3 smoke 通过，包括 TagsView 右键菜单 5 项可见（手动抽样）。
 
 - [ ] **Step 10: Commit**
@@ -736,12 +783,14 @@ git commit -m "refactor(state): migrate stores to app/stores and close tagsview 
 ## Task 12: 杂项迁移 - IconLogo / NotFound / nprogress
 
 **Files:**
+
 - Move: `src/components/icons/IconLogo.vue` → `src/layout/components/Sidebar/IconLogo.vue`
 - Move: `src/app/views/NotFound.vue` → `src/modules/about/views/NotFound.vue`
 - Move: `src/utils/nprogress/index.ts` → `src/lib/nprogress/index.ts`
 - Modify: 引用上述文件的 3 处位置
 
 **Interfaces:**
+
 - Produces: `src/components/icons/` 与 `src/utils/` 清空
 
 - [ ] **Step 1: 移动 IconLogo**
@@ -749,10 +798,13 @@ git commit -m "refactor(state): migrate stores to app/stores and close tagsview 
 ```bash
 git mv src/components/icons/IconLogo.vue src/layout/components/Sidebar/IconLogo.vue
 ```
+
 查找引用：
+
 ```bash
 rg -n "components/icons/IconLogo"
 ```
+
 改为相对路径或 `@/layout/components/Sidebar/IconLogo.vue`。
 
 - [ ] **Step 2: 移动 NotFound**
@@ -760,7 +812,9 @@ rg -n "components/icons/IconLogo"
 ```bash
 git mv src/app/views/NotFound.vue src/modules/about/views/NotFound.vue
 ```
+
 修改 `src/router/menus.ts` 第 178-181 行：
+
 ```ts
 {
   path: '/404',
@@ -775,10 +829,13 @@ git mv src/app/views/NotFound.vue src/modules/about/views/NotFound.vue
 mkdir -p src/lib/nprogress
 git mv src/utils/nprogress/index.ts src/lib/nprogress/index.ts
 ```
+
 修改 `src/router/index.ts` 第 3 行：
+
 ```ts
 import nprogress from '@/lib/nprogress'
 ```
+
 （检查 `src/app/main.ts` 是否也引用 nprogress CSS，一并改路径）
 
 - [ ] **Step 4: 验证**
@@ -800,6 +857,7 @@ git commit -m "refactor: relocate IconLogo, NotFound, nprogress to canonical pat
 ## Task 13: 删除旧目录 + ESLint no-restricted-imports
 
 **Files:**
+
 - Delete: `src/apis/`（整目录）
 - Delete: `src/stores/`（整目录，含 `counter.ts`）
 - Delete: `src/components/icons/`（空目录）
@@ -808,6 +866,7 @@ git commit -m "refactor: relocate IconLogo, NotFound, nprogress to canonical pat
 - Modify: `eslint.config.js`（新增 no-restricted-imports 块）
 
 **Interfaces:**
+
 - Produces: ESLint 强制规则生效，新代码尝试 import 旧路径立即报错
 
 - [ ] **Step 1: grep 验证零引用**
@@ -815,6 +874,7 @@ git commit -m "refactor: relocate IconLogo, NotFound, nprogress to canonical pat
 ```bash
 rg -n "@/apis|@/stores|@/utils|@/components" src/
 ```
+
 Expected: 0 matches。若有，回到对应任务修复。
 
 - [ ] **Step 2: 删除目录**
@@ -822,6 +882,7 @@ Expected: 0 matches。若有，回到对应任务修复。
 ```bash
 git rm -r src/apis src/stores src/components src/utils
 ```
+
 （若 `src/components` 还有非 icons 内容则保留，仅删 icons 子目录）
 
 - [ ] **Step 3: `.gitignore` 加一行**
@@ -867,6 +928,7 @@ pnpm lint
 pnpm type-check && pnpm test && pnpm build
 # 然后启 dev server 跑 smoke（启停片段同 Task 2 Step 2-3）
 ```
+
 Expected: lint 全绿（强制规则启用后旧路径已不存在，不触发）。
 
 - [ ] **Step 6: Commit**
@@ -881,12 +943,14 @@ git commit -m "chore: remove legacy apis/stores/utils/components and enforce via
 ## Task 14: CI smoke job + 文档同步
 
 **Files:**
+
 - Modify: `.github/workflows/ci.yml`（加 smoke job）
 - Modify: `CLAUDE.md`
 - Modify: `docs/standards/01-ARCHITECTURE.md`
 - Modify: `README.md`
 
 **Interfaces:**
+
 - Produces: GitHub Actions smoke job 跑通、文档反映迁移后路径
 
 - [ ] **Step 1: 加 CI smoke job**
@@ -946,11 +1010,13 @@ for i in $(seq 1 30); do curl -sf http://127.0.0.1:5173/ > /dev/null && break; s
 pnpm smoke
 lsof -ti:5173 | xargs kill 2>/dev/null || true
 ```
+
 Expected: 4 件套 + 3 smoke 全绿。
 
 - [ ] **Step 6: 手动浏览器冒烟**
 
 启动 dev server，依次手动验证：
+
 - [ ] 登录页可见
 - [ ] admin 登录成功，跳转首页
 - [ ] 侧边栏菜单显示 8 模块（auth 不显示，dashboard/system/profile/crud/docs/about + system 展开 5 子项）
@@ -985,15 +1051,15 @@ git commit -m "ci: add smoke job and sync docs after architecture migration"
 
 ## 估算
 
-| 任务 | 时长 |
-|---|---|
-| Task 1-3 Playwright 接入 + 3 smoke | 1.5h |
-| Task 4-8 模块标准化（5 个任务） | 2h |
-| Task 9-10 API 层迁移 | 1.5h |
-| Task 11 Store 层迁移 + 关闭当前 | 1.5h |
-| Task 12 杂项归位 | 0.5h |
-| Task 13 删除 + ESLint | 0.5h |
-| Task 14 CI + 文档 | 1h |
-| **合计** | **~8.5h** |
+| 任务                               | 时长      |
+| ---------------------------------- | --------- |
+| Task 1-3 Playwright 接入 + 3 smoke | 1.5h      |
+| Task 4-8 模块标准化（5 个任务）    | 2h        |
+| Task 9-10 API 层迁移               | 1.5h      |
+| Task 11 Store 层迁移 + 关闭当前    | 1.5h      |
+| Task 12 杂项归位                   | 0.5h      |
+| Task 13 删除 + ESLint              | 0.5h      |
+| Task 14 CI + 文档                  | 1h        |
+| **合计**                           | **~8.5h** |
 
 （比规范预估的 6.5h 多 2h，因新增了模块标准化 5 个子任务）

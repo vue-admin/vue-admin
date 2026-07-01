@@ -20,10 +20,15 @@ const formData = reactive({ name: '', role: 'user' })
 
 const fields = [
   { prop: 'name', label: '姓名', type: 'input' },
-  { prop: 'role', label: '角色', type: 'select', options: [
-    { label: '超级管理员', value: 'super_admin' },
-    { label: '管理员', value: 'admin' },
-    { label: '普通用户', value: 'user' },
-  ] },
+  {
+    prop: 'role',
+    label: '角色',
+    type: 'select',
+    options: [
+      { label: '超级管理员', value: 'super_admin' },
+      { label: '管理员', value: 'admin' },
+      { label: '普通用户', value: 'user' }
+    ]
+  }
 ]
 </script>

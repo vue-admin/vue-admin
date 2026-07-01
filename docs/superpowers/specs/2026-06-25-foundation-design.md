@@ -112,20 +112,21 @@ shared  ─────────┘
 ```ts
 // lib/http/types.ts
 export interface ApiResult<T> {
-  code: number       // 0 = 成功（仅 HTTP 200 时存在）
+  code: number // 0 = 成功（仅 HTTP 200 时存在）
   data: T
   msg: string
   traceId?: string
 }
 
-export interface ProblemDetail {       // RFC 7807
-  type: string                         // 问题类型 URI
-  title: string                        // 简短摘要
-  status: number                       // HTTP 状态码
-  detail: string                       // 具体说明
-  instance?: string                    // 资源 URI
-  code?: string                        // 应用层错误码（机器可读）
-  errors?: Record<string, string[]>    // 字段级错误（如表单校验）
+export interface ProblemDetail {
+  // RFC 7807
+  type: string // 问题类型 URI
+  title: string // 简短摘要
+  status: number // HTTP 状态码
+  detail: string // 具体说明
+  instance?: string // 资源 URI
+  code?: string // 应用层错误码（机器可读）
+  errors?: Record<string, string[]> // 字段级错误（如表单校验）
   traceId?: string
 }
 ```
@@ -141,11 +142,11 @@ export interface ProblemDetail {       // RFC 7807
 
 #### 错误处理三层契约
 
-| 层 | 默认行为 | 可覆写 |
-|---|---|---|
-| `lib/http` 拦截器 | ElMessage 提示 `problem.title`；401 跳登录 | `silent: true` 关闭提示 |
-| `modules/<domain>/api.ts` | 仅返回 `{ data, error }`，不提示 | 不再处理 |
-| `modules/<domain>/views/*.vue` | 检查 `error`，做领域内 UI 反馈（如表单字段高亮） | 自定义 |
+| 层                             | 默认行为                                         | 可覆写                  |
+| ------------------------------ | ------------------------------------------------ | ----------------------- |
+| `lib/http` 拦截器              | ElMessage 提示 `problem.title`；401 跳登录       | `silent: true` 关闭提示 |
+| `modules/<domain>/api.ts`      | 仅返回 `{ data, error }`，不提示                 | 不再处理                |
+| `modules/<domain>/views/*.vue` | 检查 `error`，做领域内 UI 反馈（如表单字段高亮） | 自定义                  |
 
 **`silent` 语义明确**：传入表示"业务自己处理错误"，拦截器不做任何全局提示。
 
@@ -175,10 +176,14 @@ export interface TokenStorage {
 
 // 默认实现：内存（access）+ sessionStorage（access + refresh）
 // 命名空间前缀 'va:'，避免与第三方 key 冲突
-export class MemorySessionTokenStorage implements TokenStorage { /* ... */ }
+export class MemorySessionTokenStorage implements TokenStorage {
+  /* ... */
+}
 
 // 推荐实现（未来有后端配合时启用）：HttpOnly Cookie
-export class HttpOnlyCookieTokenStorage implements TokenStorage { /* ... */ }
+export class HttpOnlyCookieTokenStorage implements TokenStorage {
+  /* ... */
+}
 ```
 
 - **默认选 MemorySession 的原因**：当前无后端配合设置 HttpOnly Cookie。
@@ -219,20 +224,23 @@ export const usePermissionStore = defineStore('permission', () => {
   const hasPermission = (p: string) =>
     isSuperAdmin.value || permissions.value.includes(p)
   const hasAnyPermission = (ps: string[]) =>
-    isSuperAdmin.value || ps.some(p => permissions.value.includes(p))
+    isSuperAdmin.value || ps.some((p) => permissions.value.includes(p))
   const hasAllPermissions = (ps: string[]) =>
-    isSuperAdmin.value || ps.every(p => permissions.value.includes(p))
-  const hasRole = (r: string) =>
-    isSuperAdmin.value || roles.value.includes(r)
+    isSuperAdmin.value || ps.every((p) => permissions.value.includes(p))
+  const hasRole = (r: string) => isSuperAdmin.value || roles.value.includes(r)
   const hasAnyRole = (rs: string[]) =>
-    isSuperAdmin.value || rs.some(r => roles.value.includes(r))
+    isSuperAdmin.value || rs.some((r) => roles.value.includes(r))
   const hasAllRoles = (rs: string[]) =>
-    isSuperAdmin.value || rs.every(r => roles.value.includes(r))
+    isSuperAdmin.value || rs.every((r) => roles.value.includes(r))
 
   return {
     isSuperAdmin,
-    hasPermission, hasAnyPermission, hasAllPermissions,
-    hasRole, hasAnyRole, hasAllRoles,
+    hasPermission,
+    hasAnyPermission,
+    hasAllPermissions,
+    hasRole,
+    hasAnyRole,
+    hasAllRoles
   }
 })
 ```
@@ -258,12 +266,14 @@ app.directive('permission', {
     if (typeof v === 'string') ok = store.hasPermission(v)
     else if (Array.isArray(v)) ok = store.hasAnyPermission(v)
     else if (v && typeof v === 'object') {
-      ok = v.all ? store.hasAllPermissions(v.all)
-                 : v.any ? store.hasAnyPermission(v.any)
-                         : false
+      ok = v.all
+        ? store.hasAllPermissions(v.all)
+        : v.any
+          ? store.hasAnyPermission(v.any)
+          : false
     }
     if (!ok) el.parentNode?.removeChild(el)
-  },
+  }
 })
 ```
 
@@ -279,13 +289,13 @@ declare module 'vue-router' {
     icon?: string
     showMenu?: boolean
     showInBreadcrumb?: boolean
-    public?: boolean                    // 免登录（白名单）
-    cache?: boolean                     // 参与 KeepAlive
+    public?: boolean // 免登录（白名单）
+    cache?: boolean // 参与 KeepAlive
 
     // 权限：明确区分 any / all 语义
     permissions?: {
-      any?: string[]                    // 任一命中即可
-      all?: string[]                    // 全部命中才可
+      any?: string[] // 任一命中即可
+      all?: string[] // 全部命中才可
     }
     roles?: {
       any?: string[]
@@ -326,8 +336,10 @@ export function installGuards(router: Router) {
 
     // 4) 权限校验（super_admin 已在 store 内短路）
     const m = to.meta
-    if (m.permissions?.any && !permStore.hasAnyPermission(m.permissions.any)) return false
-    if (m.permissions?.all && !permStore.hasAllPermissions(m.permissions.all)) return false
+    if (m.permissions?.any && !permStore.hasAnyPermission(m.permissions.any))
+      return false
+    if (m.permissions?.all && !permStore.hasAllPermissions(m.permissions.all))
+      return false
     if (m.roles?.any && !permStore.hasAnyRole(m.roles.any)) return false
     if (m.roles?.all && !permStore.hasAllRoles(m.roles.all)) return false
     return true
@@ -343,7 +355,10 @@ const modules = import.meta.glob('@/modules/**/*.vue')
 export function registerDynamicRoutes(menus: MenuDTO[]) {
   const walk = (list: MenuDTO[]) => {
     for (const m of list) {
-      if (m.children?.length) { walk(m.children); continue }
+      if (m.children?.length) {
+        walk(m.children)
+        continue
+      }
       const key = `/src/modules/${m.component}.vue`
       const loader = modules[key]
       if (!loader) {
@@ -354,7 +369,7 @@ export function registerDynamicRoutes(menus: MenuDTO[]) {
         path: m.path,
         name: m.name,
         component: loader as any,
-        meta: { ...m.meta },
+        meta: { ...m.meta }
       })
     }
   }
@@ -382,12 +397,17 @@ const error = ref<Error | null>(null)
 onErrorCaptured((err) => {
   error.value = err as Error
   monitor.captureException(err as Error)
-  return false  // 阻止向上冒泡
+  return false // 阻止向上冒泡
 })
 </script>
 
 <template>
-  <el-result v-if="error" icon="error" title="页面出错了" :sub-title="error.message">
+  <el-result
+    v-if="error"
+    icon="error"
+    title="页面出错了"
+    :sub-title="error.message"
+  >
     <template #extra>
       <el-button type="primary" @click="error = null">重试</el-button>
     </template>
@@ -404,7 +424,7 @@ import type { Monitor } from './types'
 export const consoleMonitor: Monitor = {
   captureException: (e, ctx) => console.error('[monitor]', e, ctx ?? ''),
   captureMessage: (m, l = 'info') => console[l]('[monitor]', m),
-  setUser: (u) => console.debug('[monitor] user=', u),
+  setUser: (u) => console.debug('[monitor] user=', u)
 }
 
 // 默认实现：console；生产可在 app/main.ts 中 provide SentryMonitor 替代
@@ -427,12 +447,13 @@ app.provide('monitor', defaultMonitor)
 **选型：MSW (Mock Service Worker)**
 
 理由（对比 `vite-plugin-mock`）：
-| 维度 | vite-plugin-mock | MSW |
-|---|---|---|
-| 工作环境 | 仅 Vite dev | dev / test / preview 通用 |
-| 测试集成 | 弱 | Vitest / Playwright / Storybook 原生支持 |
-| API 契约表达 | JS 配置 | 标准 Request/Response |
-| 业界开源标准 | 国内常用 | 国际开源主流（Storybook、Vercel、Linear） |
+
+| 维度         | vite-plugin-mock | MSW                                       |
+| ------------ | ---------------- | ----------------------------------------- |
+| 工作环境     | 仅 Vite dev      | dev / test / preview 通用                 |
+| 测试集成     | 弱               | Vitest / Playwright / Storybook 原生支持  |
+| API 契约表达 | JS 配置          | 标准 Request/Response                     |
+| 业界开源标准 | 国内常用         | 国际开源主流（Storybook、Vercel、Linear） |
 
 **目录结构**：
 
@@ -457,6 +478,7 @@ src/
 - 生产构建：MSW 代码不进入 bundle（动态 import + 条件加载）。
 
 **契约**：
+
 - Mock 必须返回与生产一致的结构（`ApiResult` 或 `ProblemDetail`）。
 - Mock 账号：`admin / 123456`（super_admin，全权限）、`user / 123456`（普通角色，仅 `user:read`）。
 
@@ -465,13 +487,14 @@ src/
 **框架**：Vitest（与 Vite 原生集成，零额外构建）。
 
 **覆盖目标（M5 阶段）**：
-| 文件 | 测试场景 |
-|---|---|
+
+| 文件                       | 测试场景                                                |
+| -------------------------- | ------------------------------------------------------- |
 | `lib/http/interceptors.ts` | 401 → refresh 重放；ProblemDetail 解析；silent 抑制提示 |
-| `lib/auth/TokenStorage.ts` | 读写、清空、命名空间隔离 |
-| `lib/auth/authService.ts` | 并发 refresh 单次触发；refresh 失败跳登录 |
-| `lib/router/guards.ts` | 白名单 / 未登录 / 权限拒绝 / bootstrap 失败 四条路径 |
-| `lib/router/dynamic.ts` | 组件缺失时记 monitor 不中断 |
+| `lib/auth/TokenStorage.ts` | 读写、清空、命名空间隔离                                |
+| `lib/auth/authService.ts`  | 并发 refresh 单次触发；refresh 失败跳登录               |
+| `lib/router/guards.ts`     | 白名单 / 未登录 / 权限拒绝 / bootstrap 失败 四条路径    |
+| `lib/router/dynamic.ts`    | 组件缺失时记 monitor 不中断                             |
 | `app/stores/permission.ts` | hasAnyPermission / hasAllPermissions / super_admin 短路 |
 
 **CI 阈值**：本次仅要求新增模块有测试；整体覆盖率阈值后续设定。
@@ -540,14 +563,14 @@ src/
 
 ## 7. 风险与对策
 
-| 风险 | 影响 | 对策 |
-|---|---|---|
-| 旧业务代码依赖 `code !== 0` 业务契约 | 迁移阻力 | **一刀切**：M2 阶段同步迁移 Mock 与业务代码；不保留双契约 |
-| 无后端配合 HttpOnly Cookie | 安全性降级 | 默认 MemorySession；接口预留；**未来切 Cookie 是强制项**，写入 ADR-003 |
-| 动态路由 component 字符串路径错配 | 白屏 | `registerDynamicRoutes` 校验 `modules[...]`，缺失记 monitor 并跳过 |
-| 并发 401 触发多次 refresh | token 失效 | refreshPromise 单例 + 请求队列重放 |
-| MSW 学习曲线 | M5 进度风险 | M3 阶段开始用 MSW，提前在 auth 模块练手 |
-| 大规模目录重构 | 引用断链 | M1 完成后立即跑 type-check；逐模块迁移（非一次性） |
+| 风险                                 | 影响        | 对策                                                                   |
+| ------------------------------------ | ----------- | ---------------------------------------------------------------------- |
+| 旧业务代码依赖 `code !== 0` 业务契约 | 迁移阻力    | **一刀切**：M2 阶段同步迁移 Mock 与业务代码；不保留双契约              |
+| 无后端配合 HttpOnly Cookie           | 安全性降级  | 默认 MemorySession；接口预留；**未来切 Cookie 是强制项**，写入 ADR-003 |
+| 动态路由 component 字符串路径错配    | 白屏        | `registerDynamicRoutes` 校验 `modules[...]`，缺失记 monitor 并跳过     |
+| 并发 401 触发多次 refresh            | token 失效  | refreshPromise 单例 + 请求队列重放                                     |
+| MSW 学习曲线                         | M5 进度风险 | M3 阶段开始用 MSW，提前在 auth 模块练手                                |
+| 大规模目录重构                       | 引用断链    | M1 完成后立即跑 type-check；逐模块迁移（非一次性）                     |
 
 ---
 
