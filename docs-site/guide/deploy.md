@@ -2,6 +2,56 @@
 
 本文档给出 Vue Admin 在云主机上的几种主流部署方案，任选其一。所有配置均可直接复制使用。
 
+## 自动化部署（推荐：GitHub Actions + rsync）
+
+推送 `main` 即自动构建 **app + 文档** 并同步到云主机。仓库已内置 `.github/workflows/deploy.yml`，只需三步配置：
+
+### 1. 云主机准备 Nginx
+
+仓库提供现成配置 `deploy/nginx.conf`，app 与文档同域（app 在 `/`，文档在 `/docs/`）：
+
+```bash
+# 云主机上创建目录
+sudo mkdir -p /var/www/vue-admin /var/www/vue-admin-docs
+sudo chown -R $USER:$USER /var/www/vue-admin /var/www/vue-admin-docs
+
+# 上传并启用 Nginx 配置（按需修改 server_name）
+sudo cp nginx.conf /etc/nginx/conf.d/vue-admin.conf
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+### 2. 配置 GitHub Secrets
+
+仓库 **Settings → Secrets and variables → Actions → New repository secret**，添加：
+
+| Secret 名 | 值 | 说明 |
+|---|---|---|
+| `SERVER_HOST` | `1.2.3.4` 或 `example.com` | 云主机地址 |
+| `SERVER_USER` | `deploy` | SSH 登录用户 |
+| `SERVER_SSH_KEY` | （私钥完整内容） | `cat ~/.ssh/id_ed25519` 的输出 |
+| `APP_PATH` | `/var/www/vue-admin` | app 部署目录 |
+| `DOCS_PATH` | `/var/www/vue-admin-docs` | 文档部署目录 |
+
+可选 **Variables**（Settings → Variables，非 Secret）：`APP_BASE`（默认 `/`）、`DOCS_BASE`（默认 `/docs/`）。
+
+> SSH 用户需对两个部署目录有写权限；建议建专用 `deploy` 用户并配置 sudo 免密（仅 nginx reload）。
+
+### 3. 推送即部署
+
+```bash
+git push origin main
+```
+
+推送后 Actions 自动执行：`lint/test 质量门禁 → 构建 app (VITE_BASE=/) → 构建文档 (DOCS_BASE=/docs/) → rsync 同步到云主机`。访问 `https://your-domain.com/`（app）与 `/docs/`（文档）。
+
+> 后续每次推送 main 自动发版，无需手动操作。Workflow 也支持手动触发（Actions 页 → Run workflow）。
+
+---
+
+## 手动部署方案
+
+以下方案适合首次部署、临时演示或不用 CI 的场景。
+
 ## 构建产物
 
 无论哪种方案，第一步都是产出静态构建产物：

@@ -8,7 +8,8 @@ export default defineConfig({
   lang: 'zh-CN',
   lastUpdated: true,
   cleanUrls: true,
-  base: '/vue-admin/',
+  // 文档 base 可经 DOCS_BASE 覆盖：GitHub Pages 用 /vue-admin/，云主机子路径用 /docs/
+  base: process.env.DOCS_BASE ?? '/vue-admin/',
   ignoreDeadLinks: true,
   head: [['meta', { name: 'theme-color', content: '#409EFF' }]],
   // docs-site 直接 import src/ 下真实组件，需配置 @ 别名指向项目 src/

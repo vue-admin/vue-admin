@@ -1,0 +1,88 @@
+name: Deploy to Server
+
+# 推送 main 时自动构建 app + 文档站点，rsync 同步到云主机。
+# 需在仓库 Settings → Secrets and variables → Actions 配置：
+#   SERVER_HOST   云主机 IP 或域名（如 1.2.3.4 或 example.com）
+#   SERVER_USER   SSH 登录用户（如 deploy）
+#   SERVER_SSH_KEY  SSH 私钥（完整内容，cat ~/.ssh/id_xxx）
+#   APP_PATH      app 部署目录（如 /var/www/vue-admin）
+#   DOCS_PATH     文档部署目录（如 /var/www/vue-admin-docs）
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {} # 支持手动触发
+
+# 同一时只跑一个部署，避免并发覆盖
+concurrency:
+  group: deploy-server
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Quality gate
+        run: |
+          pnpm type-check
+          pnpm lint
+          pnpm test
+
+      - name: Build app
+        run: pnpm build
+        env:
+          # 部署到域名根路径；子路径改为 /admin/ 等
+          VITE_BASE: ${{ vars.APP_BASE || '/' }}
+
+      - name: Build docs
+        run: pnpm docs:build
+        env:
+          # 文档部署到 /docs/ 子路径；GitHub Pages 仍用默认 /vue-admin/
+          DOCS_BASE: ${{ vars.DOCS_BASE || '/docs/' }}
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy app
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avz --delete
+          path: dist/
+          remote_path: ${{ secrets.APP_PATH }}/
+          remote_host: ${{ secrets.SERVER_HOST }}
+          remote_user: ${{ secrets.SERVER_USER }}
+          remote_key: ${{ secrets.SERVER_SSH_KEY }}
+
+      - name: Deploy docs
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avz --delete
+          path: docs-site/.vitepress/dist/
+          remote_path: ${{ secrets.DOCS_PATH }}/
+          remote_host: ${{ secrets.SERVER_HOST }}
+          remote_user: ${{ secrets.SERVER_USER }}
+          remote_key: ${{ secrets.SERVER_SSH_KEY }}
+
+      - name: Deployment summary
+        run: |
+          echo "### 🚀 Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          echo "- App:  https://${{ secrets.SERVER_HOST }}/" >> $GITHUB_STEP_SUMMARY
+          echo "- Docs: https://${{ secrets.SERVER_HOST }}/docs/" >> $GITHUB_STEP_SUMMARY
