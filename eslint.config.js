@@ -16,6 +16,7 @@ export default [
       'node_modules/**',
       'docs/**',
       'src/mock/**',
+      'public/mockServiceWorker.js',
       'coverage/**'
     ]
   },

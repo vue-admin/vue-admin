@@ -60,4 +60,15 @@ watch(
   { immediate: true }
 )
 
-app.mount('#app')
+async function bootstrap() {
+  const enableMock = import.meta.env.DEV || import.meta.env.VITE_ENABLE_MOCK === 'true'
+  if (enableMock) {
+    const { worker } = await import('@/mock/browser')
+    await worker.start({
+      onUnhandledRequest: 'bypass',
+      serviceWorker: { url: `${import.meta.env.BASE_URL}mockServiceWorker.js` }
+    })
+  }
+  app.mount('#app')
+}
+bootstrap()
