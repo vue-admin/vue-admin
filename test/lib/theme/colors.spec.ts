@@ -6,7 +6,15 @@ describe('lib/theme/colors', () => {
     it('生成主色 + 6 阶派生色', () => {
       const vars = generatePrimaryColorVars('#409EFF')
       expect(Object.keys(vars).sort()).toEqual(
-        ['primary', 'primary-dark-2', 'primary-light-3', 'primary-light-5', 'primary-light-7', 'primary-light-8', 'primary-light-9'].sort(),
+        [
+          'primary',
+          'primary-dark-2',
+          'primary-light-3',
+          'primary-light-5',
+          'primary-light-7',
+          'primary-light-8',
+          'primary-light-9'
+        ].sort()
       )
       expect(vars.primary.toLowerCase()).toBe('#409eff')
     })
@@ -46,14 +54,22 @@ describe('lib/theme/colors', () => {
     it('把派生色写入 documentElement.style', () => {
       applyPrimaryColor('#409EFF')
       const style = document.documentElement.style
-      expect(style.getPropertyValue('--el-color-primary').toLowerCase()).toBe('#409eff')
-      expect(style.getPropertyValue('--el-color-primary-light-9').toLowerCase()).toBe('#ecf5ff')
-      expect(style.getPropertyValue('--el-color-primary-dark-2').toLowerCase()).toBe('#337ecc')
+      expect(style.getPropertyValue('--el-color-primary').toLowerCase()).toBe(
+        '#409eff'
+      )
+      expect(
+        style.getPropertyValue('--el-color-primary-light-9').toLowerCase()
+      ).toBe('#ecf5ff')
+      expect(
+        style.getPropertyValue('--el-color-primary-dark-2').toLowerCase()
+      ).toBe('#337ecc')
     })
 
     it('无效输入不抛异常、不写入任何变量', () => {
       expect(() => applyPrimaryColor('not-a-color')).not.toThrow()
-      expect(document.documentElement.style.getPropertyValue('--el-color-primary')).toBe('')
+      expect(
+        document.documentElement.style.getPropertyValue('--el-color-primary')
+      ).toBe('')
     })
   })
 })

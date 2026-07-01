@@ -6,14 +6,17 @@ export const consoleMonitor: Monitor = {
     console.error('[monitor]', err, ctx ?? '')
   },
   captureMessage(msg, level = 'info') {
-    const fn = level === 'error' ? console.error
-      : level === 'warn' ? console.warn
-      : console.info
+    const fn =
+      level === 'error'
+        ? console.error
+        : level === 'warn'
+          ? console.warn
+          : console.info
     fn('[monitor]', msg)
   },
   setUser(user) {
     console.debug('[monitor] user=', user)
-  },
+  }
 }
 
 // 默认导出：未来在 app/main.ts 中可替换为 SentryMonitor 等

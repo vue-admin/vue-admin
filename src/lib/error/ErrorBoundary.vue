@@ -37,7 +37,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   title: '页面出错了',
   message: undefined,
-  maxRetries: 3,
+  maxRetries: 3
 })
 
 const monitor = inject<Monitor>('monitor')!
@@ -46,7 +46,9 @@ const retryCount = ref(0)
 const lastErrorKey = ref('')
 
 const displayTitle = computed(() => props.title)
-const displayMessage = computed(() => props.message ?? error.value?.message ?? '')
+const displayMessage = computed(
+  () => props.message ?? error.value?.message ?? ''
+)
 
 const handleRetry = () => {
   error.value = null

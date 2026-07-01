@@ -6,21 +6,25 @@ import type { LoginRequest, AuthResult, UserProfile } from '@/lib/auth/types'
 
 // 独立声明 vi.fn，避免后续断言需要 as any
 const loginMock = vi.fn<(req: LoginRequest) => Promise<AuthResult>>(
-  async () => ({ accessToken: 'a1', refreshToken: 'r1' }),
+  async () => ({ accessToken: 'a1', refreshToken: 'r1' })
 )
-const refreshMock = vi.fn<(token: string) => Promise<AuthResult>>(
-  async () => ({ accessToken: 'a2', refreshToken: 'r2' }),
-)
+const refreshMock = vi.fn<(token: string) => Promise<AuthResult>>(async () => ({
+  accessToken: 'a2',
+  refreshToken: 'r2'
+}))
 const logoutMock = vi.fn<() => Promise<void>>(async () => {})
-const meMock = vi.fn<() => Promise<UserProfile>>(
-  async () => ({ id: '1', username: 'admin', roles: ['admin'], permissions: ['*'] }),
-)
+const meMock = vi.fn<() => Promise<UserProfile>>(async () => ({
+  id: '1',
+  username: 'admin',
+  roles: ['admin'],
+  permissions: ['*']
+}))
 
 const mockProvider: AuthProvider = {
   login: loginMock,
   refresh: refreshMock,
   logout: logoutMock,
-  me: meMock,
+  me: meMock
 }
 
 const getAccessTokenMock = vi.fn<() => string | null>(() => null)
@@ -32,7 +36,7 @@ const mockStorage: TokenStorage = {
   getAccessToken: getAccessTokenMock,
   getRefreshToken: getRefreshTokenMock,
   setTokens: setTokensMock,
-  clear: clearMock,
+  clear: clearMock
 }
 
 describe('authService', () => {

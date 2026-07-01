@@ -8,22 +8,21 @@ import type { Monitor } from '@/lib/error/types'
 const createMonitor = (): Monitor => ({
   captureException: vi.fn(),
   captureMessage: vi.fn(),
-  setUser: vi.fn(),
+  setUser: vi.fn()
 })
 
 const BoomChild = defineComponent({
   setup() {
     throw new Error('child boom')
   },
-  render: () => h('div'),
+  render: () => h('div')
 })
-
 
 describe('ErrorBoundary', () => {
   it('正常子树正常渲染', () => {
     const wrapper = mount(ErrorBoundary, {
       global: { provide: { monitor: createMonitor() } },
-      slots: { default: () => h('div', { class: 'ok' }, 'hi') },
+      slots: { default: () => h('div', { class: 'ok' }, 'hi') }
     })
     expect(wrapper.html()).toContain('hi')
   })
@@ -31,7 +30,7 @@ describe('ErrorBoundary', () => {
   it('子组件抛错时显示错误兜底', async () => {
     const wrapper = mount(ErrorBoundary, {
       global: { provide: { monitor: createMonitor() } },
-      slots: { default: () => h(BoomChild) },
+      slots: { default: () => h(BoomChild) }
     })
     await nextTick()
     expect(wrapper.text()).toContain('页面出错了')
@@ -42,7 +41,7 @@ describe('ErrorBoundary', () => {
     const wrapper = mount(ErrorBoundary, {
       global: { provide: { monitor: createMonitor() } },
       props: { title: '自定义标题', message: '自定义提示' },
-      slots: { default: () => h(BoomChild) },
+      slots: { default: () => h(BoomChild) }
     })
     await nextTick()
     expect(wrapper.text()).toContain('自定义标题')
@@ -53,11 +52,13 @@ describe('ErrorBoundary', () => {
     const monitor = createMonitor()
     mount(ErrorBoundary, {
       global: { provide: { monitor } },
-      slots: { default: () => h(BoomChild) },
+      slots: { default: () => h(BoomChild) }
     })
     await nextTick()
     expect(monitor.captureException).toHaveBeenCalledTimes(1)
-    expect(monitor.captureException).toHaveBeenCalledWith(expect.objectContaining({ message: 'child boom' }))
+    expect(monitor.captureException).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'child boom' })
+    )
   })
 
   it('点击重试后恢复渲染', async () => {
@@ -67,7 +68,7 @@ describe('ErrorBoundary', () => {
       render() {
         if (this.fail) throw new Error('child boom')
         return h('div', { class: 'ok' }, 'recovered')
-      },
+      }
     })
 
     const Parent = defineComponent({
@@ -80,11 +81,11 @@ describe('ErrorBoundary', () => {
           {},
           { default: () => h(ToggleChild, { fail: this.fail }) }
         )
-      },
+      }
     })
 
     const wrapper = mount(Parent, {
-      global: { provide: { monitor } },
+      global: { provide: { monitor } }
     })
     await nextTick()
     expect(wrapper.text()).toContain('页面出错了')
@@ -101,7 +102,7 @@ describe('ErrorBoundary', () => {
     const wrapper = mount(ErrorBoundary, {
       global: { provide: { monitor } },
       props: { maxRetries: 2 },
-      slots: { default: () => h(BoomChild) },
+      slots: { default: () => h(BoomChild) }
     })
     await nextTick()
     expect(wrapper.text()).toContain('页面出错了')

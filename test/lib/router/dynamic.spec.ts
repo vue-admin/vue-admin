@@ -8,7 +8,7 @@ import type { Monitor } from '@/lib/error/types'
 const stubMonitor: Monitor = {
   captureException: vi.fn(),
   captureMessage: vi.fn(),
-  setUser: vi.fn(),
+  setUser: vi.fn()
 }
 
 // 强类型 glob mock：path -> loader
@@ -21,9 +21,9 @@ function makeRouter() {
       {
         path: '/',
         name: 'layout',
-        component: { template: '<RouterView />' },
-      },
-    ],
+        component: { template: '<RouterView />' }
+      }
+    ]
   })
 }
 
@@ -31,19 +31,21 @@ describe('registerDynamicRoutes', () => {
   it('存在的 component 注册成功', () => {
     const router = makeRouter()
     const menus: MenuDTO[] = [
-      { path: '/x', name: 'x', component: 'crud/Index' },
+      { path: '/x', name: 'x', component: 'crud/Index' }
     ]
     const glob: Glob = {
-      '/src/modules/crud/Index.vue': () => Promise.resolve({}),
+      '/src/modules/crud/Index.vue': () => Promise.resolve({})
     }
-    expect(() => registerDynamicRoutes(router, menus, stubMonitor, glob)).not.toThrow()
+    expect(() =>
+      registerDynamicRoutes(router, menus, stubMonitor, glob)
+    ).not.toThrow()
     expect(router.hasRoute('x')).toBe(true)
   })
 
   it('缺失 component 记 monitor 并跳过', () => {
     const router = makeRouter()
     const menus: MenuDTO[] = [
-      { path: '/y', name: 'y', component: 'nonexistent/Foo' },
+      { path: '/y', name: 'y', component: 'nonexistent/Foo' }
     ]
     const glob: Glob = {}
     registerDynamicRoutes(router, menus, stubMonitor, glob)
@@ -58,12 +60,12 @@ describe('registerDynamicRoutes', () => {
         path: '/parent',
         name: 'parent',
         children: [
-          { path: '/parent/child', name: 'child', component: 'crud/Index' },
-        ],
-      },
+          { path: '/parent/child', name: 'child', component: 'crud/Index' }
+        ]
+      }
     ]
     const glob: Glob = {
-      '/src/modules/crud/Index.vue': () => Promise.resolve({}),
+      '/src/modules/crud/Index.vue': () => Promise.resolve({})
     }
     registerDynamicRoutes(router, menus, stubMonitor, glob)
     expect(router.hasRoute('child')).toBe(true)

@@ -8,7 +8,7 @@ export interface LoginRequest {
 export interface AuthResult {
   accessToken: string
   refreshToken?: string
-  expiresIn?: number      // 秒
+  expiresIn?: number // 秒
 }
 
 export interface UserProfile {

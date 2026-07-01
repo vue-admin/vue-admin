@@ -6,7 +6,7 @@ import type { Monitor } from '@/lib/error/types'
 const createMonitor = (): Monitor => ({
   captureException: vi.fn(),
   captureMessage: vi.fn(),
-  setUser: vi.fn(),
+  setUser: vi.fn()
 })
 
 describe('installGlobalErrorHandlers', () => {
@@ -56,7 +56,10 @@ describe('installGlobalErrorHandlers', () => {
 
     const error = new Error('unhandled rejection')
 
-    const event = new PromiseRejectionEvent('unhandledrejection', { reason: error, promise: Promise.resolve() })
+    // jsdom 无 PromiseRejectionEvent 构造器；处理器仅读取 event.reason，
+    // 用普通 Event 自定义载体即可触发同一监听路径
+    const event = new Event('unhandledrejection')
+    Object.defineProperty(event, 'reason', { value: error })
     window.dispatchEvent(event)
 
     expect(monitor.captureException).toHaveBeenCalledTimes(1)

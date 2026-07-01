@@ -8,7 +8,7 @@ describe('parseProblem', () => {
       title: 'You do not have enough credit.',
       status: 400,
       detail: 'Your current balance is 30, but that costs 50.',
-      instance: '/account/12345/msgs/abc',
+      instance: '/account/12345/msgs/abc'
     }
     const p = parseProblem(400, body)
     expect(p.type).toBe(body.type)
@@ -34,7 +34,7 @@ describe('parseProblem', () => {
 
   it('字段级 errors 保留', () => {
     const p = parseProblem(422, {
-      errors: { username: ['already taken'], email: ['invalid'] },
+      errors: { username: ['already taken'], email: ['invalid'] }
     })
     expect(p.errors?.username).toEqual(['already taken'])
     expect(p.errors?.email).toEqual(['invalid'])

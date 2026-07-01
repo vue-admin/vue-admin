@@ -20,7 +20,7 @@ export function createConfirmService(
   defaults: ConfirmDefaults = {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning',
+    type: 'warning'
   }
 ): ConfirmService {
   const showConfirm = async (
@@ -33,7 +33,7 @@ export function createConfirmService(
         confirmButtonText: defaults.confirmButtonText,
         cancelButtonText: defaults.cancelButtonText,
         type: defaults.type,
-        ...options,
+        ...options
       })
       return true
     } catch {

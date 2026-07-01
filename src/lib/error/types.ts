@@ -4,7 +4,7 @@ import type { ProblemDetail } from '@/lib/http/types'
 export class HttpError extends Error {
   constructor(
     public readonly problem: ProblemDetail,
-    public readonly response?: Response,
+    public readonly response?: Response
   ) {
     super(problem.title)
     this.name = 'HttpError'

@@ -5,7 +5,7 @@ const createMockLoader = () => {
   const close = vi.fn()
   return {
     service: vi.fn(() => ({ close })),
-    close,
+    close
   }
 }
 
@@ -62,9 +62,11 @@ describe('loadingService', () => {
     const loader = createMockLoader()
     const service = createLoadingService(loader)
 
-    await expect(service.withLoading(async () => {
-      throw new Error('boom')
-    })).rejects.toThrow('boom')
+    await expect(
+      service.withLoading(async () => {
+        throw new Error('boom')
+      })
+    ).rejects.toThrow('boom')
 
     expect(loader.service).toHaveBeenCalledTimes(1)
     expect(loader.close).toHaveBeenCalledTimes(1)
@@ -80,7 +82,7 @@ describe('loadingService', () => {
       expect.objectContaining({
         lock: true,
         text: '保存中...',
-        background: 'rgba(255, 0, 0, 0.5)',
+        background: 'rgba(255, 0, 0, 0.5)'
       })
     )
   })

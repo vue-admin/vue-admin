@@ -7,7 +7,7 @@ const HTTP_STATUS_TITLE: Record<number, string> = {
   404: 'Not Found',
   409: 'Conflict',
   422: 'Unprocessable Entity',
-  500: 'Internal Server Error',
+  500: 'Internal Server Error'
 }
 
 // 容错解析：body 可能是对象、字符串、或 null
@@ -23,10 +23,11 @@ export function parseProblem(status: number, body: unknown): ProblemDetail {
       detail: typeof b.detail === 'string' ? b.detail : '',
       instance: typeof b.instance === 'string' ? b.instance : undefined,
       code: typeof b.code === 'string' ? b.code : undefined,
-      errors: b.errors && typeof b.errors === 'object'
-        ? b.errors as Record<string, string[]>
-        : undefined,
-      traceId: typeof b.traceId === 'string' ? b.traceId : undefined,
+      errors:
+        b.errors && typeof b.errors === 'object'
+          ? (b.errors as Record<string, string[]>)
+          : undefined,
+      traceId: typeof b.traceId === 'string' ? b.traceId : undefined
     }
   }
 
@@ -35,7 +36,7 @@ export function parseProblem(status: number, body: unknown): ProblemDetail {
       type: 'about:blank',
       title: fallbackTitle,
       status,
-      detail: body,
+      detail: body
     }
   }
 
@@ -43,6 +44,6 @@ export function parseProblem(status: number, body: unknown): ProblemDetail {
     type: 'about:blank',
     title: fallbackTitle,
     status,
-    detail: '',
+    detail: ''
   }
 }

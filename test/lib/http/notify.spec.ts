@@ -3,7 +3,7 @@ import { notifyProblem } from '@/lib/http/notify'
 import type { ProblemDetail } from '@/lib/http/types'
 
 vi.mock('element-plus', () => ({
-  ElMessage: { error: vi.fn(), warning: vi.fn(), info: vi.fn() },
+  ElMessage: { error: vi.fn(), warning: vi.fn(), info: vi.fn() }
 }))
 
 import { ElMessage } from 'element-plus'
@@ -18,14 +18,30 @@ describe('notifyProblem', () => {
   })
 
   it('4xx 默认走 ElMessage.error', () => {
-    const p: ProblemDetail = { type: 'x', title: 'Bad', status: 400, detail: 'd' }
+    const p: ProblemDetail = {
+      type: 'x',
+      title: 'Bad',
+      status: 400,
+      detail: 'd'
+    }
     notifyProblem(p)
-    expect(ElMessage.error).toHaveBeenCalledWith({ message: 'Bad', grouping: true })
+    expect(ElMessage.error).toHaveBeenCalledWith({
+      message: 'Bad',
+      grouping: true
+    })
   })
 
   it('5xx 默认走 ElMessage.error', () => {
-    const p: ProblemDetail = { type: 'x', title: 'Server Down', status: 500, detail: 'd' }
+    const p: ProblemDetail = {
+      type: 'x',
+      title: 'Server Down',
+      status: 500,
+      detail: 'd'
+    }
     notifyProblem(p)
-    expect(ElMessage.error).toHaveBeenCalledWith({ message: 'Server Down', grouping: true })
+    expect(ElMessage.error).toHaveBeenCalledWith({
+      message: 'Server Down',
+      grouping: true
+    })
   })
 })

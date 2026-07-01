@@ -37,6 +37,8 @@ describe('lib/i18n', () => {
   })
 
   it('支持插值参数', () => {
-    expect(i18n.global.t('common.welcome', { name: 'Admin' })).toBe('欢迎, Admin')
+    expect(i18n.global.t('common.welcome', { name: 'Admin' })).toBe(
+      '欢迎, Admin'
+    )
   })
 })

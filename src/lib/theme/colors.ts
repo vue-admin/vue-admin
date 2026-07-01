@@ -12,7 +12,11 @@ const NAMED_WEIGHTS = [3, 5, 7, 8, 9] as const
 function normalizeHex(input: string): string | null {
   if (!input) return null
   let h = input.trim().replace(/^#/, '')
-  if (h.length === 3) h = h.split('').map((c) => c + c).join('')
+  if (h.length === 3)
+    h = h
+      .split('')
+      .map((c) => c + c)
+      .join('')
   if (h.length !== 6 || /[^0-9a-fA-F]/.test(h)) return null
   return h.toLowerCase()
 }
@@ -26,7 +30,11 @@ function rgbToHex(r: number, g: number, b: number): string {
   return (
     '#' +
     [r, g, b]
-      .map((v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0'))
+      .map((v) =>
+        Math.max(0, Math.min(255, Math.round(v)))
+          .toString(16)
+          .padStart(2, '0')
+      )
       .join('')
   )
 }
@@ -37,11 +45,13 @@ function mix(weight: number, c1: string, c2: string): string {
   return rgbToHex(
     a[0] * weight + b[0] * (1 - weight),
     a[1] * weight + b[1] * (1 - weight),
-    a[2] * weight + b[2] * (1 - weight),
+    a[2] * weight + b[2] * (1 - weight)
   )
 }
 
-export function generatePrimaryColorVars(primary: string): Record<string, string> {
+export function generatePrimaryColorVars(
+  primary: string
+): Record<string, string> {
   const hex = normalizeHex(primary)
   if (!hex) return {}
 

@@ -6,7 +6,10 @@ import { jwtAuthProvider } from './JwtAuthProvider'
 import { getTokenStorage } from './TokenStorage'
 
 // 工厂函数：便于测试注入 mock
-export function createAuthService(provider: AuthProvider, storage: TokenStorage) {
+export function createAuthService(
+  provider: AuthProvider,
+  storage: TokenStorage
+) {
   let refreshPromise: Promise<AuthResult> | null = null
 
   // SIDE EFFECT: 把 storage 注册到 http 拦截器层（M2.3 setTokenReader 是模块级单例）
@@ -14,7 +17,7 @@ export function createAuthService(provider: AuthProvider, storage: TokenStorage)
   // 测试路径靠 beforeEach 重置 mock storage 才能保持隔离。
   // 未来若需要多实例隔离，把 setTokenReader 调用提到工厂外，由 app/main.ts 显式执行。
   setTokenReader({
-    getAccessToken: () => storage.getAccessToken(),
+    getAccessToken: () => storage.getAccessToken()
   })
 
   return {
@@ -63,7 +66,7 @@ export function createAuthService(provider: AuthProvider, storage: TokenStorage)
 
     isAuthenticated(): boolean {
       return !!storage.getAccessToken()
-    },
+    }
   }
 }
 

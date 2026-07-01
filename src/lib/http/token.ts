@@ -6,7 +6,7 @@ export interface TokenReader {
 
 // 占位实现：M3 阶段被替换
 export const noopTokenReader: TokenReader = {
-  getAccessToken: () => null,
+  getAccessToken: () => null
 }
 
 // 运行时持有的 TokenReader（由 auth 模块在启动时设置）

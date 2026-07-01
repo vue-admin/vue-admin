@@ -2,23 +2,25 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import axios, {
   type AxiosInstance,
   type AxiosResponse,
-  type InternalAxiosRequestConfig,
+  type InternalAxiosRequestConfig
 } from 'axios'
 import { installInterceptors } from '@/lib/http/interceptors'
 import { HttpError } from '@/lib/error/types'
 
 vi.mock('element-plus', () => ({
-  ElMessage: { error: vi.fn(), warning: vi.fn(), info: vi.fn() },
+  ElMessage: { error: vi.fn(), warning: vi.fn(), info: vi.fn() }
 }))
 
 // 成功响应 adapter：模拟 HTTP 200/2xx 返回任意 data
 function successAdapter(data: unknown, status = 200) {
-  return async (config: InternalAxiosRequestConfig): Promise<AxiosResponse> => ({
+  return async (
+    config: InternalAxiosRequestConfig
+  ): Promise<AxiosResponse> => ({
     data,
     status,
     statusText: 'OK',
     headers: {},
-    config,
+    config
   })
 }
 
@@ -31,7 +33,7 @@ function errorAdapter(status: number, data: unknown) {
       isAxiosError: true,
       toJSON() {
         return { message: 'Request failed', code: 'ERR_BAD_REQUEST' }
-      },
+      }
     })
     throw err
   }
@@ -42,7 +44,7 @@ function networkErrorAdapter() {
   return async (config: InternalAxiosRequestConfig): Promise<AxiosResponse> => {
     throw Object.assign(new Error('Network Error'), {
       config,
-      isAxiosError: true,
+      isAxiosError: true
       // 注意：无 response 字段
     })
   }
@@ -61,7 +63,7 @@ describe('interceptors integration', () => {
     instance.defaults.adapter = successAdapter({
       code: 0,
       data: { hello: 'world' },
-      msg: 'ok',
+      msg: 'ok'
     })
     const res = await instance.get('/x')
     expect(res.data).toEqual({ hello: 'world' })
@@ -71,7 +73,7 @@ describe('interceptors integration', () => {
     instance.defaults.adapter = successAdapter({
       code: 1,
       data: null,
-      msg: 'biz error',
+      msg: 'biz error'
     })
     await expect(instance.get('/x')).rejects.toBeInstanceOf(HttpError)
     try {
@@ -89,7 +91,7 @@ describe('interceptors integration', () => {
       type: 'about:blank',
       title: 'Server Error',
       status: 500,
-      detail: 'down',
+      detail: 'down'
     })
     await expect(instance.get('/x')).rejects.toBeInstanceOf(HttpError)
     try {
@@ -107,12 +109,10 @@ describe('interceptors integration', () => {
       type: 'x',
       title: 't',
       status: 400,
-      detail: 'd',
+      detail: 'd'
     })
     const { ElMessage } = await import('element-plus')
-    await instance
-      .get('/x', { _silent: true } as never)
-      .catch(() => undefined)
+    await instance.get('/x', { _silent: true } as never).catch(() => undefined)
     expect(ElMessage.error).not.toHaveBeenCalled()
   })
 

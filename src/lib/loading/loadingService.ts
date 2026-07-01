@@ -6,7 +6,10 @@ export type LoadingServiceOptions = Partial<LoadingOptionsResolved>
 export interface LoadingService {
   show(options?: LoadingServiceOptions): void
   close(): void
-  withLoading<T>(fn: () => Promise<T>, options?: LoadingServiceOptions): Promise<T>
+  withLoading<T>(
+    fn: () => Promise<T>,
+    options?: LoadingServiceOptions
+  ): Promise<T>
 }
 
 export function createLoadingService(
@@ -21,7 +24,7 @@ export function createLoadingService(
         lock: true,
         text: '加载中...',
         background: 'rgba(0, 0, 0, 0.7)',
-        ...options,
+        ...options
       })
     }
     stack += 1

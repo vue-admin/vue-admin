@@ -23,13 +23,24 @@ class MyStorage {
     this.storage.setItem(key, data)
   }
 
-  // 返回 unknown 强制调用方做类型 narrowing；具体类型由调用方断言
+  // 返回 unknown 强制调用方做类型 narrowing；具体类型由调用方断言。
+  // 容错：损坏数据返回 null 而非抛错（避免单条脏数据导致应用崩溃）。
   get(key: string): unknown {
     const value = this.storage.getItem(key)
-    if (value) {
+    if (!value) return null
+    try {
       return JSON.parse(value)
+    } catch {
+      // 数据损坏：清理该键并返回 null，调用方按"无数据"处理
+      this.storage.removeItem(key)
+      return null
     }
-    return null
+  }
+
+  // 泛型版：调用方显式声明期望类型。仍需自行校验结构。
+  getAs<T>(key: string): T | null {
+    const value = this.get(key)
+    return (value ?? null) as T | null
   }
 
   delete(key: string) {

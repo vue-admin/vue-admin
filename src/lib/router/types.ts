@@ -7,8 +7,8 @@ declare module 'vue-router' {
     icon?: string
     showMenu?: boolean
     showInBreadcrumb?: boolean
-    public?: boolean                    // 免登录（白名单）
-    cache?: boolean                     // 参与 KeepAlive
+    public?: boolean // 免登录（白名单）
+    cache?: boolean // 参与 KeepAlive
     permissions?: {
       any?: string[]
       all?: string[]

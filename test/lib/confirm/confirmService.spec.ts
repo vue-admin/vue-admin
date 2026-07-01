@@ -15,7 +15,7 @@ describe('confirmService', () => {
       expect.objectContaining({
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning',
+        type: 'warning'
       })
     )
   })
@@ -41,7 +41,7 @@ describe('confirmService', () => {
       expect.objectContaining({
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'info',
+        type: 'info'
       })
     )
   })
@@ -51,7 +51,7 @@ describe('confirmService', () => {
     const service = createConfirmService(messageBox, {
       confirmButtonText: 'Yes',
       cancelButtonText: 'No',
-      type: 'info',
+      type: 'info'
     })
 
     await service.showConfirm('确认？')
@@ -62,7 +62,7 @@ describe('confirmService', () => {
       expect.objectContaining({
         confirmButtonText: 'Yes',
         cancelButtonText: 'No',
-        type: 'info',
+        type: 'info'
       })
     )
   })
