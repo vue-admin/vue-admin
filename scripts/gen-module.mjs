@@ -1,12 +1,16 @@
 #!/usr/bin/env node
 /* eslint-disable */
-import { readFile, writeFile, mkdir } from 'node:fs/promises'
+import { readFile, writeFile, mkdir, access } from 'node:fs/promises'
 import { createInterface } from 'node:readline/promises'
 import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
 import process from 'node:process'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const SRC_DIR = join(__dirname, '..', 'src')
+
+// 路径存在性检查（access 不抛错的 Promise 版）
+const exists = (p) => access(p).then(() => true).catch(() => false)
 
 const rl = createInterface({
   input: process.stdin,
@@ -84,15 +88,14 @@ async function main() {
   await writeFile(mockPath, mockTemplate)
   console.log(`✅ 生成 mock/apis/${domain}.ts`)
 
-  // 更新路由菜单
+  // 更新菜单（写入 mock/apis/menu.ts 的 ALL_MENUS）
   await updateMenusRouter(domain, PascalName, nameZh, parent)
-  console.log(`✅ 更新路由配置`)
+  console.log(`✅ 更新菜单配置（mock/apis/menu.ts）`)
 
   console.log('\n🎉 模块生成完成！')
   console.log(`\n📝 下一步：`)
-  console.log(`   1. 在 src/mock/index.ts 中导入 mock/apis/${domain}.ts`)
-  console.log(`   2. 根据实际需求修改字段配置`)
-  console.log(`   3. 运行 pnpm dev 查看效果\n`)
+  console.log(`   1. 根据实际需求修改字段配置（api.ts / List.vue / FormDrawer）`)
+  console.log(`   2. 运行 pnpm dev 查看效果\n`)
 
   rl.close()
 }
@@ -464,35 +467,44 @@ const handleSubmit = async () => {
 function generateMockTemplate(domain, PascalName) {
   return `// ${domain} mock API
 import Mock from 'mockjs'
-import { defineMock } from 'vite-plugin-mock-dev-server'
+import type { MockMethod } from 'vite-plugin-mock'
+
+// 将对象数组转为 CSV 文本（含表头）。字段含逗号/引号时用双引号包裹并转义。
+function toCsv(rows: object[], headers: string[]): string {
+  const escape = (v: unknown) => {
+    const s = v == null ? '' : String(v)
+    return /[",\\n]/.test(s) ? \`"\${s.replace(/"/g, '""')}"\` : s
+  }
+  const lines = [headers.join(',')]
+  for (const row of rows) {
+    const r = row as Record<string, unknown>
+    lines.push(headers.map((h) => escape(r[h])).join(','))
+  }
+  return lines.join('\\n')
+}
 
 const dataList: any[] = []
 
 for (let i = 1; i <= 50; i++) {
-  dataList.push(Mock.mock({
-    id: '@guid',
-    name: '@ctitle(5, 10)',
-    description: '@ctitle(20, 50)',
-    'status|1': ['active', 'inactive'],
-    createTime: '@datetime("yyyy-MM-dd HH:mm:ss")',
-    updateTime: '@datetime("yyyy-MM-dd HH:mm:ss")',
-  }))
+  dataList.push(
+    Mock.mock({
+      id: '@guid',
+      name: '@ctitle(5, 10)',
+      description: '@ctitle(20, 50)',
+      'status|1': ['active', 'inactive'],
+      createTime: '@datetime("yyyy-MM-dd HH:mm:ss")',
+      updateTime: '@datetime("yyyy-MM-dd HH:mm:ss")',
+    }),
+  )
 }
 
-export default defineMock([
+export default [
+  // GET /api/${domain} - 列表（分页 + 过滤）
   {
     url: '/api/${domain}',
     method: 'GET',
-    response: ({ query }) => {
-      const { page = 1, size = 10, keyword = '', status = '', all } = query
-
-      if (all === 'true') {
-        return {
-          code: 0,
-          data: dataList,
-          msg: 'success',
-        }
-      }
+    response: ({ query }: { query: Record<string, string> }) => {
+      const { page = 1, size = 10, keyword = '', status = '' } = query
 
       let filtered = [...dataList]
 
@@ -523,6 +535,15 @@ export default defineMock([
         },
         msg: 'success',
       }
+    },
+  },
+  // GET /api/${domain}/export - 导出 CSV（必须在 /:id 之前，否则被 :id 抢匹配）
+  {
+    url: '/api/${domain}/export',
+    method: 'GET',
+    response: () => {
+      const csv = toCsv(dataList, ['name', 'description', 'status', 'createTime', 'updateTime'])
+      return { code: 0, data: csv, msg: 'success' }
     },
   },
   {
@@ -592,66 +613,72 @@ export default defineMock([
       return { code: 0, data: true, msg: 'success' }
     },
   },
-  {
-    url: '/api/${domain}/export',
-    method: 'GET',
-    response: () => {
-      return {
-        code: 0,
-        data: 'data:text/csv;charset=utf-8,名称,状态,创建时间\n测试,active,2024-01-01 00:00:00',
-        msg: 'success',
-      }
-    },
-  },
-])
+] as MockMethod[]
 `
 }
 
+// 把新模块作为叶子节点写入 mock/apis/menu.ts 的 ALL_MENUS。
+// - parent 为空：作为顶级菜单追加到 ALL_MENUS 数组末尾
+// - parent 命中某分组（如 system 下的 access/config/log）：追加到该分组的 children
+// - parent 未命中：仅提示手动添加，不破坏文件
 async function updateMenusRouter(domain, PascalName, nameZh, parent) {
-  const menusPath = join(SRC_DIR, 'router', 'menus.ts')
+  const menusPath = join(SRC_DIR, 'mock', 'apis', 'menu.ts')
   let content = await readFile(menusPath, 'utf8')
 
-  // 找到要插入的位置
-  const componentPath = parent
-    ? `../modules/${parent}/${domain}/views/List.vue`
-    : `../modules/${domain}/views/List.vue`
-
+  const component = parent
+    ? `${parent}/${domain}/views/List`
+    : `${domain}/views/List`
   const menuPath = parent ? `/${parent}/${domain}` : `/${domain}`
+  const menuName = parent
+    ? `${parent}${PascalName}`
+    : PascalName.charAt(0).toLowerCase() + PascalName.slice(1)
 
-  const newRoute = `    {
-      path: '${domain}',
-      name: '${PascalName}Management',
-      component: () => import('${componentPath}'),
-      meta: {
-        title: '${nameZh}',
-        icon: 'Document',
-      },
-    },`
+  const newMenu = `          {
+            path: '${menuPath}',
+            name: '${menuName}',
+            component: '${component}',
+            meta: {
+              title: '${nameZh}',
+              icon: 'Document',
+              showMenu: true,
+              permissions: { any: ['${domain}:read', '*'] }
+            }
+          },`
 
   if (parent) {
-    // 在父模块的 children 中插入
-    const parentPattern = new RegExp(
-      `path:\\s*['"]${parent}['"][\\s\\S]*?children:\\s*\\[`
+    // 在父模块分组的 children 末尾插入（匹配该分组 children 数组的闭合 ])
+    // 简化匹配：找 `name: '${parent}'` 所在节点，定位其 children 的最后一个 } 后插入
+    const parentRe = new RegExp(
+      `path:\\s*['"]/${parent}['"][\\s\\S]*?name:\\s*['"]${parent}[^'"]*['"][\\s\\S]*?children:\\s*\\[([\\s\\S]*?)\\n\\s{10}\\]`,
     )
-    const match = content.match(parentPattern)
+    const match = content.match(parentRe)
     if (match) {
       const insertPos = match.index + match[0].length
       content =
-        content.slice(0, insertPos) + '\n' + newRoute + content.slice(insertPos)
+        content.slice(0, insertPos - 1) +
+        newMenu +
+        '\n' +
+        content.slice(insertPos - 1)
     } else {
-      console.warn(`⚠️ 未找到父模块 ${parent}，请手动添加路由`)
+      console.warn(
+        `⚠️ 未在 mock/apis/menu.ts 中找到父分组 /${parent}，请手动添加菜单节点`,
+      )
       return
     }
   } else {
-    // 在 Layout children 的末尾添加
-    const insertPattern = /path:\s*['"]profile['"][\s\S]*?\},\s*\n/
-    const match = content.match(insertPattern)
+    // 顶级：在 ALL_MENUS 数组闭合 ] 前插入（匹配末尾 ] 前的缩进）
+    const closeRe = /(\n\s{2}\]\s*\n\s*\n\s*export default \[)/
+    const match = content.match(closeRe)
     if (match) {
-      const insertPos = match.index + match[0].length
+      const insertPos = match.index
       content =
-        content.slice(0, insertPos) + newRoute + '\n' + content.slice(insertPos)
+        content.slice(0, insertPos) +
+        '  ' + newMenu.replace(/^\s{10}/, '  ') + ',' +
+        content.slice(insertPos)
     } else {
-      console.warn(`⚠️ 未找到合适的位置插入路由，请手动添加`)
+      console.warn(
+        `⚠️ 未找到 ALL_MENUS 数组闭合位置，请手动添加菜单节点`,
+      )
       return
     }
   }
