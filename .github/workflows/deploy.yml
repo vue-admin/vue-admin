@@ -65,6 +65,7 @@ jobs:
         uses: burnett01/rsync-deployments@7.0.1
         with:
           switches: -avz --delete
+          excludes: '[".user.ini"]'
           path: dist/
           remote_path: ${{ secrets.APP_PATH }}/
           remote_host: ${{ secrets.SERVER_HOST }}
@@ -75,6 +76,7 @@ jobs:
         uses: burnett01/rsync-deployments@7.0.1
         with:
           switches: -avz --delete
+          excludes: '[".user.ini"]'
           path: docs-site/.vitepress/dist/
           remote_path: ${{ secrets.DOCS_PATH }}/
           remote_host: ${{ secrets.SERVER_HOST }}
