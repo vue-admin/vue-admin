@@ -57,6 +57,13 @@ export default defineConfig({
             { text: '模块开发', link: '/guide/module' },
             { text: '通用服务', link: '/guide/lib' }
           ]
+        },
+        {
+          text: '开发实践',
+          items: [
+            { text: '新增业务模块', link: '/guide/module-development' },
+            { text: '常见问题', link: '/guide/faq' }
+          ]
         }
       ],
       '/components/': [
