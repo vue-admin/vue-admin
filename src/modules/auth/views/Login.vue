@@ -7,7 +7,7 @@
     <el-card class="box-card">
       <template #header>
         <div class="card-header">
-          <span>用户登录</span>
+          <span>{{ t('auth.title') }}</span>
           <div
             class="dark-icon"
             @click="themeStore.toggleDark()"
@@ -29,13 +29,13 @@
           class="demo-ruleForm"
         >
           <el-form-item
-            label="用户名"
+            :label="t('auth.username')"
             prop="username"
           >
             <el-input v-model="ruleForm.username" />
           </el-form-item>
           <el-form-item
-            label="密码"
+            :label="t('auth.password')"
             prop="password"
           >
             <el-input
@@ -50,7 +50,7 @@
               :loading="submitting"
               @click="submitForm(ruleFormRef)"
             >
-              登录
+              {{ t('auth.submit') }}
             </el-button>
           </el-form-item>
         </el-form>
@@ -62,11 +62,13 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useThemeStore } from '@/app/stores/theme'
 import type { FormInstance, FormItemRule, FormRules } from 'element-plus'
 import { authService } from '@/lib/auth/authService'
 import { useUserStore } from '@/app/stores/user'
 
+const { t } = useI18n()
 const ruleFormRef = ref<FormInstance>()
 const router = useRouter()
 const userStore = useUserStore()
@@ -80,7 +82,7 @@ const validateEmpty: NonNullable<FormItemRule['validator']> = (
   callback,
 ) => {
   if (value === '' || value == null) {
-    callback(new Error('字段不能为空'))
+    callback(new Error(t('common.message.fieldRequired')))
   } else {
     callback()
   }
