@@ -64,6 +64,13 @@ export default defineConfig({
             { text: '新增业务模块', link: '/guide/module-development' },
             { text: '常见问题', link: '/guide/faq' }
           ]
+        },
+        {
+          text: '项目',
+          items: [
+            { text: '更新日志', link: '/guide/changelog' },
+            { text: '贡献指南', link: '/guide/contributing' }
+          ]
         }
       ],
       '/components/': [
