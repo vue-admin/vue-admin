@@ -30,6 +30,12 @@ function genToken(prefix: string, username: string): string {
   return token
 }
 
+// 从 token 格式中解析用户名，保证页面刷新后 worker 内存重置时仍能校验
+function getUsernameFromToken(token: string): string | undefined {
+  const parts = token.split('_')
+  return parts.length >= 2 ? parts[1] : undefined
+}
+
 export const authHandlers = [
   http.post('/api/auth/sessions', async ({ request }) => {
     const body = (await request.json()) as { username?: string; password?: string }
@@ -56,7 +62,7 @@ export const authHandlers = [
   http.get('/api/auth/users/me', ({ request }) => {
     const auth = request.headers.get('authorization') ?? ''
     const token = auth.replace(/^Bearer\s+/, '')
-    const username = TOKENS.get(token)
+    const username = TOKENS.get(token) ?? getUsernameFromToken(token)
     if (!username) return fail(401, 'Unauthorized')
     const user = USERS.find((u) => u.username === username)
     if (!user) return fail(401, 'User not found')

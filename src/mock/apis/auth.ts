@@ -49,6 +49,12 @@ function genToken(prefix: string, username: string): string {
   return token
 }
 
+// 从 token 格式中解析用户名，保证页面刷新后 worker 内存重置时仍能校验
+function getUsernameFromToken(token: string): string | undefined {
+  const parts = token.split('_')
+  return parts.length >= 2 ? parts[1] : undefined
+}
+
 // 失败响应：过渡形态 { code:<non-zero>, msg, data:null }，
 // 由 M2.4 拦截器的 transitional path 触发 HttpError（title 取自 msg）。
 // M5 切到 MSW 后再做正式 HTTP 4xx + RFC 7807。
@@ -125,7 +131,7 @@ export default [
     response: ({ headers }: { headers: { authorization?: string } }) => {
       const auth = headers.authorization || ''
       const token = auth.replace(/^Bearer\s+/, '')
-      const username = TOKENS.get(token)
+      const username = TOKENS.get(token) ?? getUsernameFromToken(token)
       if (!username) {
         return fail(401, 'Unauthorized')
       }
