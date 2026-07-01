@@ -75,9 +75,10 @@ jobs:
       - name: Deploy app
         uses: burnett01/rsync-deployments@7.0.1
         with:
-          # --exclude 走 switches（该 action 无 excludes 输入）；--delete 排除 .user.ini 后再删
-          # --omit-dir-times：部署用户无目录 mtime 写权限（属主 www），跳过避免 code 23 警告
-          switches: -avz --delete --exclude=.user.ini --omit-dir-times --no-perms
+          # --exclude 走 switches（该 action 无 excludes 输入）
+          # --omit-dir-times --no-perms：部署用户无目录 mtime/权限写权限（属主 www），跳过避免 code 23
+          # --exclude=.user.ini：宝塔锁定文件；--exclude=.well-known：Let's Encrypt 证书验证目录（不可删）
+          switches: -avz --delete --exclude=.user.ini --exclude=.well-known --omit-dir-times --no-perms
           path: dist/
           remote_path: ${{ secrets.APP_PATH }}/
           remote_host: ${{ secrets.SERVER_HOST }}
@@ -88,7 +89,7 @@ jobs:
       - name: Deploy docs
         uses: burnett01/rsync-deployments@7.0.1
         with:
-          switches: -avz --delete --exclude=.user.ini --omit-dir-times --no-perms
+          switches: -avz --delete --exclude=.user.ini --exclude=.well-known --omit-dir-times --no-perms
           path: docs-site/.vitepress/dist/
           remote_path: ${{ secrets.DOCS_PATH }}/
           remote_host: ${{ secrets.SERVER_HOST }}
