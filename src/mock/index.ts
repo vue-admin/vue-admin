@@ -8,6 +8,8 @@ import { dictHandlers } from './handlers/dict'
 import { noticeHandlers } from './handlers/notice'
 import { dashboardHandlers } from './handlers/dashboard'
 import { crudHandlers } from './handlers/crud'
+import { logHandlers } from './handlers/log'
+import { menuManageHandlers } from './handlers/menu-manage'
 
 export const handlers = [
   ...authHandlers,
@@ -19,5 +21,7 @@ export const handlers = [
   ...dictHandlers,
   ...noticeHandlers,
   ...dashboardHandlers,
-  ...crudHandlers
+  ...crudHandlers,
+  ...logHandlers,
+  ...menuManageHandlers
 ]
