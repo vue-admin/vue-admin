@@ -73,7 +73,11 @@ export default defineConfig({
             { text: 'SearchTable', link: '/components/search-table' },
             { text: 'FormDrawer', link: '/components/form-drawer' },
             { text: 'PageContainer', link: '/components/page-container' },
-            { text: 'Selectors', link: '/components/selectors' }
+            { text: 'Selectors', link: '/components/selectors' },
+            { text: 'StatusTag', link: '/components/status-tag' },
+            { text: 'DictTag', link: '/components/dict-tag' },
+            { text: 'ErrorBoundary', link: '/components/error-boundary' },
+            { text: '通用服务', link: '/components/services' }
           ]
         }
       ]
