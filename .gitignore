@@ -37,3 +37,4 @@ playwright/.cache/
 
 # macOS Finder metadata
 **/.DS_Store
+deploy/
