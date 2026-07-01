@@ -1,5 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router'
 
+// 静态路由：仅保留无权限要求的入口页面
+// 业务菜单（system/* 等）完全由后端 API 下发，见 src/mock/apis/menu.ts
 const menus: RouteRecordRaw[] = [
   {
     path: '/',
@@ -7,120 +9,19 @@ const menus: RouteRecordRaw[] = [
     component: () => import('@/modules/dashboard/views/Home.vue'),
     meta: {
       title: '首页',
-      icon: 'menu',
+      icon: 'HomeFilled',
       showMenu: true
-    }
-  },
-  {
-    path: '/doc',
-    name: 'doc',
-    component: () => import('@/modules/docs/views/Documents.vue'),
-    meta: {
-      title: '文档',
-      icon: 'document',
-      showMenu: false
     }
   },
   {
     path: '/crud',
     name: 'crud',
+    component: () => import('@/modules/crud/views/List.vue'),
     meta: {
       title: '增删改查',
-      icon: 'document',
+      icon: 'Document',
       showMenu: true
-    },
-    children: [
-      {
-        path: '/crud/list',
-        name: 'crudList',
-        component: () => import('@/modules/crud/views/Index.vue'),
-        meta: {
-          title: '列表',
-          showMenu: true
-        }
-      }
-    ]
-  },
-  {
-    path: '/about',
-    name: 'about',
-    component: () => import('@/modules/about/views/About.vue'),
-    meta: {
-      title: '关于',
-      icon: 'InfoFilled',
-      showMenu: false
     }
-  },
-  {
-    path: '/system',
-    name: 'system',
-    meta: {
-      title: '系统管理',
-      icon: 'setting',
-      showMenu: true
-    },
-    children: [
-      {
-        path: '/system/admin',
-        name: 'systemAdmin',
-        component: () => import('@/modules/system/views/admin/List.vue'),
-        meta: {
-          title: '管理员',
-          icon: 'Avatar',
-          showMenu: true
-        }
-      },
-      {
-        path: '/system/user',
-        name: 'systemUser',
-        component: () => import('@/modules/system/user/views/List.vue'),
-        meta: {
-          title: '用户管理',
-          icon: 'User',
-          showMenu: true
-        }
-      },
-      {
-        path: '/system/role',
-        name: 'systemRole',
-        component: () => import('@/modules/system/views/role/List.vue'),
-        meta: {
-          title: '角色管理',
-          icon: 'User',
-          showMenu: true
-        }
-      },
-      {
-        path: '/system/permission',
-        name: 'systemPermission',
-        component: () => import('@/modules/system/views/permission/List.vue'),
-        meta: {
-          title: '权限管理',
-          icon: 'Lock',
-          showMenu: true
-        }
-      },
-      {
-        path: '/system/dict',
-        name: 'systemDict',
-        component: () => import('@/modules/system/views/dict/List.vue'),
-        meta: {
-          title: '字典管理',
-          icon: 'DataBoard',
-          showMenu: true
-        }
-      },
-      {
-        path: '/system/menu',
-        name: 'systemMenu',
-        component: () => import('@/modules/system/menu/views/List.vue'),
-        meta: {
-          title: '菜单管理',
-          icon: 'Menu',
-          showMenu: true
-        }
-      }
-    ]
   },
   {
     path: '/profile',

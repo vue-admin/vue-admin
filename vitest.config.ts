@@ -15,10 +15,10 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
-      reportsDirectory: './coverage',
-    },
+      reportsDirectory: './coverage'
+    }
   },
   resolve: {
-    alias: { '@': path.resolve(__dirname, './src') },
-  },
+    alias: { '@': path.resolve(__dirname, './src') }
+  }
 })

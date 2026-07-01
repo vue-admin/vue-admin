@@ -15,11 +15,11 @@ export default {
         'build',
         'ci',
         'chore',
-        'revert',
-      ],
+        'revert'
+      ]
     ],
     'subject-case': [0],
     'header-max-length': [2, 'always', 100],
-    'body-max-line-length': [0],
-  },
+    'body-max-line-length': [0]
+  }
 }

@@ -1,0 +1,13 @@
+node_modules
+dist
+dist-ssr
+coverage
+test-results
+playwright-report
+playwright/.cache
+.vscode
+.idea
+*.local
+*.log
+auto-imports.d.ts
+components.d.ts

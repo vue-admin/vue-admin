@@ -8,8 +8,12 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { viteMockServe } from 'vite-plugin-mock'
 
 // https://vitejs.dev/config/
+// base 可通过 VITE_BASE 环境变量覆盖（云主机部署到根路径用 '/'，子路径用 '/xxx/'）；
+// 默认开发为 ''，生产为 '/vue-admin/'（GitHub Pages 子路径）
+const base = process.env.VITE_BASE ?? (process.env.NODE_ENV === 'production' ? '/vue-admin/' : '')
+
 export default defineConfig({
-  base: process.env.NODE_ENV === 'production' ? '/vue-admin/' : '',
+  base,
   server: {
     host: true,
     watch: { usePolling: true },
@@ -59,9 +63,11 @@ export default defineConfig({
           // 将 Element Plus 相关代码单独打包
           'element-plus': ['element-plus'],
           // 将 Vue 相关代码单独打包
-          'vue': ['vue', 'vue-router', 'pinia'],
+          vue: ['vue', 'vue-router', 'pinia'],
           // 将其他第三方库单独打包
-          'vendor': ['axios', '@vueuse/core']
+          vendor: ['axios', '@vueuse/core'],
+          // ECharts 独立分包（仅 dashboard 懒加载，独立缓存）
+          echarts: ['echarts']
         }
       }
     },

@@ -10,7 +10,14 @@ import globals from 'globals'
 export default [
   // 全局忽略：产物、依赖、文档、mock（mock 为 M5.3 MSW 迁移前的过渡）
   {
-    ignores: ['dist/**', 'docs-site/**', 'node_modules/**', 'docs/**', 'src/mock/**', 'coverage/**'],
+    ignores: [
+      'dist/**',
+      'docs-site/**',
+      'node_modules/**',
+      'docs/**',
+      'src/mock/**',
+      'coverage/**'
+    ]
   },
   js.configs.recommended,
   ...vue.configs['flat/recommended'],
@@ -23,26 +30,31 @@ export default [
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
-        parser: tsparser,
-      },
+        parser: tsparser
+      }
     },
     plugins: {
       '@typescript-eslint': tseslint,
-      import: importPlugin,
+      import: importPlugin
     },
     rules: {
       ...tseslint.configs.recommended.rules,
       'vue/multi-word-component-names': 'off',
       '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
-    },
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }
+      ],
+      // TS 项目由 tsc 检查未定义变量；原生 no-undef 不识别 TS 类型注解（RequestInit/BlobPart 等）
+      'no-undef': 'off'
+    }
   },
   // .ts/.tsx 文件没有 vue-eslint-parser 包装，必须显式设置顶层 parser
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
-      parser: tsparser,
-    },
+      parser: tsparser
+    }
   },
   // 根目录配置文件（vite/vitest/eslint 等）运行在 Node 环境，需要 Node globals
   // 避免 process / __dirname / Buffer 等触发 no-undef
@@ -50,64 +62,106 @@ export default [
     files: ['*.config.ts', '*.config.js', 'vite.config.ts', 'vitest.config.ts'],
     languageOptions: {
       globals: {
-        ...globals.node,
-      },
-    },
+        ...globals.node
+      }
+    }
+  },
+  // src/ 运行在浏览器环境，需要 browser globals
+  // 避免 RequestInit / BlobPart / File / FormData 等 DOM 类型触发 no-undef
+  {
+    files: ['src/**/*.{ts,tsx,vue}'],
+    languageOptions: {
+      globals: {
+        ...globals.browser
+      }
+    }
   },
   // 目录边界强制：lib 不得依赖业务层
   {
     files: ['src/lib/**/*.{ts,vue}'],
     rules: {
-      'no-restricted-imports': ['error', {
-        patterns: [
-          {
-            group: ['@/app/*', '@/modules/*', '@/views/*', '@/apis/*', '@/router/*', '@/stores/*', '@/layout/*', '@/components/*'],
-            message: 'lib/ 不得依赖业务层（app/modules/views/apis/router/stores/layout/components）',
-          },
-        ],
-      }],
-    },
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: [
+                '@/app/*',
+                '@/modules/*',
+                '@/views/*',
+                '@/apis/*',
+                '@/router/*',
+                '@/stores/*',
+                '@/layout/*',
+                '@/components/*'
+              ],
+              message:
+                'lib/ 不得依赖业务层（app/modules/views/apis/router/stores/layout/components）'
+            }
+          ]
+        }
+      ]
+    }
   },
   // shared 不得依赖业务层与基础设施层
   {
     files: ['src/shared/**/*'],
     rules: {
-      'no-restricted-imports': ['error', {
-        patterns: [
-          {
-            group: ['@/app/*', '@/modules/*', '@/views/*', '@/apis/*', '@/router/*', '@/stores/*', '@/layout/*', '@/components/*', '@/lib/*'],
-            message: 'shared/ 不得依赖任何业务层或基础设施层',
-          },
-        ],
-      }],
-    },
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: [
+                '@/app/*',
+                '@/modules/*',
+                '@/views/*',
+                '@/apis/*',
+                '@/router/*',
+                '@/stores/*',
+                '@/layout/*',
+                '@/components/*',
+                '@/lib/*'
+              ],
+              message: 'shared/ 不得依赖任何业务层或基础设施层'
+            }
+          ]
+        }
+      ]
+    }
   },
   // 业务层（modules/layout/app）禁止引用已删除的旧目录路径
   // 旧目录在 Task 13 已物理删除，此规则作为防回退护栏：新代码若尝试 import 旧路径立即报错
   {
     files: ['src/modules/**/*', 'src/layout/**/*', 'src/app/**/*'],
     rules: {
-      'no-restricted-imports': ['error', {
-        patterns: [
-          {
-            group: ['@/apis', '@/apis/*'],
-            message: '禁止引用旧 src/apis/，请改用 @/modules/<domain>/api 或 @/lib/http/client',
-          },
-          {
-            group: ['@/stores', '@/stores/*'],
-            message: '禁止引用旧 src/stores/，请改用 @/app/stores/* 或 @/modules/<domain>/store',
-          },
-          {
-            group: ['@/utils', '@/utils/*'],
-            message: '禁止引用旧 src/utils/，请改用 @/lib/*',
-          },
-          {
-            group: ['@/components', '@/components/*'],
-            message: '禁止引用旧 src/components/，请改用 @/layout/components/* 或 @/modules/<x>/components/*',
-          },
-        ],
-      }],
-    },
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/apis', '@/apis/*'],
+              message:
+                '禁止引用旧 src/apis/，请改用 @/modules/<domain>/api 或 @/lib/http/client'
+            },
+            {
+              group: ['@/stores', '@/stores/*'],
+              message:
+                '禁止引用旧 src/stores/，请改用 @/app/stores/* 或 @/modules/<domain>/store'
+            },
+            {
+              group: ['@/utils', '@/utils/*'],
+              message: '禁止引用旧 src/utils/，请改用 @/lib/*'
+            },
+            {
+              group: ['@/components', '@/components/*'],
+              message:
+                '禁止引用旧 src/components/，请改用 @/layout/components/* 或 @/modules/<x>/components/*'
+            }
+          ]
+        }
+      ]
+    }
   },
   // 例外：路由守卫需要拉取 user/permission store 做权限检查
   // 项目 plan M4.4 全局约束明确允许此反向依赖（lib→app/stores）
@@ -115,7 +169,14 @@ export default [
   {
     files: ['src/lib/router/guards.ts'],
     rules: {
-      'no-restricted-imports': 'off',
-    },
+      'no-restricted-imports': 'off'
+    }
   },
+  // Node.js 脚本：使用 node globals（process/__dirname 等）
+  {
+    files: ['scripts/**/*.js'],
+    languageOptions: {
+      globals: { ...globals.node }
+    }
+  }
 ]
