@@ -78,3 +78,39 @@ const deptId = ref<string>()
 ```ts
 { prop: 'parentId', label: '上级部门', type: 'treeSelect' }
 ```
+
+## API
+
+### 通用 Props
+
+`RoleSelector` / `UserSelector` / `DeptSelector` 三个组件共享以下 props：
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `modelValue` | `string \| string[] \| undefined` | — | v-model 绑定值，单选为 id，多选为 id 数组 |
+| `multiple` | `boolean` | `false` | 是否多选 |
+| `disabled` | `boolean` | `false` | 是否禁用 |
+| `clearable` | `boolean` | `true` | 是否可清空 |
+| `placeholder` | `string` | — | 占位文案；未传时分别走 `selectRole` / `selectUser` / `selectDept` 的 i18n 默认 |
+| `onlyActive` | `boolean` | `false` | 仅展示/可选启用项；`RoleSelector` / `UserSelector` 请求带 `status=active`，`DeptSelector` 将 inactive 节点置灰 |
+
+### 通用 Events
+
+| 事件名 | 参数 | 说明 |
+| --- | --- | --- |
+| `update:modelValue` | `(value: string \| string[] \| undefined)` | 选中值变化（v-model） |
+| `change` | `(value: string \| string[] \| undefined)` | 选中值变化 |
+
+### 组件特有 Props
+
+#### UserSelector
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `pageSize` | `number` | `20` | 远程搜索每页条数 |
+
+`RoleSelector` 与 `DeptSelector` 无特有 props。
+
+::: tip 远程搜索
+`UserSelector` 远程搜索为内置行为（`remote` 固定为 `true`，关键词经 300ms 防抖），无对外开关；如需控制每页返回量，调整 `pageSize`。
+:::

@@ -30,6 +30,25 @@
   <PageContainerDemoNoTitle />
 </div>
 
+## API
+
+### Props
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `title` | `string` | — | 页面标题；不传且未使用 `#header` 插槽时不渲染标题栏 |
+
+### Events
+
+无。
+
+### Slots
+
+| 名称 | 说明 |
+| --- | --- |
+| `default` | 页面主内容 |
+| `header` | 标题右侧操作区（传入 `title` 或使用 `#header` 时渲染标题栏） |
+
 <script setup>
 import PageContainerDemoBasic from './demos/PageContainerDemoBasic.vue'
 import PageContainerDemoHeader from './demos/PageContainerDemoHeader.vue'
