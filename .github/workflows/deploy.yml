@@ -75,22 +75,23 @@ jobs:
       - name: Deploy app
         uses: burnett01/rsync-deployments@7.0.1
         with:
-          switches: -avz --delete
-          excludes: '[".user.ini"]'
+          # --exclude 走 switches（该 action 无 excludes 输入）；--delete 排除 .user.ini 后再删
+          switches: -avz --delete --exclude=.user.ini
           path: dist/
           remote_path: ${{ secrets.APP_PATH }}/
           remote_host: ${{ secrets.SERVER_HOST }}
+          remote_port: ${{ secrets.SSH_PORT || '22' }}
           remote_user: ${{ secrets.SERVER_USER }}
           remote_key: ${{ secrets.SERVER_SSH_KEY }}
 
       - name: Deploy docs
         uses: burnett01/rsync-deployments@7.0.1
         with:
-          switches: -avz --delete
-          excludes: '[".user.ini"]'
+          switches: -avz --delete --exclude=.user.ini
           path: docs-site/.vitepress/dist/
           remote_path: ${{ secrets.DOCS_PATH }}/
           remote_host: ${{ secrets.SERVER_HOST }}
+          remote_port: ${{ secrets.SSH_PORT || '22' }}
           remote_user: ${{ secrets.SERVER_USER }}
           remote_key: ${{ secrets.SERVER_SSH_KEY }}
 
@@ -98,4 +99,4 @@ jobs:
         run: |
           echo "### 🚀 Deployment Complete" >> $GITHUB_STEP_SUMMARY
           echo "- App:  https://${{ secrets.SERVER_HOST }}/" >> $GITHUB_STEP_SUMMARY
-          echo "- Docs: https://${{ secrets.SERVER_HOST }}/docs/" >> $GITHUB_STEP_SUMMARY
+          echo "- Docs: https://${{ secrets.SERVER_HOST }}/" >> $GITHUB_STEP_SUMMARY
