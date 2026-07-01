@@ -50,13 +50,6 @@ let crudList: CrudRecord[] = [
   }
 ]
 
-// 从 URL path 中提取最后一段作为 id（兼容历史实现）
-function extractId(url: string): string | null {
-  const parts = url.split('/')
-  const id = parts.pop() || parts.pop()
-  return id === 'crud' || id === '' || !id ? null : id
-}
-
 export const crudHandlers = [
   // GET /api/crud?current=1&size=10 - 列表（也兼容 ?id= 查询单条）
   http.get('/api/crud', ({ request }) => {
@@ -92,8 +85,8 @@ export const crudHandlers = [
   }),
 
   // GET /api/crud/:id - 详情（path param）
-  http.get('/api/crud/:id', ({ request }) => {
-    const id = extractId(new URL(request.url).pathname)
+  http.get('/api/crud/:id', ({ params }) => {
+    const id = params.id as string
     const record = crudList.find((item) => item.id === id)
     return record ? ok(record) : fail(404, '记录不存在')
   }),
