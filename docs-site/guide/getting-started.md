@@ -26,7 +26,7 @@ pnpm i            # 安装依赖
 pnpm dev          # 启动开发服务器（含 mock）
 ```
 
-浏览器打开 `http://localhost:5173/vue-admin/`。
+浏览器打开 `http://localhost:5173/`。
 
 ## 测试账号
 
