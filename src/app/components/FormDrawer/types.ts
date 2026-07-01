@@ -1,6 +1,15 @@
 export type FormFieldType =
-  | 'input' | 'textarea' | 'number' | 'select' | 'radio' | 'checkbox'
-  | 'switch' | 'date' | 'password' | 'treeSelect' | 'cascader'
+  | 'input'
+  | 'textarea'
+  | 'number'
+  | 'select'
+  | 'radio'
+  | 'checkbox'
+  | 'switch'
+  | 'date'
+  | 'password'
+  | 'treeSelect'
+  | 'cascader'
 
 export type FormDrawerMode = 'add' | 'edit' | 'view'
 
@@ -13,7 +22,10 @@ export interface FormFieldDependency {
   /** 触发字段名 */
   trigger: string
   /** 显示条件，返回 true 时字段可见 */
-  show: (values: Record<string, unknown>, ctx: { mode: FormDrawerMode }) => boolean
+  show: (
+    values: Record<string, unknown>,
+    ctx: { mode: FormDrawerMode }
+  ) => boolean
 }
 
 /** Element Plus FormItemRule 的子集，避免导入 element-plus 类型造成循环依赖 */
@@ -25,7 +37,11 @@ export interface FormFieldRule {
   max?: number
   type?: string
   pattern?: RegExp
-  validator?: (rule: unknown, value: unknown, callback: (error?: Error) => void) => void
+  validator?: (
+    rule: unknown,
+    value: unknown,
+    callback: (error?: Error) => void
+  ) => void
 }
 
 export interface FormField {

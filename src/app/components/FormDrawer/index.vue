@@ -33,7 +33,7 @@
                 <component
                   :is="resolveComponent(field.type)"
                   v-model="formData[field.prop]"
-                  :placeholder="field.placeholder || `请输入${field.label}`"
+                  :placeholder="field.placeholder || t('common.placeholder.input', { label: field.label })"
                   :disabled="field.disabled || loading || mode === 'view'"
                   v-bind="resolveExtraProps(field)"
                 >
@@ -58,10 +58,15 @@
                     <el-tree-select
                       v-model="formData[field.prop]"
                       :data="field.treeData"
-                      :props="field.treeProps || { label: 'label', children: 'children' }"
+                      :props="
+                        field.treeProps || {
+                          label: 'label',
+                          children: 'children'
+                        }
+                      "
                       node-key="id"
                       check-strictly
-                      :placeholder="field.placeholder || `请选择${field.label}`"
+                      :placeholder="field.placeholder || t('common.placeholder.select', { label: field.label })"
                       :disabled="field.disabled || loading || mode === 'view'"
                     />
                   </template>
@@ -78,18 +83,18 @@
         v-if="mode === 'view'"
         @click="handleCancel"
       >
-        关闭
+        {{ t('common.action.close') }}
       </el-button>
       <template v-else>
         <el-button @click="handleCancel">
-          取消
+          {{ t('common.action.cancel') }}
         </el-button>
         <el-button
           type="primary"
           :loading="loading"
           @click="handleConfirm"
         >
-          确认
+          {{ t('common.action.confirm') }}
         </el-button>
       </template>
     </template>
@@ -98,6 +103,7 @@
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
+import { t } from '@/lib/i18n'
 import type { FormInstance } from 'element-plus'
 import type { FormDrawerProps, FormField, FormFieldType } from './types'
 
@@ -128,7 +134,8 @@ const componentMap: Record<FormFieldType, string> = {
   cascader: 'el-cascader'
 }
 
-const resolveComponent = (type: FormField['type']): string => componentMap[type] || 'el-input'
+const resolveComponent = (type: FormField['type']): string =>
+  componentMap[type] || 'el-input'
 
 const resolveExtraProps = (field: FormField): Record<string, unknown> => {
   if (field.type === 'textarea') return { type: 'textarea', rows: 3 }

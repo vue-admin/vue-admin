@@ -3,13 +3,11 @@ import { usePermissionStore } from '@/app/stores/permission'
 
 // 指令 binding value：支持字符串、数组、对象语法
 export type BindingValue =
-  | string
-  | string[]
-  | { any?: string[]; all?: string[] }
+  string | string[] | { any?: string[]; all?: string[] }
 
 function evaluate(
   store: ReturnType<typeof usePermissionStore>,
-  v: BindingValue,
+  v: BindingValue
 ): boolean {
   if (typeof v === 'string') return store.hasPermission(v)
   if (Array.isArray(v)) return store.hasAnyPermission(v)
@@ -28,5 +26,5 @@ export const vPermission: Directive<HTMLElement, BindingValue> = {
     if (!evaluate(store, binding.value)) {
       el.parentNode?.removeChild(el)
     }
-  },
+  }
 }

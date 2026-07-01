@@ -9,8 +9,10 @@ describe('FormDrawer', () => {
   it('关闭时不渲染表单', async () => {
     const wrapper = mount(FormDrawer, {
       props: {
-        modelValue: false, title: '测试',
-        formData: {}, fields: []
+        modelValue: false,
+        title: '测试',
+        formData: {},
+        fields: []
       },
       global
     })
@@ -24,11 +26,10 @@ describe('FormDrawer', () => {
   it('渲染 fields 定义的字段', async () => {
     const wrapper = mount(FormDrawer, {
       props: {
-        modelValue: true, title: '测试',
+        modelValue: true,
+        title: '测试',
         formData: { name: '' },
-        fields: [
-          { prop: 'name', label: '名称', type: 'input' as const }
-        ]
+        fields: [{ prop: 'name', label: '名称', type: 'input' as const }]
       },
       global
     })
@@ -40,8 +41,10 @@ describe('FormDrawer', () => {
   it('点取消 emit update:modelValue false', async () => {
     const wrapper = mount(FormDrawer, {
       props: {
-        modelValue: true, title: '测试',
-        formData: {}, fields: []
+        modelValue: true,
+        title: '测试',
+        formData: {},
+        fields: []
       },
       global
     })

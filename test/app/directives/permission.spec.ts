@@ -12,12 +12,12 @@ const TestComponent = defineComponent({
   props: {
     perm: {
       type: [String, Array, Object] as unknown as PropType<BindingValue>,
-      required: true,
-    },
+      required: true
+    }
   },
   // 嵌套一层包裹：避免 v-permission 直接挂组件根节点时
   // removeChild 在 jsdom + vue-test-utils 下对 find() 不可见
-  template: `<div><div v-permission="perm" data-test="t">hi</div></div>`,
+  template: `<div><div v-permission="perm" data-test="t">hi</div></div>`
 })
 
 describe('v-permission', () => {
@@ -30,7 +30,7 @@ describe('v-permission', () => {
       id: '1',
       username: 'x',
       roles,
-      permissions: perms,
+      permissions: perms
     }
     u.profile = profile
     u.isLoaded = true
@@ -57,7 +57,7 @@ describe('v-permission', () => {
   it('数组语法：任一命中保留', () => {
     seed(['user'], ['user:read'])
     const w = mount(TestComponent, {
-      props: { perm: ['user:read', 'user:write'] },
+      props: { perm: ['user:read', 'user:write'] }
     })
     expect(w.find('[data-test="t"]').exists()).toBe(true)
   })
@@ -65,7 +65,7 @@ describe('v-permission', () => {
   it('对象语法 { all }: 全部命中保留', () => {
     seed(['user'], ['user:read', 'user:write'])
     const w = mount(TestComponent, {
-      props: { perm: { all: ['user:read', 'user:write'] } },
+      props: { perm: { all: ['user:read', 'user:write'] } }
     })
     expect(w.find('[data-test="t"]').exists()).toBe(true)
   })
@@ -73,7 +73,7 @@ describe('v-permission', () => {
   it('对象语法 { all }: 部分命中移除', () => {
     seed(['user'], ['user:read'])
     const w = mount(TestComponent, {
-      props: { perm: { all: ['user:read', 'user:write'] } },
+      props: { perm: { all: ['user:read', 'user:write'] } }
     })
     expect(w.find('[data-test="t"]').exists()).toBe(false)
   })
@@ -81,7 +81,7 @@ describe('v-permission', () => {
   it('对象语法 { any }: 任一命中保留', () => {
     seed(['user'], ['user:read'])
     const w = mount(TestComponent, {
-      props: { perm: { any: ['user:read', 'user:write'] } },
+      props: { perm: { any: ['user:read', 'user:write'] } }
     })
     expect(w.find('[data-test="t"]').exists()).toBe(true)
   })

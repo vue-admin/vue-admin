@@ -1,3 +1,8 @@
 export { default as SearchTable } from './SearchTable/index.vue'
 export { default as FormDrawer } from './FormDrawer/index.vue'
 export { default as PageContainer } from './PageContainer/index.vue'
+export { default as StatusTag } from './StatusTag/Index.vue'
+export { default as DictTag } from './DictTag/Index.vue'
+export { default as RoleSelector } from './Selectors/RoleSelector.vue'
+export { default as UserSelector } from './Selectors/UserSelector.vue'
+export { default as DeptSelector } from './Selectors/DeptSelector.vue'

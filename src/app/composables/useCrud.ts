@@ -3,7 +3,9 @@ import { ElMessage } from 'element-plus'
 import { confirmService } from '@/lib/confirm'
 
 export interface UseCrudOptions<T> {
-  fetch: (params: Record<string, unknown>) => Promise<{ records: T[]; total: number; current: number; size: number }>
+  fetch: (
+    params: Record<string, unknown>
+  ) => Promise<{ records: T[]; total: number; current: number; size: number }>
   remove?: (id: string) => Promise<unknown>
   batchRemove?: (ids: string[]) => Promise<unknown>
   defaultSearchForm?: Record<string, unknown>
@@ -11,7 +13,13 @@ export interface UseCrudOptions<T> {
 }
 
 export function useCrud<T extends { id: string }>(options: UseCrudOptions<T>) {
-  const { fetch, remove, batchRemove, defaultSearchForm = {}, pageSize = 10 } = options
+  const {
+    fetch,
+    remove,
+    batchRemove,
+    defaultSearchForm = {},
+    pageSize = 10
+  } = options
 
   const listData = ref<T[]>([]) as Ref<T[]>
   const loading = ref(false)
@@ -20,20 +28,19 @@ export function useCrud<T extends { id: string }>(options: UseCrudOptions<T>) {
     size: pageSize,
     total: 0
   })
-  // 默认 searchForm 包含 keyword/role/status 三个字段，使 fetchList 调用参数结构稳定
-  // defaultSearchForm 可覆盖或扩展这些字段
-  const searchForm = reactive<Record<string, unknown>>({
-    keyword: undefined,
-    role: undefined,
-    status: undefined,
-    ...defaultSearchForm
-  })
+  // searchForm 字段由调用方 defaultSearchForm 完全决定；
+  // useCrud 作为通用 hook 不预设业务字段（避免污染非 user/role 场景）。
+  const searchForm = reactive<Record<string, unknown>>({ ...defaultSearchForm })
   const selectedRows = ref<T[]>([]) as Ref<T[]>
 
   const fetchList = async () => {
     loading.value = true
     try {
-      const params = { page: pagination.page, size: pagination.size, ...searchForm }
+      const params = {
+        page: pagination.page,
+        size: pagination.size,
+        ...searchForm
+      }
       const res = await fetch(params)
       listData.value = res.records
       pagination.total = res.total
@@ -69,10 +76,14 @@ export function useCrud<T extends { id: string }>(options: UseCrudOptions<T>) {
 
   const handleDelete = async (id: string) => {
     if (!remove) throw new Error('useCrud: remove not provided')
-    const confirmed = await confirmService.showConfirm('确认删除该记录？', '提示', {
-      confirmButtonText: '确认',
-      cancelButtonText: '取消',
-    })
+    const confirmed = await confirmService.showConfirm(
+      '确认删除该记录？',
+      '提示',
+      {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消'
+      }
+    )
     if (!confirmed) return
     await remove(id)
     ElMessage.success('删除成功')

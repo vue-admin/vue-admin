@@ -31,7 +31,9 @@ describe('useCrud', () => {
       current: 1,
       size: 10
     })
-    const { listData, loading, pagination, fetchList } = useCrud<TestItem>({ fetch })
+    const { listData, loading, pagination, fetchList } = useCrud<TestItem>({
+      fetch
+    })
 
     expect(loading.value).toBe(false)
     const promise = fetchList()
@@ -52,7 +54,9 @@ describe('useCrud', () => {
   })
 
   it('handleSearch 重置 page 到 1 后 fetchList', async () => {
-    const fetch = vi.fn().mockResolvedValue({ records: [], total: 0, current: 1, size: 10 })
+    const fetch = vi
+      .fn()
+      .mockResolvedValue({ records: [], total: 0, current: 1, size: 10 })
     const { pagination, handleSearch } = useCrud<TestItem>({ fetch })
 
     pagination.page = 3
@@ -62,7 +66,9 @@ describe('useCrud', () => {
   })
 
   it('handleReset 清空 searchForm 并重置 page', async () => {
-    const fetch = vi.fn().mockResolvedValue({ records: [], total: 0, current: 1, size: 10 })
+    const fetch = vi
+      .fn()
+      .mockResolvedValue({ records: [], total: 0, current: 1, size: 10 })
     const { searchForm, pagination, handleReset } = useCrud<TestItem>({
       fetch,
       defaultSearchForm: { keyword: '', role: '' }
@@ -77,7 +83,9 @@ describe('useCrud', () => {
   })
 
   it('handleDelete 调 remove 并刷新列表', async () => {
-    const fetch = vi.fn().mockResolvedValue({ records: [], total: 0, current: 1, size: 10 })
+    const fetch = vi
+      .fn()
+      .mockResolvedValue({ records: [], total: 0, current: 1, size: 10 })
     const remove = vi.fn().mockResolvedValue(undefined)
     // 修复 brief bug #2：删除 `vi.spyOn({ fetchList }, 'fetchList')` 死代码（spy 临时对象无意义）
     // 修复 brief bug #3：handleDelete 内部调用闭包 fetchList，spyOn 返回对象的方法无法捕获
@@ -91,9 +99,14 @@ describe('useCrud', () => {
   })
 
   it('handleBatchDelete 调 batchRemove with selectedRows ids', async () => {
-    const fetch = vi.fn().mockResolvedValue({ records: [], total: 0, current: 1, size: 10 })
+    const fetch = vi
+      .fn()
+      .mockResolvedValue({ records: [], total: 0, current: 1, size: 10 })
     const batchRemove = vi.fn().mockResolvedValue(undefined)
-    const { selectedRows, handleBatchDelete } = useCrud<TestItem>({ fetch, batchRemove })
+    const { selectedRows, handleBatchDelete } = useCrud<TestItem>({
+      fetch,
+      batchRemove
+    })
 
     selectedRows.value = [
       { id: '1', name: 'a' },

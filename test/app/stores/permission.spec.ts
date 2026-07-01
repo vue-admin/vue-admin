@@ -16,7 +16,7 @@ describe('permissionStore', () => {
       id: '1',
       username: 'x',
       roles,
-      permissions: perms,
+      permissions: perms
     }
     u.profile = profile
     u.isLoaded = true
