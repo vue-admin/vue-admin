@@ -7,7 +7,9 @@ export default defineConfig({
     'Vue 3 + Vite + TypeScript + Element Plus 企业级后台管理前端基座',
   lang: 'zh-CN',
   lastUpdated: true,
-  cleanUrls: true,
+  // 关闭 cleanUrls：生成 /guide/xxx.html 而非 /guide/xxx，
+  // 这样 nginx 无需 SPA fallback 即可直接访问静态文件
+  cleanUrls: false,
   // 文档 base 可经 DOCS_BASE 覆盖：GitHub Pages 用 /vue-admin/，云主机子路径用 /docs/
   base: process.env.DOCS_BASE ?? '/vue-admin/',
   ignoreDeadLinks: true,
