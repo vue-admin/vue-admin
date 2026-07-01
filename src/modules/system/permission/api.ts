@@ -43,27 +43,27 @@ export interface PermissionSearchResponse {
 
 // 获取权限列表
 export const fetchPermissionList = (params: PermissionSearchRequest) =>
-  api.get<PermissionSearchResponse>('/api/permission/list', { params })
+  api.get<PermissionSearchResponse>('/api/permission', { params })
 
 // 获取权限详情
 export const fetchPermissionDetail = (id: string) =>
-  api.get<PermissionInfo>(`/api/permission/detail/${id}`)
+  api.get<PermissionInfo>(`/api/permission/${id}`)
 
 // 创建权限
 export const createPermission = (data: PermissionCreateRequest) =>
-  api.post<PermissionInfo>('/api/permission/create', data)
+  api.post<PermissionInfo>('/api/permission', data)
 
 // 更新权限
 export const updatePermission = (id: string, data: Partial<PermissionCreateRequest>) =>
-  api.put<PermissionInfo>(`/api/permission/update/${id}`, data)
+  api.put<PermissionInfo>(`/api/permission/${id}`, data)
 
 // 删除权限
 export const deletePermission = (id: string) =>
-  api.del<boolean>(`/api/permission/delete/${id}`)
+  api.del<boolean>(`/api/permission/${id}`)
 
 // 批量删除权限
 export const batchDeletePermissions = (ids: string[]) =>
-  api.post<boolean>('/api/permission/batch-delete', { ids })
+  api.del<boolean>('/api/permission', { data: { ids } })
 
 // 导出权限列表
 export const exportPermissions = () =>
@@ -71,12 +71,4 @@ export const exportPermissions = () =>
 
 // 获取所有权限（用于角色权限配置）
 export const fetchAllPermissions = () =>
-  api.get<PermissionInfo[]>('/api/permission/all')
-
-// 获取角色权限
-export const fetchRolePermissions = (roleId: string) =>
-  api.get<string[]>(`/api/role/permissions/${roleId}`)
-
-// 设置角色权限
-export const setRolePermissions = (roleId: string, permissions: string[]) =>
-  api.post<boolean>(`/api/role/permissions/${roleId}`, { permissions })
+  api.get<PermissionInfo[]>('/api/permission?all=true')

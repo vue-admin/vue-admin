@@ -40,27 +40,27 @@ export interface RoleSearchResponse {
 
 // 获取角色列表
 export const fetchRoleList = (params: RoleSearchRequest) =>
-  api.get<RoleSearchResponse>('/api/role/list', { params })
+  api.get<RoleSearchResponse>('/api/role', { params })
 
 // 获取角色详情
 export const fetchRoleDetail = (id: string) =>
-  api.get<RoleInfo>(`/api/role/detail/${id}`)
+  api.get<RoleInfo>(`/api/role/${id}`)
 
 // 创建角色
 export const createRole = (data: RoleCreateRequest) =>
-  api.post<RoleInfo>('/api/role/create', data)
+  api.post<RoleInfo>('/api/role', data)
 
 // 更新角色
 export const updateRole = (id: string, data: Partial<RoleCreateRequest>) =>
-  api.put<RoleInfo>(`/api/role/update/${id}`, data)
+  api.put<RoleInfo>(`/api/role/${id}`, data)
 
 // 删除角色
 export const deleteRole = (id: string) =>
-  api.del<boolean>(`/api/role/delete/${id}`)
+  api.del<boolean>(`/api/role/${id}`)
 
 // 批量删除角色
 export const batchDeleteRoles = (ids: string[]) =>
-  api.post<boolean>('/api/role/batch-delete', { ids })
+  api.del<boolean>('/api/role', { data: { ids } })
 
 // 导出角色列表
 export const exportRoles = () =>
@@ -68,8 +68,8 @@ export const exportRoles = () =>
 
 // 获取角色权限
 export const fetchRolePermissions = (roleId: string) =>
-  api.get<string[]>(`/api/role/permissions/${roleId}`)
+  api.get<string[]>(`/api/role/${roleId}/permissions`)
 
 // 设置角色权限
 export const setRolePermissions = (roleId: string, permissions: string[]) =>
-  api.post<boolean>(`/api/role/permissions/${roleId}`, { permissions })
+  api.put<boolean>(`/api/role/${roleId}/permissions`, { permissions })

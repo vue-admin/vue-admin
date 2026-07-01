@@ -13,29 +13,42 @@
         <el-icon v-if="layoutStore.showLogo">
           <IconLogo />
         </el-icon>
-        <span v-if="!sidebarStore.collapsed && layoutStore.showLogo"> 后台管理系统 </span>
+        <span v-if="!sidebarStore.collapsed && layoutStore.showLogo">
+          后台管理系统
+        </span>
       </div>
-      <MenuItem
-        v-for="item in menus"
-        v-show="item.meta?.['showMenu']"
-        :key="item.path"
-        :data="item"
-      />
+      <template v-if="permissionStore.menusLoaded">
+        <MenuItem
+          v-for="item in permissionStore.visibleMenus"
+          :key="item.path"
+          :data="item"
+        />
+      </template>
+      <div
+        v-else
+        class="sidebar-loading"
+      >
+        <el-icon class="is-loading">
+          <Loading />
+        </el-icon>
+      </div>
     </el-menu>
   </el-aside>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { Loading } from '@element-plus/icons-vue'
 import { useSidebarStore } from '@/app/stores/sidebar'
 import { useLayoutStore } from '@/app/stores/layout'
+import { usePermissionStore } from '@/app/stores/permission'
 import MenuItem from '../Menu/MenuItem.vue'
 import IconLogo from './IconLogo.vue'
-import menus from '@/router/menus'
 
 const sidebarStore = useSidebarStore()
 const layoutStore = useLayoutStore()
+const permissionStore = usePermissionStore()
 
 // 菜单激活的路由
 const route = useRoute()
@@ -44,22 +57,16 @@ watch(route, (to) => {
   activePath.value = to.path
 })
 
-const handleOpen = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
-const handleClose = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
-
-// TODO: M5+ 接入用户上下文后删除此占位
-const _ruleForm = reactive({
-  userId: ''
-})
+const handleOpen = () => {}
+const handleClose = () => {}
 </script>
 
 <style scoped>
 .sidebar-logo-container {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   height: 50px;
   overflow: hidden;
   border-bottom: 1px solid var(--el-menu-border-color);
@@ -67,15 +74,17 @@ const _ruleForm = reactive({
 
 .sidebar-logo-container .el-icon {
   font-size: 26px;
-  margin-top: 10px;
-  margin-bottom: 10px;
 }
 
 .sidebar-logo-container span {
-  margin-left: 10px;
-  display: inline-block;
-  line-height: 30px;
-  vertical-align: super;
+  line-height: 50px;
+}
+
+.sidebar-loading {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+  color: var(--el-text-color-secondary);
 }
 
 .el-menu-aside {

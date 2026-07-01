@@ -19,7 +19,9 @@ test.describe.serial('layout 配置', () => {
     await expect(page.getByRole('heading', { name: '布局设置' })).toBeVisible()
 
     // 关闭 TagsView 开关
-    const switchItem = page.locator('.setting-item', { hasText: '显示 TagsView' }).locator('.el-switch')
+    const switchItem = page
+      .locator('.setting-item', { hasText: '显示 TagsView' })
+      .locator('.el-switch')
     await switchItem.click()
 
     // TagsView 应消失

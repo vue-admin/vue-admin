@@ -1,7 +1,7 @@
 <template>
   <el-watermark
     :font="font"
-    :content="['wang', 'vue-admin']"
+    :content="watermarkContent"
   >
     <el-container>
       <Sidebar />
@@ -24,18 +24,26 @@ import Sidebar from './components/Sidebar/Index.vue'
 import Header from './components/Header/Index.vue'
 import TagView from './components/TagsView/Index.vue'
 import Footer from './components/Footer.vue'
-import { reactive, watch } from 'vue'
+import { computed, reactive, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useThemeStore } from '@/app/stores/theme'
 import { useLayoutStore } from '@/app/stores/layout'
+import { useUserStore } from '@/app/stores/user'
 
 const themeStore = useThemeStore()
 const { isDark } = storeToRefs(themeStore)
 const layoutStore = useLayoutStore()
+const userStore = useUserStore()
+const { profile } = storeToRefs(userStore)
 
 const font = reactive({
   color: 'rgba(0, 0, 0, .05)'
 })
+
+const watermarkContent = computed(() => [
+  profile.value?.username || 'vue-admin',
+  profile.value?.nickname || ''
+].filter(Boolean))
 
 watch(
   isDark,

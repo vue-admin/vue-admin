@@ -112,84 +112,84 @@ export interface DictItemSearchResponse {
 
 // 获取字典分类列表
 export const fetchDictCategoryList = (params: DictCategorySearchRequest) =>
-  api.get<DictCategorySearchResponse>('/api/dict/category/list', { params })
+  api.get<DictCategorySearchResponse>('/api/dict/categories', { params })
 
 // 获取字典分类详情
 export const fetchDictCategoryDetail = (id: string) =>
-  api.get<DictCategoryInfo>(`/api/dict/category/detail/${id}`)
+  api.get<DictCategoryInfo>(`/api/dict/categories/${id}`)
 
 // 创建字典分类
 export const createDictCategory = (data: DictCategoryCreateRequest) =>
-  api.post<DictCategoryInfo>('/api/dict/category/create', data)
+  api.post<DictCategoryInfo>('/api/dict/categories', data)
 
 // 更新字典分类
 export const updateDictCategory = (id: string, data: Partial<DictCategoryCreateRequest>) =>
-  api.put<DictCategoryInfo>(`/api/dict/category/update/${id}`, data)
+  api.put<DictCategoryInfo>(`/api/dict/categories/${id}`, data)
 
 // 删除字典分类
 export const deleteDictCategory = (id: string) =>
-  api.del<boolean>(`/api/dict/category/delete/${id}`)
+  api.del<boolean>(`/api/dict/categories/${id}`)
 
 // 批量删除字典分类
 export const batchDeleteDictCategories = (ids: string[]) =>
-  api.post<boolean>('/api/dict/category/batch-delete', { ids })
+  api.del<boolean>('/api/dict/categories', { data: { ids } })
 
 // 导出字典分类列表
 export const exportDictCategories = () =>
-  api.get<string>('/api/dict/category/export')
+  api.get<string>('/api/dict/categories/export')
 
 // 获取字典列表
 export const fetchDictList = (params: DictSearchRequest) =>
-  api.get<DictSearchResponse>('/api/dict/list', { params })
+  api.get<DictSearchResponse>('/api/dict/dicts', { params })
 
 // 获取字典详情
 export const fetchDictDetail = (id: string) =>
-  api.get<DictInfo>(`/api/dict/detail/${id}`)
+  api.get<DictInfo>(`/api/dict/dicts/${id}`)
 
 // 创建字典
 export const createDict = (data: DictCreateRequest) =>
-  api.post<DictInfo>('/api/dict/create', data)
+  api.post<DictInfo>('/api/dict/dicts', data)
 
 // 更新字典
 export const updateDict = (id: string, data: Partial<DictCreateRequest>) =>
-  api.put<DictInfo>(`/api/dict/update/${id}`, data)
+  api.put<DictInfo>(`/api/dict/dicts/${id}`, data)
 
 // 删除字典
 export const deleteDict = (id: string) =>
-  api.del<boolean>(`/api/dict/delete/${id}`)
+  api.del<boolean>(`/api/dict/dicts/${id}`)
 
 // 批量删除字典
 export const batchDeleteDicts = (ids: string[]) =>
-  api.post<boolean>('/api/dict/batch-delete', { ids })
+  api.del<boolean>('/api/dict/dicts', { data: { ids } })
 
 // 导出字典列表
 export const exportDicts = () =>
-  api.get<string>('/api/dict/export')
+  api.get<string>('/api/dict/dicts/export')
 
 // 获取字典项列表
 export const fetchDictItemList = (params: DictItemSearchRequest) =>
-  api.get<DictItemSearchResponse>('/api/dict/item/list', { params })
+  api.get<DictItemSearchResponse>('/api/dict/items', { params })
 
 // 获取字典项详情
 export const fetchDictItemDetail = (id: string) =>
-  api.get<DictItemInfo>(`/api/dict/item/detail/${id}`)
+  api.get<DictItemInfo>(`/api/dict/items/${id}`)
 
 // 创建字典项
 export const createDictItem = (data: DictItemCreateRequest) =>
-  api.post<DictItemInfo>('/api/dict/item/create', data)
+  api.post<DictItemInfo>('/api/dict/items', data)
 
 // 更新字典项
 export const updateDictItem = (id: string, data: Partial<DictItemCreateRequest>) =>
-  api.put<DictItemInfo>(`/api/dict/item/update/${id}`, data)
+  api.put<DictItemInfo>(`/api/dict/items/${id}`, data)
 
 // 删除字典项
 export const deleteDictItem = (id: string) =>
-  api.del<boolean>(`/api/dict/item/delete/${id}`)
+  api.del<boolean>(`/api/dict/items/${id}`)
 
 // 批量删除字典项
 export const batchDeleteDictItems = (ids: string[]) =>
-  api.post<boolean>('/api/dict/item/batch-delete', { ids })
+  api.del<boolean>('/api/dict/items', { data: { ids } })
 
 // 导出字典项列表
 export const exportDictItems = () =>
-  api.get<string>('/api/dict/item/export')
+  api.get<string>('/api/dict/items/export')

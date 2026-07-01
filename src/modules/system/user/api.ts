@@ -48,27 +48,27 @@ export interface UserCreateRequest {
 
 // 获取用户列表
 export const fetchUserList = (params: UserSearchRequest) =>
-  api.get<UserSearchResponse>('/api/user/list', { params })
+  api.get<UserSearchResponse>('/api/user', { params })
 
 // 获取用户详情
 export const fetchUserDetail = (id: string) =>
-  api.get<UserInfo>(`/api/user/detail/${id}`)
+  api.get<UserInfo>(`/api/user/${id}`)
 
 // 创建用户
 export const createUser = (data: UserCreateRequest) =>
-  api.post<UserInfo>('/api/user/create', data)
+  api.post<UserInfo>('/api/user', data)
 
 // 更新用户
-export const updateUser = (id: string, data: UserCreateRequest) =>
-  api.put<UserInfo>(`/api/user/update/${id}`, data)
+export const updateUser = (id: string, data: Partial<UserCreateRequest>) =>
+  api.put<UserInfo>(`/api/user/${id}`, data)
 
 // 删除用户
 export const deleteUser = (id: string) =>
-  api.del<boolean>(`/api/user/delete/${id}`)
+  api.del<boolean>(`/api/user/${id}`)
 
 // 批量删除用户
 export const batchDeleteUsers = (ids: string[]) =>
-  api.post<boolean>('/api/user/batch-delete', { ids })
+  api.del<boolean>('/api/user', { data: { ids } })
 
 // 导出用户列表
 export const exportUsers = (params: UserSearchRequest) =>

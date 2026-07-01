@@ -24,6 +24,7 @@ import {
   type UserInfo,
   type UserCreateRequest,
 } from '../api'
+import { COMMON_STATUS_OPTIONS, ROLE_OPTIONS } from '@/app/constants/enums'
 
 const props = defineProps<{
   modelValue: boolean
@@ -73,21 +74,14 @@ const fields = computed<FormField[]>(() => [
     label: '角色',
     type: 'select',
     span: 12,
-    options: [
-      { label: '管理员', value: 'admin' },
-      { label: '普通用户', value: 'user' },
-      { label: 'VIP用户', value: 'vip' },
-    ],
+    options: [...ROLE_OPTIONS],
   },
   {
     prop: 'status',
     label: '状态',
     type: 'select',
     span: 12,
-    options: [
-      { label: '启用', value: 'active' },
-      { label: '禁用', value: 'inactive' },
-    ],
+    options: [...COMMON_STATUS_OPTIONS],
   },
   {
     prop: 'password',
@@ -170,7 +164,7 @@ const initForm = () => {
     password: '',
     confirmPassword: '',
   }
-  if (props.mode === 'edit' && props.data) {
+  if ((props.mode === 'edit' || props.mode === 'view') && props.data) {
     const u = props.data
     Object.assign(formData, {
       username: u.username,

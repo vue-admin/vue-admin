@@ -48,7 +48,10 @@
       <el-radio-group
         :model-value="layoutStore.componentSize"
         size="small"
-        @update:model-value="(v) => layoutStore.setComponentSize(v as 'large' | 'default' | 'small')"
+        @update:model-value="
+          (v) =>
+            layoutStore.setComponentSize(v as 'large' | 'default' | 'small')
+        "
       >
         <el-radio-button value="large">
           {{ t('size.large') }}
@@ -67,7 +70,9 @@
         :model-value="layoutStore.locale"
         size="small"
         style="width: 120px"
-        @update:model-value="(v) => layoutStore.setLocale(v as 'zh-CN' | 'en-US')"
+        @update:model-value="
+          (v) => layoutStore.setLocale(v as 'zh-CN' | 'en-US')
+        "
       >
         <el-option
           label="简体中文"

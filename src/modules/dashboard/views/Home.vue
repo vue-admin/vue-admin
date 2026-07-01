@@ -1,607 +1,195 @@
 <template>
   <div class="home">
-    <!-- 欢迎区域 -->
-    <el-card
-      shadow="never"
-      class="welcome-card"
-    >
-      <template #header>
-        <div class="card-header">
-          <span>欢迎使用 Vue Admin 管理系统</span>
-          <el-tag type="success">
-            v1.0.0
-          </el-tag>
-        </div>
-      </template>
+    <!-- 公告横幅 -->
+    <NoticeBanner />
 
-      <div class="welcome-content">
-        <div class="welcome-text">
-          <h2>您好，管理员！</h2>
-          <p>
-            欢迎您登录 Vue Admin 管理系统，这是一个基于 Vue 3 和 Element Plus
-            的现代化管理系统。
-          </p>
-          <p>
-            系统提供了用户管理、CRUD
-            操作、系统配置等功能，帮助您高效管理业务数据。
-          </p>
-        </div>
-        <div class="welcome-image">
-          <el-empty
-            description="系统首页展示"
-            :image-size="120"
-          />
-        </div>
-      </div>
-    </el-card>
+    <!-- 欢迎卡 -->
+    <WelcomeCard
+      :username="displayName"
+      :is-admin="permissionStore.isSuperAdmin"
+      :role-label="roleLabel"
+      @action-click="onWelcomeAction"
+    />
 
-    <!-- 数据统计区域 -->
-    <el-row
-      :gutter="16"
-      class="stats-row"
-    >
-      <el-col
-        :xs="12"
-        :sm="6"
-      >
-        <el-card
-          shadow="hover"
-          class="stats-card"
-        >
-          <div class="stats-content">
-            <div class="stats-icon user-icon">
-              <el-icon><User /></el-icon>
-            </div>
-            <div class="stats-info">
-              <div class="stats-number">
-                {{ userCount }}
-              </div>
-              <div class="stats-label">
-                总用户数
-              </div>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
+    <!-- 管理员视角：统计 + 图表 -->
+    <template v-if="permissionStore.isSuperAdmin">
+      <StatsCards :items="statItems" />
 
-      <el-col
-        :xs="12"
-        :sm="6"
-      >
-        <el-card
-          shadow="hover"
-          class="stats-card"
-        >
-          <div class="stats-content">
-            <div class="stats-icon admin-icon">
-              <el-icon><Avatar /></el-icon>
-            </div>
-            <div class="stats-info">
-              <div class="stats-number">
-                {{ adminCount }}
-              </div>
-              <div class="stats-label">
-                管理员数
-              </div>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
+      <ChartCards
+        :trend-data="charts.trend"
+        :distribution-data="charts.distribution"
+        :range="range"
+        :loading="chartsLoading"
+        @range-change="onRangeChange"
+      />
+    </template>
 
-      <el-col
-        :xs="12"
-        :sm="6"
-      >
-        <el-card
-          shadow="hover"
-          class="stats-card"
-        >
-          <div class="stats-content">
-            <div class="stats-icon order-icon">
-              <el-icon><Document /></el-icon>
-            </div>
-            <div class="stats-info">
-              <div class="stats-number">
-                {{ orderCount }}
-              </div>
-              <div class="stats-label">
-                订单数
-              </div>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-
-      <el-col
-        :xs="12"
-        :sm="6"
-      >
-        <el-card
-          shadow="hover"
-          class="stats-card"
-        >
-          <div class="stats-content">
-            <div class="stats-icon revenue-icon">
-              <el-icon><Money /></el-icon>
-            </div>
-            <div class="stats-info">
-              <div class="stats-number">
-                {{ formatCurrency(revenue) }}
-              </div>
-              <div class="stats-label">
-                总营收
-              </div>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-
-    <!-- 图表区域 -->
-    <el-row
-      :gutter="16"
-      class="charts-row"
-    >
-      <el-col
-        :xs="24"
-        :md="12"
-      >
-        <el-card
-          shadow="hover"
-          class="chart-card"
-        >
-          <template #header>
-            <div class="card-header">
-              <span>用户增长趋势</span>
-              <el-select
-                v-model="timeRange"
-                size="small"
-                style="width: 120px"
-              >
-                <el-option
-                  label="近7天"
-                  value="7d"
-                />
-                <el-option
-                  label="近30天"
-                  value="30d"
-                />
-                <el-option
-                  label="近90天"
-                  value="90d"
-                />
-              </el-select>
-            </div>
-          </template>
-
-          <div class="chart-container">
-            <el-empty
-              description="图表展示区域"
-              :image-size="150"
-            />
-          </div>
-        </el-card>
-      </el-col>
-
-      <el-col
-        :xs="24"
-        :md="12"
-      >
-        <el-card
-          shadow="hover"
-          class="chart-card"
-        >
-          <template #header>
-            <div class="card-header">
-              <span>用户角色分布</span>
-              <el-button
-                type="primary"
-                size="small"
-                link
-              >
-                查看详情
-              </el-button>
-            </div>
-          </template>
-
-          <div class="chart-container">
-            <el-empty
-              description="图表展示区域"
-              :image-size="150"
-            />
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-
-    <!-- 更新模块 -->
-    <el-card
-      shadow="hover"
-      class="activity-card"
-    >
-      <template #header>
-        <div class="card-header">
-          <span>更新</span>
-          <el-button
-            type="primary"
-            size="small"
-            link
-          >
-            {{ currentDate }}
-          </el-button>
-        </div>
-      </template>
-
-      <el-timeline>
-        <el-timeline-item
-          v-for="(activity, index) in activities"
-          :key="index"
-          :timestamp="activity.time"
-          :type="activity.type"
-          :color="activity.color"
-        >
-          <template #dot>
-            <el-icon><Clock /></el-icon>
-          </template>
-
-          <div class="activity-content">
-            <h4>{{ activity.title }}</h4>
-            <p>{{ activity.description }}</p>
-          </div>
-        </el-timeline-item>
-      </el-timeline>
-    </el-card>
-
-    <!-- 快速操作区域 -->
-    <el-card
-      shadow="hover"
-      class="quick-actions-card"
-    >
-      <template #header>
-        <div class="card-header">
-          <span>快速操作</span>
-        </div>
-      </template>
-
-      <el-row :gutter="16">
-        <el-col
-          v-for="(action, index) in quickActions"
-          :key="index"
-          :xs="12"
-          :sm="6"
-        >
-          <el-card
-            shadow="never"
-            class="action-card"
-            @click="handleQuickAction(action)"
-          >
-            <div
-              class="action-icon"
-              :style="{ backgroundColor: action.color }"
-            >
-              <el-icon :size="24">
-                {{ action.icon }}
-              </el-icon>
-            </div>
-            <div class="action-label">
-              {{ action.label }}
-            </div>
-          </el-card>
-        </el-col>
-      </el-row>
-    </el-card>
+    <!-- 双列：动态 + 快捷入口 -->
+    <div class="bottom-grid">
+      <ActivityTimeline :activities="activities" />
+      <QuickActions
+        :actions="quickActions"
+        @select="onQuickAction"
+      />
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted, type Component } from 'vue'
 import { useRouter } from 'vue-router'
-import { User, Avatar, Document, Money, Clock } from '@element-plus/icons-vue'
+import {
+  User,
+  UserFilled,
+  Lock,
+  DataBoard,
+  Menu as MenuIcon,
+  Bell,
+  Document,
+  Setting
+} from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/app/stores/user'
+import { usePermissionStore } from '@/app/stores/permission'
+import { Permissions, PERMISSION_WILDCARD } from '@/app/constants/permissions'
+import {
+  fetchDashboardStats,
+  fetchDashboardCharts,
+  fetchDashboardActivities,
+  type DashboardStats,
+  type DashboardCharts,
+  type Activity,
+  type ChartRange
+} from '../api'
+import NoticeBanner from '../components/NoticeBanner.vue'
+import WelcomeCard from '../components/WelcomeCard.vue'
+import StatsCards from '../components/StatsCards.vue'
+import ChartCards from '../components/ChartCards.vue'
+import ActivityTimeline from '../components/ActivityTimeline.vue'
+import QuickActions from '../components/QuickActions.vue'
 
 const router = useRouter()
+const userStore = useUserStore()
+const permissionStore = usePermissionStore()
 
-// 数据统计
-const userCount = ref(12345)
-const adminCount = ref(123)
-const orderCount = ref(5678)
-const revenue = ref(1234567.89)
+const displayName = computed(
+  () => userStore.profile?.nickname || userStore.profile?.username || '用户'
+)
 
-// 时间范围
-const timeRange = ref('7d')
+const roleLabel = computed(() => {
+  if (permissionStore.isSuperAdmin) return '超级管理员'
+  return '普通用户'
+})
 
-// 格式化金额
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('zh-CN', {
-    style: 'currency',
-    currency: 'CNY',
-    minimumFractionDigits: 2
-  }).format(value)
+// 统计数据
+const stats = ref<DashboardStats | null>(null)
+const statItems = computed(() => {
+  if (!stats.value) return []
+  const s = stats.value
+  return [
+    { key: 'users', label: '总用户数', value: s.users.value, trendPct: s.users.trendPct },
+    { key: 'orders', label: '订单数', value: s.orders.value, trendPct: s.orders.trendPct },
+    { key: 'revenue', label: '总营收', value: s.revenue.value, unit: '¥', trendPct: s.revenue.trendPct },
+    { key: 'active', label: '活跃用户', value: s.active.value, trendPct: s.active.trendPct }
+  ]
+})
+
+// 图表数据
+const range = ref<ChartRange>('7d')
+const charts = ref<DashboardCharts>({ trend: [], distribution: [] })
+const chartsLoading = ref(false)
+
+const loadCharts = async () => {
+  chartsLoading.value = true
+  try {
+    charts.value = await fetchDashboardCharts(range.value)
+  } catch {
+    // 静默失败，UI 显示空图表
+  } finally {
+    chartsLoading.value = false
+  }
 }
 
-// 最新动态
-const activities = ref([
-  {
-    time: '2023-10-01 10:30',
-    type: 'primary',
-    color: 'blue',
-    title: '系统更新',
-    description: 'Vue Admin 管理系统已更新至 v1.0.0 版本，新增用户管理功能'
-  },
-  {
-    time: '2023-09-28 14:20',
-    type: 'success',
-    color: 'green',
-    title: '数据统计',
-    description: '本月用户注册量突破 5000 人，订单量增长 20%'
-  },
-  {
-    time: '2023-09-25 09:15',
-    type: 'warning',
-    color: 'orange',
-    title: '安全提醒',
-    description: '系统检测到异常登录行为，已自动封禁 2 个账号'
-  },
-  {
-    time: '2023-09-20 16:45',
-    type: 'danger',
-    color: 'red',
-    title: '系统维护',
-    description: '系统将于 2023-09-25 00:00 进行维护，预计持续 2 小时'
-  }
-])
+const onRangeChange = (r: ChartRange) => {
+  range.value = r
+  loadCharts()
+}
 
-// 快速操作
-interface QuickAction {
-  icon: string
+// 动态
+const activities = ref<Activity[]>([])
+
+// 快捷入口（含权限过滤）
+interface QAction {
+  key: string
   label: string
-  color: string
+  icon: Component
   path?: string
+  perm?: string[]
 }
-const quickActions = ref<QuickAction[]>([
-  {
-    icon: 'User',
-    label: '用户管理',
-    color: '#409eff',
-    path: '/system/user'
-  },
-  {
-    icon: 'Document',
-    label: 'CRUD 操作',
-    color: '#67c23a',
-    path: '/crud/list'
-  },
-  {
-    icon: 'Avatar',
-    label: '管理员',
-    color: '#f56c6c',
-    path: '/system/admin'
-  },
-  {
-    icon: 'UserFilled',
-    label: '个人中心',
-    color: '#909399',
-    path: '/profile'
-  }
-])
+const quickActions = computed<QAction[]>(() => {
+  const actions: QAction[] = [
+    { key: 'user', label: '用户管理', icon: User, path: '/system/user', perm: [Permissions.USER_READ, PERMISSION_WILDCARD] },
+    { key: 'role', label: '角色管理', icon: UserFilled, path: '/system/role', perm: [Permissions.ROLE_READ, PERMISSION_WILDCARD] },
+    { key: 'permission', label: '权限管理', icon: Lock, path: '/system/permission', perm: [Permissions.PERMISSION_READ, PERMISSION_WILDCARD] },
+    { key: 'dict', label: '字典管理', icon: DataBoard, path: '/system/dict', perm: [Permissions.DICT_READ, PERMISSION_WILDCARD] },
+    { key: 'menu', label: '菜单管理', icon: MenuIcon, path: '/system/menu', perm: [Permissions.MENU_READ, PERMISSION_WILDCARD] },
+    { key: 'notice', label: '公告管理', icon: Bell, path: '/system/notice', perm: [Permissions.NOTICE_READ, PERMISSION_WILDCARD] },
+    { key: 'crud', label: '增删改查', icon: Document, path: '/crud' },
+    { key: 'profile', label: '个人中心', icon: Setting, path: '/profile' }
+  ]
+  return actions
+})
 
-// 处理快速操作
-const handleQuickAction = (action: QuickAction) => {
+const onQuickAction = (action: QAction) => {
   if (action.path) {
     router.push(action.path)
   } else {
-    ElMessage.info('该功能正在开发中...')
+    ElMessage.info('该功能正在开发中')
   }
 }
 
-// 页面加载时的操作
-onMounted(() => {
-  // 模拟数据加载
-  console.log('首页加载完成')
-})
+const onWelcomeAction = (action: string) => {
+  if (action === 'profile') router.push('/profile')
+  else if (action === 'docs') {
+    ElMessage.info('文档站点建设中')
+  }
+}
 
-// 获取当前日期（格式：YYYY-MM）
-const currentDate = ref('')
-onMounted(() => {
-  const now = new Date()
-  const year = now.getFullYear()
-  const month = String(now.getMonth() + 1).padStart(2, '0')
-  currentDate.value = `${year}-${month}`
+onMounted(async () => {
+  // 普通用户不需要加载统计和图表
+  if (!permissionStore.isSuperAdmin) {
+    activities.value = await fetchDashboardActivities().catch(() => [])
+    return
+  }
+  try {
+    const [s, c, a] = await Promise.all([
+      fetchDashboardStats(),
+      fetchDashboardCharts(range.value),
+      fetchDashboardActivities()
+    ])
+    stats.value = s
+    charts.value = c
+    activities.value = a
+  } catch {
+    ElMessage.error('首页数据加载失败')
+  }
 })
 </script>
 
-<style lang="scss" scoped>
-.welcome-card {
-  margin-bottom: 20px;
-
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: 600;
-    font-size: 16px;
-  }
-
-  .welcome-content {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-
-    .welcome-text {
-      flex: 1;
-
-      h2 {
-        margin: 0 0 10px 0;
-        font-size: 24px;
-        color: var(--el-text-color-primary);
-      }
-
-      p {
-        margin: 0 0 10px 0;
-        color: var(--el-text-color-regular);
-        font-size: 14px;
-      }
-    }
-
-    .welcome-image {
-      flex-shrink: 0;
-    }
-  }
+<style scoped>
+.home {
+  padding: 16px;
 }
 
-.stats-row {
-  margin-bottom: 20px;
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
 }
 
-.stats-card {
-  .stats-content {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-
-    .stats-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      color: #fff;
-
-      &.user-icon {
-        background-color: #409eff;
-      }
-
-      &.admin-icon {
-        background-color: #67c23a;
-      }
-
-      &.order-icon {
-        background-color: #e6a23c;
-      }
-
-      &.revenue-icon {
-        background-color: #f56c6c;
-      }
-    }
-
-    .stats-info {
-      flex: 1;
-
-      .stats-number {
-        font-size: 24px;
-        font-weight: 600;
-        color: var(--el-text-color-primary);
-      }
-
-      .stats-label {
-        font-size: 14px;
-        color: var(--el-text-color-regular);
-      }
-    }
-  }
-}
-
-.charts-row {
-  margin-bottom: 20px;
-}
-
-.chart-card {
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: 600;
-    font-size: 16px;
-  }
-
-  .chart-container {
-    height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-}
-
-.activity-card {
-  margin-bottom: 20px;
-
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: 600;
-    font-size: 16px;
-  }
-
-  .activity-content {
-    h4 {
-      margin: 0 0 5px 0;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--el-text-color-primary);
-    }
-
-    p {
-      margin: 0;
-      font-size: 13px;
-      color: var(--el-text-color-regular);
-    }
-  }
-}
-
-.quick-actions-card {
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: 600;
-    font-size: 16px;
-  }
-
-  .action-card {
-    cursor: pointer;
-    transition: all 0.3s ease;
-
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .action-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      margin: 0 auto 10px;
-    }
-
-    .action-label {
-      text-align: center;
-      font-size: 14px;
-      color: var(--el-text-color-primary);
-    }
-  }
-}
-
-// 响应式设计
-@media (max-width: 768px) {
-  .welcome-content {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .stats-card .stats-content {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .charts-row .chart-card .chart-container {
-    height: 200px;
+@media (max-width: 992px) {
+  .bottom-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>

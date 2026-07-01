@@ -33,20 +33,20 @@ export interface MenuSortRequest {
 
 // 获取完整菜单树
 export const fetchMenuTree = () =>
-  api.get<MenuInfo[]>('/api/system/menu/tree')
+  api.get<MenuInfo[]>('/api/system/menu?view=tree')
 
 // 创建菜单
 export const createMenu = (data: MenuCreateRequest) =>
-  api.post<MenuInfo>('/api/system/menu/create', data)
+  api.post<MenuInfo>('/api/system/menu', data)
 
 // 更新菜单
 export const updateMenu = (id: string, data: Partial<MenuCreateRequest>) =>
-  api.put<MenuInfo>(`/api/system/menu/update/${id}`, data)
+  api.put<MenuInfo>(`/api/system/menu/${id}`, data)
 
 // 删除菜单
 export const deleteMenu = (id: string) =>
-  api.del<boolean>(`/api/system/menu/delete/${id}`)
+  api.del<boolean>(`/api/system/menu/${id}`)
 
 // 拖拽排序
 export const updateMenuSort = (data: MenuSortRequest) =>
-  api.post<boolean>('/api/system/menu/sort', data)
+  api.patch<boolean>('/api/system/menu/sort', data)

@@ -23,6 +23,7 @@ import {
   type PermissionInfo,
   type PermissionCreateRequest,
 } from '../../permission/api'
+import { COMMON_STATUS_OPTIONS } from '@/app/constants/enums'
 
 const props = defineProps<{
   modelValue: boolean
@@ -80,10 +81,7 @@ const fields: FormField[] = [
     label: '状态',
     type: 'radio',
     span: 12,
-    options: [
-      { label: '启用', value: 'active' },
-      { label: '禁用', value: 'inactive' },
-    ],
+    options: [...COMMON_STATUS_OPTIONS],
   },
   { prop: 'description', label: '描述', type: 'textarea', span: 24 },
 ]
@@ -97,7 +95,7 @@ const rules = {
 }
 
 const initForm = () => {
-  if (props.mode === 'edit' && props.data) {
+  if ((props.mode === 'edit' || props.mode === 'view') && props.data) {
     Object.assign(formData, {
       name: props.data.name,
       code: props.data.code,

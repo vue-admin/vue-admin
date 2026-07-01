@@ -1,6 +1,6 @@
 <template>
   <el-menu-item
-    v-if="!m.data.children && m.data.meta?.['showMenu'] !== false"
+    v-if="!hasChildren && m.data.meta?.['showMenu'] !== false"
     :key="m.data.path"
     :index="m.data.path"
   >
@@ -29,6 +29,13 @@
   </el-sub-menu>
 </template>
 <script lang="ts" setup>
-import { RouteRecordRaw } from 'vue-router'
-const m = defineProps<{ data: RouteRecordRaw }>()
+import { computed } from 'vue'
+import type { MenuDTO } from '@/lib/router/types-menu'
+
+const props = defineProps<{ data: MenuDTO }>()
+const m = props
+
+const hasChildren = computed(() => {
+  return Boolean(m.data.children && m.data.children.length > 0)
+})
 </script>

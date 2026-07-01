@@ -32,7 +32,7 @@
         <template #default="{ data }">
           <div class="tree-node">
             <span class="tree-node__label">
-              <el-icon v-if="data.icon">
+              <el-icon v-if="data.icon && resolveIcon(data.icon)">
                 <component :is="resolveIcon(data.icon)" />
               </el-icon>
               {{ data.name }}
