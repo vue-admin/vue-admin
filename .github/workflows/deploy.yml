@@ -76,7 +76,8 @@ jobs:
         uses: burnett01/rsync-deployments@7.0.1
         with:
           # --exclude 走 switches（该 action 无 excludes 输入）；--delete 排除 .user.ini 后再删
-          switches: -avz --delete --exclude=.user.ini
+          # --omit-dir-times：部署用户无目录 mtime 写权限（属主 www），跳过避免 code 23 警告
+          switches: -avz --delete --exclude=.user.ini --omit-dir-times --no-perms
           path: dist/
           remote_path: ${{ secrets.APP_PATH }}/
           remote_host: ${{ secrets.SERVER_HOST }}
@@ -87,7 +88,7 @@ jobs:
       - name: Deploy docs
         uses: burnett01/rsync-deployments@7.0.1
         with:
-          switches: -avz --delete --exclude=.user.ini
+          switches: -avz --delete --exclude=.user.ini --omit-dir-times --no-perms
           path: docs-site/.vitepress/dist/
           remote_path: ${{ secrets.DOCS_PATH }}/
           remote_host: ${{ secrets.SERVER_HOST }}
