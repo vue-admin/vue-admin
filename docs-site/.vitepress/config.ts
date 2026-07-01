@@ -28,6 +28,9 @@ export default defineConfig({
   },
   themeConfig: {
     logo: '/logo.svg',
+    search: {
+      provider: 'local'
+    },
     nav: [
       { text: '首页', link: '/' },
       { text: '规范', link: '/guide/overview' },
