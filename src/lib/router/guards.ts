@@ -1,4 +1,4 @@
-import type { Router } from 'vue-router'
+import type { Router, RouteRecordRaw } from 'vue-router'
 import { authService } from '@/lib/auth/authService'
 import { useUserStore } from '@/app/stores/user'
 import { usePermissionStore } from '@/app/stores/permission'
@@ -18,6 +18,8 @@ export function _resetMenusRegistered(): void {
   menusPromise = null
 }
 
+const CATCH_ALL_NAME = 'catchAll'
+
 /**
  * 拉取菜单并注册动态路由。
  *
@@ -36,6 +38,16 @@ export async function bootstrapMenus(router: Router): Promise<void> {
       // 同步到 permission store，供 Sidebar 渲染
       usePermissionStore().setMenus(menus)
       menusRegistered = true
+      // 动态路由注册完成后再添加 404 通配符，避免 initial navigation 到未注册路由时
+      // 通配符 redirect 在 beforeEach 之前执行，导致动态路由失去注册机会。
+      if (!router.hasRoute(CATCH_ALL_NAME)) {
+        router.addRoute({
+          path: '/:catchAll(.*)',
+          name: CATCH_ALL_NAME,
+          redirect: '/404',
+          meta: {},
+        } as unknown as RouteRecordRaw)
+      }
     } finally {
       menusPromise = null
     }

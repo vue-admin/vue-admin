@@ -113,6 +113,24 @@ export default [
     },
   },
   {
+    url: '/api/system/login-log/export',
+    method: 'GET',
+    response: () => {
+      const csv = toCsv(loginLogs, [
+        'username', 'ip', 'location', 'browser', 'os', 'status', 'message', 'loginTime',
+      ])
+      return { code: 0, data: csv, msg: 'success' }
+    },
+  },
+  {
+    url: '/api/system/login-log/clear',
+    method: 'DELETE',
+    response: () => {
+      loginLogs.length = 0
+      return { code: 0, data: true, msg: 'success' }
+    },
+  },
+  {
     url: '/api/system/login-log/:id',
     method: 'GET',
     response: ({ params }) => {
@@ -147,24 +165,6 @@ export default [
         }
       })
       return { code: 0, data: true, msg: 'success' }
-    },
-  },
-  {
-    url: '/api/system/login-log/clear',
-    method: 'DELETE',
-    response: () => {
-      loginLogs.length = 0
-      return { code: 0, data: true, msg: 'success' }
-    },
-  },
-  {
-    url: '/api/system/login-log/export',
-    method: 'GET',
-    response: () => {
-      const csv = toCsv(loginLogs, [
-        'username', 'ip', 'location', 'browser', 'os', 'status', 'message', 'loginTime',
-      ])
-      return { code: 0, data: csv, msg: 'success' }
     },
   },
 
@@ -214,6 +214,24 @@ export default [
     },
   },
   {
+    url: '/api/system/operation-log/export',
+    method: 'GET',
+    response: () => {
+      const csv = toCsv(operationLogs, [
+        'username', 'module', 'operation', 'method', 'ip', 'location', 'time', 'status', 'errorMsg', 'operationTime',
+      ])
+      return { code: 0, data: csv, msg: 'success' }
+    },
+  },
+  {
+    url: '/api/system/operation-log/clear',
+    method: 'DELETE',
+    response: () => {
+      operationLogs.length = 0
+      return { code: 0, data: true, msg: 'success' }
+    },
+  },
+  {
     url: '/api/system/operation-log/:id',
     method: 'GET',
     response: ({ params }) => {
@@ -248,24 +266,6 @@ export default [
         }
       })
       return { code: 0, data: true, msg: 'success' }
-    },
-  },
-  {
-    url: '/api/system/operation-log/clear',
-    method: 'DELETE',
-    response: () => {
-      operationLogs.length = 0
-      return { code: 0, data: true, msg: 'success' }
-    },
-  },
-  {
-    url: '/api/system/operation-log/export',
-    method: 'GET',
-    response: () => {
-      const csv = toCsv(operationLogs, [
-        'username', 'module', 'operation', 'method', 'ip', 'location', 'time', 'status', 'errorMsg', 'operationTime',
-      ])
-      return { code: 0, data: csv, msg: 'success' }
     },
   },
 ]

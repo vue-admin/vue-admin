@@ -29,7 +29,7 @@
       </el-tooltip>
       <el-tooltip content="设置">
         <div
-          class="header-icon"
+          class="header-icon settings-icon"
           @click="settingsVisible = true"
         >
           <el-icon><Setting /></el-icon>

@@ -18,11 +18,6 @@ const router = createRouter({
       component: Layout,
       children: menus
     },
-    {
-      path: '/:catchAll(.*)',
-      redirect: '/404',
-      meta: {}
-    }
   ]
 })
 
